@@ -20,11 +20,11 @@ import logoImg from '../assets/logo-white.png';
 				</div>
 			</a>
 		</div>
-		<div class="internal-links">
+		<!-- <div class="internal-links">
 			<HeaderLink href="/">Home</HeaderLink>
 			<HeaderLink href="/blog">Blog</HeaderLink>
 			<HeaderLink href="/about">About</HeaderLink>
-		</div>
+		</div> -->
 		<div class="social-links">
 			<a href="#" target="_blank" title="YouTube">
 				<!-- TODO: Add YouTube channel URL -->
@@ -63,7 +63,7 @@ import logoImg from '../assets/logo-white.png';
 
 	header {
 		margin: 0;
-		padding: 0 1em;
+		padding: 0;
 		background: white;
 		box-shadow: 0 2px 8px rgba(var(--black), 5%);
 	}
@@ -72,6 +72,10 @@ import logoImg from '../assets/logo-white.png';
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		width: auto;
+		max-width: 90%;
+		margin: 0 auto;
+		padding: 0 1rem;
 	}
 
 	/* Logo */
@@ -160,6 +164,11 @@ import logoImg from '../assets/logo-white.png';
 	.social-links a {
 		display: flex;
 		color: #29527a;
+		transition: color 0.2s ease;
+	}
+
+	.social-links a:hover {
+		color: #5dbac2;
 	}
 
 	@media (max-width: 720px) {
