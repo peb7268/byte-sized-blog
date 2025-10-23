@@ -1,0 +1,84 @@
+---
+import { SITE_TITLE, SITE_TAGLINE } from '../consts';
+const today = new Date();
+---
+
+<footer>
+	<div class="footer-content">
+		<p class="branding">
+			<strong>{SITE_TITLE}</strong> • {SITE_TAGLINE}
+		</p>
+		<nav class="footer-links">
+			<a href="/">Home</a>
+			<a href="/blog">Blog</a>
+			<a href="/about">About</a>
+			<a href="#" title="YouTube">YouTube</a>
+			<!-- TODO: Add YouTube channel URL -->
+			<a href="https://www.linkedin.com/in/peb7268/" target="_blank">LinkedIn</a>
+			<a href="/rss.xml">RSS</a>
+		</nav>
+		<p class="copyright">
+			&copy; {today.getFullYear()} Paul • Built with <a href="https://astro.build" target="_blank">Astro</a> • Written in Obsidian
+		</p>
+	</div>
+</footer>
+<style>
+	footer {
+		padding: 3em 1em;
+		background: linear-gradient(var(--gray-gradient)) no-repeat;
+		color: rgb(var(--gray));
+		text-align: center;
+		border-top: 1px solid rgba(var(--gray-light), 0.25);
+		margin-top: 4rem;
+	}
+
+	.footer-content {
+		max-width: 65ch;
+		margin: 0 auto;
+	}
+
+	.branding {
+		font-size: 1.1rem;
+		margin-bottom: 1rem;
+	}
+
+	.footer-links {
+		display: flex;
+		justify-content: center;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+		margin: 1.5rem 0;
+	}
+
+	.footer-links a {
+		color: rgb(var(--gray));
+		text-decoration: none;
+		transition: color 0.2s;
+	}
+
+	.footer-links a:hover {
+		color: rgb(var(--gray-dark));
+	}
+
+	.copyright {
+		font-size: 0.9rem;
+		margin-top: 1.5rem;
+		color: rgb(var(--gray-light));
+	}
+
+	.copyright a {
+		color: rgb(var(--gray-light));
+		text-decoration: none;
+	}
+
+	.copyright a:hover {
+		color: rgb(var(--gray));
+	}
+
+	@media (max-width: 720px) {
+		.footer-links {
+			flex-direction: column;
+			gap: 0.75rem;
+		}
+	}
+</style>

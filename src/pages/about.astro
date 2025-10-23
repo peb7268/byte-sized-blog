@@ -1,0 +1,66 @@
+---
+import AboutHeroImage from '../assets/blog-placeholder-about.jpg';
+import Layout from '../layouts/BlogPost.astro';
+---
+
+<Layout
+	title="About"
+	description="Learn about Byte-Sized and PaulThatAIGuy"
+	pubDate={new Date('October 22 2024')}
+	heroImage={AboutHeroImage}
+>
+	<h2>Hi, I'm Paul (PaulThatAIGuy)</h2>
+
+	<p>
+		This blog is my personal knowledge management system (PKMS) where I capture micro-learnings,
+		tech insights, and workflows. Think of it as my public notes on building better software,
+		faster—embodying the tagline: <strong>iterate daily. ship fast</strong>.
+	</p>
+
+	<h3>What you'll find here:</h3>
+
+	<h4>🤖 Agentic Development</h4>
+	<p>
+		Patterns and practices for AI-powered development. How to leverage LLMs like Claude and Gemini
+		in your daily workflow, build better prompts, and ship code faster with AI assistance.
+	</p>
+
+	<h4>📝 PKMS Workflows</h4>
+	<p>
+		How I use Obsidian, Astro, and other tools to manage knowledge and iterate daily. My systems
+		for capturing insights, organizing ideas, and turning notes into published content.
+	</p>
+
+	<h4>🎥 Product Reviews</h4>
+	<p>
+		Tech reviews and tutorials featured on my YouTube channel. Deep dives into development tools,
+		productivity apps, and emerging technologies worth your attention.
+	</p>
+
+	<h4>⚡ Micro-learnings</h4>
+	<p>
+		Quick insights, tips, and TILs (Today I Learned) from daily work. The small discoveries that
+		compound over time—the byte-sized knowledge that moves you forward.
+	</p>
+
+	<hr />
+
+	<h3>How this blog works</h3>
+	<p>
+		All posts are written in <strong>Obsidian</strong> (my PKMS), automatically synced to this
+		Astro-powered static site, and deployed to my Unraid server. The workflow itself embodies
+		the tagline: iterate daily, ship fast.
+	</p>
+	<p>
+		It's a hybrid local/remote setup that lets me write anywhere, anytime, and publish with a
+		simple build command. The entire workflow is documented in this blog—meta content about
+		building the blog you're reading right now.
+	</p>
+
+	<p style="margin-top: 2rem;">
+		<strong>Connect:</strong><br />
+		<a href="#" target="_blank">YouTube (PaulThatAIGuy)</a> •
+		<a href="https://www.linkedin.com/in/peb7268/" target="_blank">LinkedIn</a>
+		<!-- TODO: Add YouTube channel URL -->
+	</p>
+</Layout>
