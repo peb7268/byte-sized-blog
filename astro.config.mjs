@@ -7,7 +7,5 @@ import { defineConfig } from 'astro/config';
 // https://astro.build/config
 export default defineConfig({
 	site: 'https://blog.byte-sized.io',
-	// Build directly to Unraid mount instead of local dist/
-	outDir: '/Volumes/blog',
 	integrations: [mdx(), sitemap()],
 });
