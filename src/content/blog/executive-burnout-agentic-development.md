@@ -2,7 +2,7 @@
 title: 'The Hidden Cost of Building the Future: Executive Burnout in the Age of Agentic AI'
 description: 'Why the leaders building autonomous AI systems are uniquely vulnerable to burnout—and what the data reveals about protecting yourself in the agentic era.'
 pubDate: 'Mar 22 2026'
-heroImage: "{{unsplash_image_url}}"
+heroImage: "https://images.unsplash.com/photo-1632893037506-aac33bf18107?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080"
 tags: ["burnout", "leadership", "agentic-ai", "mental-health", "founders"]
 ---
 
