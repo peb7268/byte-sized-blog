@@ -23,33 +23,33 @@ const posts = (await getCollection('blog'))
 
 const recentWriting = posts.slice(0, 3);
 
-// "Inside Optimus" — three architectural pieces that together form the
-// data, inference, and orchestration layers of an agent-native engineering
-// platform. Each is genuinely novel on its own; the aggregate is the
-// thesis. Status badges read like real engineering updates, not pitches.
+// "Inside Optimus" — Optimus as the umbrella plus two of the components
+// that make it more than a kanban tool: Test-driver (verification layer)
+// and Nexus (universal context primitive). Status badges read like real
+// engineering updates, not pitches.
 const nowBuilding = [
   {
-    name: 'Nexus',
-    handle: 'optimus / nexus',
+    name: 'Optimus',
+    handle: 'optimus',
     summary:
-      'A universal world-context primitive. 16 composable ContextTypes (docs, stories, plans, git history, goals, daily notes, calendar, memory, …) sit in one table, cross-linked, embedding-aware. Backs the entire knowledge surface — one query language, every source.',
-    status: '16 types · in production',
-    href: 'https://board.byte-sized.io',
-  },
-  {
-    name: 'Harness',
-    handle: 'optimus / harness',
-    summary:
-      'Provider-abstracted LLM routing. Every AI feature speaks one interface; the harness picks the model. Swap Claude → GPT → Gemini without touching feature code — insurance against tokenizer drift and pricing whiplash.',
-    status: 'multi-provider',
+      'An agent-native engineering platform. Plans, stories, docs, git history, goals, and daily flow all live in one composable world-context engine — built so a small operator + a fleet of agents can ship like a large team.',
+    status: 'v0.9 · in production',
     href: 'https://board.byte-sized.io',
   },
   {
     name: 'Test-driver',
     handle: 'optimus / test-driver',
     summary:
-      'An agent that walks a feature end-to-end, captures evidence, scores severity, and writes the run manifest back into nexus_items. Runs on a weekly LaunchAgent or on demand. Dogfoods itself by walking the test-drive UI.',
+      'An agent that walks a feature end-to-end, captures evidence, scores severity, and writes the run manifest back into nexus_items. Runs on a weekly LaunchAgent or on demand — and dogfoods itself by walking the test-drive UI.',
     status: 'live · scheduled',
+    href: 'https://board.byte-sized.io',
+  },
+  {
+    name: 'Nexus',
+    handle: 'optimus / nexus',
+    summary:
+      'A universal world-context primitive. 16 composable ContextTypes (docs, stories, plans, git history, goals, daily notes, calendar, memory, …) sit in one table, cross-linked, embedding-aware. One query language, every source.',
+    status: '16 types · in production',
     href: 'https://board.byte-sized.io',
   },
 ];
@@ -122,11 +122,13 @@ const nowBuilding = [
       <!-- ===================================================================
            NOW BUILDING — current work strip
       =================================================================== -->
-      <section class="now-building" id="now-building" aria-label="Inside Optimus">
+      <section class="now-building" id="now-building" aria-label="Now building">
         <header class="section-header">
-          <span class="section-label mono">// inside optimus</span>
-          <h2>Architecture I'm shipping</h2>
-          <p class="section-sub">Three pieces of Optimus that are interesting on their own.</p>
+          <span class="section-label mono">// now building</span>
+          <h2>What I'm shipping</h2>
+          <p class="section-sub">
+            Optimus and two of the components that make it more than a kanban tool.
+          </p>
         </header>
 
         <div class="project-grid">
