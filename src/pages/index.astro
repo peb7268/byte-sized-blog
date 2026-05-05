@@ -23,33 +23,34 @@ const posts = (await getCollection('blog'))
 
 const recentWriting = posts.slice(0, 3);
 
-// "Now Building" — current projects shown as a strip below the hero.
-// Status badges use semantic versioning + state vocabulary so they read
-// like a real engineering update rather than agency marketing copy.
+// "Inside Optimus" — three architectural pieces that together form the
+// data, inference, and orchestration layers of an agent-native engineering
+// platform. Each is genuinely novel on its own; the aggregate is the
+// thesis. Status badges read like real engineering updates, not pitches.
 const nowBuilding = [
   {
-    name: 'Optimus',
-    handle: 'optimus.byte-sized.io',
+    name: 'Nexus',
+    handle: 'optimus / nexus',
     summary:
-      'A durable, composable world-context engine for engineering teams. Obsidian → Postgres → vector, with cross-type linking and agentic test-drive.',
-    status: 'v0.9 · in production',
+      'A universal world-context primitive. 16 composable ContextTypes (docs, stories, plans, git history, goals, daily notes, calendar, memory, …) sit in one table, cross-linked, embedding-aware. Backs the entire knowledge surface — one query language, every source.',
+    status: '16 types · in production',
     href: 'https://board.byte-sized.io',
   },
   {
-    name: 'Mile High Marketing',
-    handle: 'mhm.byte-sized.io',
+    name: 'Harness',
+    handle: 'optimus / harness',
     summary:
-      'Agentic marketing studio. Sites, brand, SEO, and digital strategy delivered in days by a small fleet of agents and one careful operator.',
-    status: 'open for work',
-    href: 'https://mhm.byte-sized.io',
+      'Provider-abstracted LLM routing. Every AI feature speaks one interface; the harness picks the model. Swap Claude → GPT → Gemini without touching feature code — insurance against tokenizer drift and pricing whiplash.',
+    status: 'multi-provider',
+    href: 'https://board.byte-sized.io',
   },
   {
-    name: 'Agent Vault',
-    handle: 'github.com/peb7268',
+    name: 'Test-driver',
+    handle: 'optimus / test-driver',
     summary:
-      'A registry of specialized agents — networking, secrets, vault hygiene, blog writing — all coordinating through a shared memory protocol.',
-    status: 'building in public',
-    href: 'https://github.com/peb7268',
+      'An agent that walks a feature end-to-end, captures evidence, scores severity, and writes the run manifest back into nexus_items. Runs on a weekly LaunchAgent or on demand. Dogfoods itself by walking the test-drive UI.',
+    status: 'live · scheduled',
+    href: 'https://board.byte-sized.io',
   },
 ];
 ---
@@ -121,11 +122,11 @@ const nowBuilding = [
       <!-- ===================================================================
            NOW BUILDING — current work strip
       =================================================================== -->
-      <section class="now-building" id="now-building" aria-label="Current projects">
+      <section class="now-building" id="now-building" aria-label="Inside Optimus">
         <header class="section-header">
-          <span class="section-label mono">// now building</span>
-          <h2>Current projects</h2>
-          <p class="section-sub">A few things I'm operating in the open.</p>
+          <span class="section-label mono">// inside optimus</span>
+          <h2>Architecture I'm shipping</h2>
+          <p class="section-sub">Three pieces of Optimus that are interesting on their own.</p>
         </header>
 
         <div class="project-grid">

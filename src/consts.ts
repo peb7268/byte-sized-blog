@@ -13,4 +13,4 @@ export const AUTHOR_LOCATION = 'Denver, CO';
 export const AUTHOR_TAGLINE =
   'Building agentic systems and marketing infrastructure that ships in days, not quarters.';
 export const AUTHOR_BIO_SHORT =
-  'I build software with AI agents — Optimus (a context engine for engineering teams), Mile High Marketing (an agentic marketing studio), and a steady stream of musings on what changes when development becomes agentic.';
+  'I build software with AI agents — Optimus (a context engine for engineering teams), the harness layer that lets it swap models, and a steady stream of musings on what changes when development becomes agentic.';
