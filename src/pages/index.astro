@@ -5,267 +5,534 @@ import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
 import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE, SITE_TAGLINE } from '../consts';
+import {
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+  AUTHOR_NAME,
+  AUTHOR_HANDLE,
+  AUTHOR_LOCATION,
+  AUTHOR_TAGLINE,
+  AUTHOR_BIO_SHORT,
+} from '../consts';
 
 const posts = (await getCollection('blog'))
-	.filter((post) => !post.data.draft)
-	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const featuredPost = posts[0];
-const recentPosts = posts.slice(1, 7); // Get posts 2-7 (up to 6 posts)
+const recentWriting = posts.slice(0, 3);
+
+// "Now Building" — current projects shown as a strip below the hero.
+// Status badges use semantic versioning + state vocabulary so they read
+// like a real engineering update rather than agency marketing copy.
+const nowBuilding = [
+  {
+    name: 'Optimus',
+    handle: 'optimus.byte-sized.io',
+    summary:
+      'A durable, composable world-context engine for engineering teams. Obsidian → Postgres → vector, with cross-type linking and agentic test-drive.',
+    status: 'v0.9 · in production',
+    href: 'https://board.byte-sized.io',
+  },
+  {
+    name: 'Mile High Marketing',
+    handle: 'mhm.byte-sized.io',
+    summary:
+      'Agentic marketing studio. Sites, brand, SEO, and digital strategy delivered in days by a small fleet of agents and one careful operator.',
+    status: 'open for work',
+    href: 'https://mhm.byte-sized.io',
+  },
+  {
+    name: 'Agent Vault',
+    handle: 'github.com/peb7268',
+    summary:
+      'A registry of specialized agents — networking, secrets, vault hygiene, blog writing — all coordinating through a shared memory protocol.',
+    status: 'building in public',
+    href: 'https://github.com/peb7268',
+  },
+];
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<p class="wip">Blog in development. WIP</p>
+  <head>
+    <BaseHead title={`${AUTHOR_NAME} — ${AUTHOR_TAGLINE}`} description={SITE_DESCRIPTION} />
+  </head>
+  <body class="personal">
+    <Header />
 
-			{featuredPost && (
-				<section class="posts-section">
-					<div class="two-column-layout">
-						<!-- Featured Post (Left Column) -->
-						<article class="featured-post">
-							<a href={`/blog/${featuredPost.id}/`}>
-								{featuredPost.data.heroImage && (
-									<Image
-										width={960}
-										height={480}
-										src={featuredPost.data.heroImage}
-										alt={featuredPost.data.title}
-										class="featured-image"
-									/>
-								)}
-								<div class="featured-content">
-									<h3>{featuredPost.data.title}</h3>
-									<p class="date">
-										<FormattedDate date={featuredPost.data.pubDate} />
-									</p>
-									{featuredPost.data.description && (
-										<p class="description">{featuredPost.data.description}</p>
-									)}
-								</div>
-							</a>
-						</article>
+    <main>
+      <!-- ===================================================================
+           HERO — digital business card
+      =================================================================== -->
+      <section class="hero" aria-label="Introduction">
+        <div class="hero-inner">
+          <div class="hero-text">
+            <p class="status-pill">
+              <span class="status-dot" aria-hidden="true"></span>
+              <span class="mono">{AUTHOR_HANDLE}</span>
+              <span class="sep" aria-hidden="true">·</span>
+              <span class="mono">{AUTHOR_LOCATION}</span>
+            </p>
 
-						<!-- Recent Posts Sidebar (Right Column) -->
-						{recentPosts.length > 0 && (
-							<aside class="recent-posts-sidebar">
-								{recentPosts.map((post) => (
-									<article class="sidebar-post">
-										<a href={`/blog/${post.id}/`}>
-											{post.data.heroImage && (
-												<Image
-													width={480}
-													height={240}
-													src={post.data.heroImage}
-													alt={post.data.title}
-													class="sidebar-image"
-												/>
-											)}
-											<h4>{post.data.title}</h4>
-											<p class="date">
-												<FormattedDate date={post.data.pubDate} />
-											</p>
-										</a>
-									</article>
-								))}
-							</aside>
-						)}
-					</div>
+            <h1 class="hero-name">{AUTHOR_NAME}</h1>
 
-					<div class="cta">
-						<a href="/blog" class="cta-button">→ Browse All Posts</a>
-					</div>
-				</section>
-			)}
+            <p class="hero-tagline">
+              {AUTHOR_TAGLINE}<span class="cursor" aria-hidden="true">▍</span>
+            </p>
 
-			<section class="meta">
-				<p>
-					<em>Writing in public, building in the open.</em><br />
-					Posts written in Obsidian, published with Astro.
-				</p>
-			</section>
-		</main>
-		<Footer />
-	</body>
+            <p class="hero-bio">{AUTHOR_BIO_SHORT}</p>
+
+            <div class="cta-row">
+              <a href="/blog" class="btn btn-primary">Read the writing</a>
+              <a href="#now-building" class="btn btn-ghost">See what I'm building</a>
+              <a href={`mailto:${AUTHOR_HANDLE}`} class="btn btn-ghost">Email me</a>
+              <a href="https://www.linkedin.com/in/paul-barrick/" class="btn btn-ghost"
+                target="_blank" rel="noopener">LinkedIn</a>
+            </div>
+          </div>
+
+          <div class="monogram" aria-hidden="true">
+            <!-- Inline SVG monogram. Same flat-vector language used in
+                 the MHM revamp — gold serif glyph on near-black bg with
+                 a thin gold border, scales crisply to any size. -->
+            <svg viewBox="0 0 240 240" width="200" height="200" role="img"
+              aria-labelledby="monogram-title">
+              <title id="monogram-title">Paul Barrick monogram</title>
+              <defs>
+                <linearGradient id="bg-grad" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#0F1219" />
+                  <stop offset="1" stop-color="#1A2030" />
+                </linearGradient>
+              </defs>
+              <rect x="2" y="2" width="236" height="236" rx="16" fill="url(#bg-grad)" />
+              <rect x="6" y="6" width="228" height="228" rx="14" fill="none"
+                stroke="#D4AF37" stroke-width="1.5" opacity="0.7" />
+              <text x="50%" y="54%" text-anchor="middle"
+                font-family="Georgia, 'Times New Roman', serif"
+                font-size="148" font-weight="700" fill="#D4AF37"
+                dominant-baseline="middle">pb</text>
+              <line x1="64" y1="180" x2="176" y2="180"
+                stroke="#D4AF37" stroke-width="1" opacity="0.4" />
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           NOW BUILDING — current work strip
+      =================================================================== -->
+      <section class="now-building" id="now-building" aria-label="Current projects">
+        <header class="section-header">
+          <span class="section-label mono">// now building</span>
+          <h2>Current projects</h2>
+          <p class="section-sub">A few things I'm operating in the open.</p>
+        </header>
+
+        <div class="project-grid">
+          {nowBuilding.map((p) => (
+            <a class="project-card" href={p.href} target="_blank" rel="noopener">
+              <header class="project-head">
+                <h3>{p.name}</h3>
+                <span class="badge mono">{p.status}</span>
+              </header>
+              <p class="project-handle mono">{p.handle}</p>
+              <p class="project-summary">{p.summary}</p>
+              <span class="project-arrow" aria-hidden="true">↗</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           RECENT WRITING
+      =================================================================== -->
+      <section class="recent-writing" aria-label="Recent writing">
+        <header class="section-header">
+          <span class="section-label mono">// recent writing</span>
+          <h2>Recent writing</h2>
+          <p class="section-sub">Notes from the build. Updated as I ship.</p>
+        </header>
+
+        <ul class="writing-list">
+          {recentWriting.map((post) => (
+            <li class="writing-item">
+              <a href={`/blog/${post.id}/`}>
+                <p class="writing-meta mono">
+                  <FormattedDate date={post.data.pubDate} />
+                  {post.data.tags && post.data.tags.length > 0 && (
+                    <>
+                      <span class="sep" aria-hidden="true">·</span>
+                      <span>{post.data.tags.slice(0, 2).join(' · ')}</span>
+                    </>
+                  )}
+                </p>
+                <h3 class="writing-title">{post.data.title}</h3>
+                {post.data.description && (
+                  <p class="writing-excerpt">{post.data.description}</p>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div class="writing-cta">
+          <a href="/blog" class="btn btn-ghost">All writing →</a>
+        </div>
+      </section>
+    </main>
+
+    <Footer />
+
+    <style>
+      :root {
+        --ink: #0F1219;
+        --ink-soft: #2B3243;
+        --paper: #FAFAFA;
+        --paper-warm: #F4EFE6;
+        --gold: #D4AF37;
+        --gold-dim: rgba(212, 175, 55, 0.4);
+        --rule: rgba(15, 18, 25, 0.12);
+        --mono-stack: 'JetBrains Mono', 'Fira Code', 'Berkeley Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+        --serif-stack: 'Georgia', 'Times New Roman', serif;
+      }
+
+      body.personal {
+        background: var(--paper);
+        color: var(--ink);
+      }
+
+      main {
+        width: min(1100px, calc(100% - 2rem));
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 2rem 1rem 4rem;
+      }
+
+      /* ============================================================
+         HERO
+      ============================================================ */
+      .hero {
+        padding: 5rem 0 4rem;
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .hero-inner {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 3rem;
+        align-items: center;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0.75rem;
+        border: 1px solid var(--rule);
+        border-radius: 999px;
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+        margin-bottom: 1.75rem;
+        background: rgba(212, 175, 55, 0.04);
+      }
+
+      .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: #16a34a;
+        box-shadow: 0 0 8px rgba(22, 163, 74, 0.6);
+        display: inline-block;
+      }
+
+      .status-pill .sep { opacity: 0.4; }
+
+      .hero-name {
+        font-family: var(--serif-stack);
+        font-size: clamp(3rem, 7vw, 5.5rem);
+        font-weight: 700;
+        line-height: 0.95;
+        letter-spacing: -0.025em;
+        margin: 0 0 1.25rem;
+        color: var(--ink);
+      }
+
+      .hero-tagline {
+        font-size: 1.5rem;
+        line-height: 1.35;
+        color: var(--ink);
+        margin: 0 0 1.5rem;
+        font-weight: 400;
+        max-width: 36ch;
+      }
+
+      .cursor {
+        display: inline-block;
+        margin-left: 4px;
+        color: var(--gold);
+        animation: blink 1.05s steps(1) infinite;
+      }
+
+      @keyframes blink {
+        50% { opacity: 0; }
+      }
+
+      .hero-bio {
+        font-size: 1rem;
+        line-height: 1.65;
+        color: var(--ink-soft);
+        margin: 0 0 2.5rem;
+        max-width: 56ch;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.72rem 1.4rem;
+        border-radius: 999px;
+        font-size: 0.95rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+        line-height: 1.2;
+      }
+
+      .btn-primary {
+        background: var(--ink);
+        color: var(--paper);
+        border: 1px solid var(--ink);
+      }
+      .btn-primary:hover {
+        background: var(--gold);
+        color: var(--ink);
+        border-color: var(--gold);
+      }
+
+      .btn-ghost {
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid var(--rule);
+      }
+      .btn-ghost:hover {
+        border-color: var(--ink);
+      }
+
+      .monogram {
+        line-height: 0;
+        align-self: center;
+      }
+
+      /* ============================================================
+         SHARED — section header
+      ============================================================ */
+      .section-header {
+        margin-bottom: 2.5rem;
+      }
+      .section-label {
+        display: block;
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+        opacity: 0.7;
+        margin-bottom: 0.4rem;
+        letter-spacing: 0.04em;
+      }
+      .section-header h2 {
+        font-family: var(--serif-stack);
+        font-size: 2.25rem;
+        font-weight: 700;
+        line-height: 1.05;
+        letter-spacing: -0.015em;
+        margin: 0 0 0.5rem;
+        color: var(--ink);
+      }
+      .section-sub {
+        margin: 0;
+        color: var(--ink-soft);
+        font-size: 1rem;
+      }
+      .mono {
+        font-family: var(--mono-stack);
+      }
+
+      /* ============================================================
+         NOW BUILDING
+      ============================================================ */
+      .now-building {
+        padding: 4rem 0;
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .project-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+      }
+
+      .project-card {
+        position: relative;
+        display: block;
+        padding: 1.5rem;
+        border: 1px solid var(--rule);
+        border-radius: 12px;
+        text-decoration: none;
+        color: inherit;
+        background: #fff;
+        transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .project-card:hover {
+        border-color: var(--gold);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px -16px rgba(15, 18, 25, 0.25);
+      }
+
+      .project-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .project-card h3 {
+        font-family: var(--serif-stack);
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1.2;
+        color: var(--ink);
+      }
+
+      .badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        background: var(--paper-warm);
+        color: var(--ink-soft);
+        white-space: nowrap;
+      }
+
+      .project-handle {
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+        opacity: 0.7;
+        margin: 0 0 0.85rem;
+      }
+
+      .project-summary {
+        font-size: 0.95rem;
+        line-height: 1.5;
+        color: var(--ink-soft);
+        margin: 0;
+      }
+
+      .project-arrow {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        font-size: 1.25rem;
+        color: var(--ink-soft);
+        opacity: 0;
+        transition: opacity 0.2s ease, transform 0.2s ease;
+      }
+
+      .project-card:hover .project-arrow {
+        opacity: 1;
+        transform: translate(2px, -2px);
+      }
+
+      /* ============================================================
+         RECENT WRITING
+      ============================================================ */
+      .recent-writing {
+        padding: 4rem 0 2rem;
+      }
+
+      .writing-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .writing-item {
+        border-top: 1px solid var(--rule);
+      }
+      .writing-item:last-child {
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .writing-item a {
+        display: block;
+        padding: 1.5rem 0;
+        text-decoration: none;
+        color: inherit;
+        transition: padding-left 0.2s ease;
+      }
+
+      .writing-item a:hover {
+        padding-left: 0.5rem;
+      }
+
+      .writing-meta {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+        opacity: 0.7;
+        margin: 0 0 0.4rem;
+      }
+
+      .writing-title {
+        font-family: var(--serif-stack);
+        font-size: 1.6rem;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.01em;
+        margin: 0 0 0.4rem;
+        color: var(--ink);
+        transition: color 0.15s ease;
+      }
+
+      .writing-item a:hover .writing-title {
+        color: var(--gold);
+      }
+
+      .writing-excerpt {
+        font-size: 1rem;
+        color: var(--ink-soft);
+        line-height: 1.55;
+        margin: 0;
+        max-width: 70ch;
+      }
+
+      .writing-cta {
+        margin-top: 2rem;
+      }
+
+      /* ============================================================
+         RESPONSIVE
+      ============================================================ */
+      @media (max-width: 900px) {
+        .hero { padding: 3rem 0 2.5rem; }
+        .hero-inner { grid-template-columns: 1fr; gap: 2rem; }
+        .monogram { order: -1; }
+        .monogram svg { width: 120px; height: 120px; }
+        .project-grid { grid-template-columns: 1fr; }
+      }
+
+      @media (max-width: 540px) {
+        .hero-tagline { font-size: 1.2rem; }
+        .cta-row { gap: 0.5rem; }
+        .btn { font-size: 0.88rem; padding: 0.6rem 1.1rem; }
+      }
+    </style>
+  </body>
 </html>
-<style>
-	main {
-		width: auto;
-		max-width: 90%;
-		margin: 0 auto;
-		padding: 2rem 1rem;
-	}
-
-	.wip {
-		text-align: center;
-		color: rgb(var(--gray));
-		font-size: 1rem;
-		margin-bottom: 3rem;
-	}
-
-	.meta {
-		text-align: center;
-		margin-top: 4rem;
-		padding-top: 2rem;
-		border-top: 1px solid rgba(var(--gray-light), 0.25);
-		color: var(--gray);
-		font-style: italic;
-	}
-
-	/* Posts Section */
-	.posts-section {
-		margin: 4rem auto;
-		padding: 0 1rem;
-	}
-
-	/* Two Column Layout */
-	.two-column-layout {
-		display: grid;
-		grid-template-columns: 65% 35%;
-		gap: 2rem;
-		margin-bottom: 3rem;
-	}
-
-	/* Featured Post (Left Column) */
-	.featured-post a {
-		display: block;
-		text-decoration: none;
-		color: inherit;
-		transition: transform 0.2s;
-	}
-
-	.featured-post a:hover {
-		transform: translateY(-2px);
-	}
-
-	.featured-image {
-		width: 100%;
-		border-radius: 12px;
-		margin-bottom: 1rem;
-		box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	}
-
-	.featured-post a:hover .featured-image {
-		box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
-	}
-
-	.featured-content {
-		text-align: center;
-		max-width: 65ch;
-		margin: 0 auto;
-	}
-
-	.featured-content h3 {
-		font-size: 2rem;
-		margin: 1rem 0 0.5rem;
-		color: rgb(var(--black));
-		line-height: 1.2;
-	}
-
-	.featured-post a:hover h3 {
-		color: rgb(var(--accent));
-	}
-
-	.featured-content .description {
-		color: rgb(var(--gray));
-		font-size: 1.125rem;
-		line-height: 1.6;
-		margin-top: 1rem;
-	}
-
-	/* Recent Posts Sidebar (Right Column) */
-	.recent-posts-sidebar {
-		display: flex;
-		flex-direction: column;
-		gap: 1.5rem;
-	}
-
-	.sidebar-post a {
-		display: block;
-		text-decoration: none;
-		color: inherit;
-		transition: transform 0.2s;
-	}
-
-	.sidebar-post a:hover {
-		transform: translateY(-2px);
-	}
-
-	.sidebar-image {
-		width: 100%;
-		border-radius: 8px;
-		margin-bottom: 0.75rem;
-		box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	}
-
-	.sidebar-post a:hover .sidebar-image {
-		box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-	}
-
-	.sidebar-post h4 {
-		font-size: 1.125rem;
-		margin: 0 0 0.25rem;
-		color: rgb(var(--black));
-		line-height: 1.3;
-	}
-
-	.sidebar-post a:hover h4 {
-		color: rgb(var(--accent));
-	}
-
-	.date {
-		margin: 0.25rem 0;
-		color: rgb(var(--gray));
-		font-size: 0.9rem;
-	}
-
-	/* CTA Button */
-	.cta {
-		display: flex;
-		justify-content: center;
-		margin-top: 3rem;
-	}
-
-	.cta-button {
-		display: inline-block;
-		padding: 0.75rem 2rem;
-		background: #29527a;
-		color: white;
-		text-decoration: none;
-		border-radius: 0.25rem;
-		font-weight: 500;
-		font-size: 1.125rem;
-		transition: background 0.2s ease;
-	}
-
-	.cta-button:hover {
-		background: #5dbac2;
-	}
-
-	@media (max-width: 960px) {
-		.two-column-layout {
-			grid-template-columns: 1fr;
-			gap: 3rem;
-		}
-
-		.recent-posts-sidebar {
-			gap: 2rem;
-		}
-	}
-
-	@media (max-width: 720px) {
-		.featured-content h3 {
-			font-size: 1.5rem;
-		}
-
-		.sidebar-post h4 {
-			font-size: 1rem;
-		}
-	}
-</style>
