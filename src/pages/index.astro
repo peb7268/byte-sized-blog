@@ -34,7 +34,7 @@ const nowBuilding = [
     summary:
       'An agent-native engineering platform. Plans, stories, docs, git history, goals, and daily flow all live in one composable world-context engine — built so a small operator + a fleet of agents can ship like a large team.',
     status: 'v0.9 · in production',
-    href: 'https://board.byte-sized.io',
+    href: '/optimus',
   },
   {
     name: 'Test-driver',
@@ -42,7 +42,7 @@ const nowBuilding = [
     summary:
       'An agent that walks a feature end-to-end, captures evidence, scores severity, and writes the run manifest back into nexus_items. Runs on a weekly LaunchAgent or on demand — and dogfoods itself by walking the test-drive UI.',
     status: 'live · scheduled',
-    href: 'https://board.byte-sized.io',
+    href: '/optimus/test-driver',
   },
   {
     name: 'Nexus',
@@ -50,7 +50,7 @@ const nowBuilding = [
     summary:
       'A universal world-context primitive. 16 composable ContextTypes (docs, stories, plans, git history, goals, daily notes, calendar, memory, …) sit in one table, cross-linked, embedding-aware. One query language, every source.',
     status: '16 types · in production',
-    href: 'https://board.byte-sized.io',
+    href: '/optimus/nexus',
   },
 ];
 ---
@@ -133,14 +133,14 @@ const nowBuilding = [
 
         <div class="project-grid">
           {nowBuilding.map((p) => (
-            <a class="project-card" href={p.href} target="_blank" rel="noopener">
+            <a class="project-card" href={p.href}>
               <header class="project-head">
                 <h3>{p.name}</h3>
                 <span class="badge mono">{p.status}</span>
               </header>
               <p class="project-handle mono">{p.handle}</p>
               <p class="project-summary">{p.summary}</p>
-              <span class="project-arrow" aria-hidden="true">↗</span>
+              <span class="project-arrow" aria-hidden="true">→</span>
             </a>
           ))}
         </div>

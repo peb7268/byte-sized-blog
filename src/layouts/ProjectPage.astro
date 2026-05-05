@@ -1,0 +1,274 @@
+---
+// Shared layout for /optimus and its component detail pages.
+// Same visual tokens as the personal-brand landing — Georgia serif
+// headings, JetBrains Mono section labels, gold accents on hover.
+//
+// Each page passes:
+//   - eyebrow: monospace label above the title (e.g. "// optimus")
+//   - title: the project name in big serif
+//   - tagline: 1-line description directly below
+//   - status: badge in the hero (e.g. "v0.9 · in production")
+//
+// Body content is the default slot.
+
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  tagline: string;
+  status: string;
+  description?: string;
+}
+
+const { eyebrow, title, tagline, status, description } = Astro.props;
+const ogTitle = `${title} — Paul Barrick`;
+const ogDescription = description ?? tagline;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={ogTitle} description={ogDescription} />
+  </head>
+  <body class="personal">
+    <main>
+      <a href="/" class="back-link">← Paul Barrick</a>
+
+      <header class="page-hero">
+        <p class="eyebrow mono">{eyebrow}</p>
+        <h1>{title}</h1>
+        <p class="tagline">{tagline}</p>
+        <p class="status-pill">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span class="mono">{status}</span>
+        </p>
+      </header>
+
+      <article class="page-body">
+        <slot />
+      </article>
+
+      <nav class="page-foot">
+        <a href="/" class="btn btn-ghost">← Back to home</a>
+        <a href="/blog" class="btn btn-ghost">Read the writing →</a>
+      </nav>
+    </main>
+
+    <Footer />
+
+    <style is:global>
+      :root {
+        --ink: #0F1219;
+        --ink-soft: #2B3243;
+        --paper: #FAFAFA;
+        --paper-warm: #F4EFE6;
+        --gold: #D4AF37;
+        --rule: rgba(15, 18, 25, 0.12);
+        --mono-stack: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
+        --serif-stack: Georgia, 'Times New Roman', serif;
+      }
+
+      body.personal {
+        background: var(--paper);
+        color: var(--ink);
+      }
+
+      body.personal main {
+        width: min(760px, calc(100% - 2rem));
+        margin: 0 auto;
+        padding: 3rem 1rem 4rem;
+      }
+
+      .back-link {
+        display: inline-block;
+        font-family: var(--serif-stack);
+        font-size: 1rem;
+        color: var(--ink-soft);
+        text-decoration: none;
+        margin-bottom: 3rem;
+        transition: color 0.15s ease;
+      }
+      .back-link:hover { color: var(--gold); }
+
+      .page-hero {
+        padding-bottom: 3rem;
+        border-bottom: 1px solid var(--rule);
+        margin-bottom: 3rem;
+      }
+
+      .eyebrow {
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+        opacity: 0.65;
+        letter-spacing: 0.04em;
+        margin: 0 0 0.5rem;
+      }
+
+      .page-hero h1 {
+        font-family: var(--serif-stack);
+        font-size: clamp(2.5rem, 5.5vw, 4rem);
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        margin: 0 0 1rem;
+        color: var(--ink);
+      }
+
+      .page-hero .tagline {
+        font-size: 1.25rem;
+        line-height: 1.4;
+        color: var(--ink-soft);
+        margin: 0 0 1.5rem;
+        max-width: 60ch;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0.75rem;
+        border: 1px solid var(--rule);
+        border-radius: 999px;
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+        background: rgba(212, 175, 55, 0.05);
+        margin: 0;
+      }
+
+      .status-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: #16a34a;
+        box-shadow: 0 0 8px rgba(22, 163, 74, 0.6);
+        display: inline-block;
+      }
+
+      .mono { font-family: var(--mono-stack); }
+
+      /* ============================================================
+         Body content — semantic styling for slotted markdown-like HTML
+      ============================================================ */
+      .page-body h2 {
+        font-family: var(--serif-stack);
+        font-size: 1.85rem;
+        font-weight: 700;
+        line-height: 1.15;
+        letter-spacing: -0.01em;
+        margin: 3rem 0 1rem;
+        color: var(--ink);
+      }
+
+      .page-body h3 {
+        font-family: var(--serif-stack);
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 2rem 0 0.75rem;
+        color: var(--ink);
+      }
+
+      .page-body p {
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: var(--ink-soft);
+        margin: 0 0 1.25rem;
+      }
+
+      .page-body strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .page-body ul {
+        padding-left: 1.4rem;
+        margin: 0 0 1.5rem;
+      }
+      .page-body li {
+        font-size: 1.05rem;
+        line-height: 1.7;
+        color: var(--ink-soft);
+        margin-bottom: 0.4rem;
+      }
+      .page-body li::marker { color: var(--gold); }
+
+      .page-body code {
+        font-family: var(--mono-stack);
+        font-size: 0.92em;
+        background: rgba(15, 18, 25, 0.06);
+        padding: 0.1em 0.4em;
+        border-radius: 4px;
+      }
+
+      .page-body pre {
+        background: #0F1219;
+        color: #E6E6E6;
+        font-family: var(--mono-stack);
+        font-size: 0.88rem;
+        padding: 1.25rem 1.4rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        line-height: 1.55;
+        margin: 1.5rem 0 2rem;
+      }
+      .page-body pre code {
+        background: transparent;
+        padding: 0;
+      }
+
+      .page-body blockquote {
+        border-left: 3px solid var(--gold);
+        margin: 1.5rem 0;
+        padding: 0.5rem 0 0.5rem 1.25rem;
+        color: var(--ink-soft);
+        font-style: italic;
+      }
+
+      /* Type-list grid for ContextTypes etc. */
+      .page-body .type-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem 1.25rem;
+        margin: 1.25rem 0 2rem;
+        padding: 0;
+        list-style: none;
+      }
+      .page-body .type-grid li {
+        font-family: var(--mono-stack);
+        font-size: 0.88rem;
+        margin: 0;
+        padding: 0.4rem 0;
+        border-bottom: 1px dashed var(--rule);
+      }
+
+      /* ============================================================
+         Footer nav
+      ============================================================ */
+      .page-foot {
+        margin-top: 4rem;
+        padding-top: 2rem;
+        border-top: 1px solid var(--rule);
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.65rem 1.3rem;
+        border-radius: 999px;
+        font-size: 0.92rem;
+        font-weight: 500;
+        text-decoration: none;
+        line-height: 1.2;
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid var(--rule);
+      }
+      .btn-ghost:hover { border-color: var(--ink); }
+    </style>
+  </body>
+</html>
