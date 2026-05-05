@@ -1,0 +1,80 @@
+---
+import ProjectPage from '../../layouts/ProjectPage.astro';
+---
+
+<ProjectPage
+  eyebrow="// optimus / test-driver"
+  title="Test-driver"
+  tagline="An agent that walks a feature end-to-end, captures evidence, scores severity, and writes the run manifest back into the world-context engine."
+  status="live · scheduled"
+  description="Test-driver — Optimus's agentic verification layer. Walks features, captures evidence, writes manifests."
+>
+  <h2>The problem</h2>
+  <p>
+    Agentic features are non-deterministic. Snapshot tests pass or fail
+    on the wrong things. Coverage isn't the question — <strong>repeatable
+    evidence is.</strong> When an LLM-backed feature regresses, the
+    operator wants to see what actually happened during a real walk:
+    which screens loaded, which assertions held, what severity the
+    failure had, which commit made it worse.
+  </p>
+  <p>
+    Test-driver is the agent that produces that evidence on a schedule
+    so the operator never has to ask "is the build still good?" without
+    a recent answer in front of them.
+  </p>
+
+  <h2>How it works</h2>
+  <ul>
+    <li><strong>Discovery.</strong> Reads feature manifests from <code>Projects/&lt;app&gt;/docs/feature-discovery/</code> — each manifest declares table-stakes assertions and feature-level assertions.</li>
+    <li><strong>Walk.</strong> Drives a real Playwright session against the live UI, captures DOM snapshots, console logs, and network errors per assertion.</li>
+    <li><strong>Score.</strong> Each assertion failure is graded HIGH / MEDIUM / LOW / N/A. The walk gets an aggregate severity.</li>
+    <li><strong>Persist.</strong> The full run manifest — entries, screenshots, severity, duration — gets written back to <code>nexus_items</code> with type <code>test_runs</code>. Now it's queryable alongside everything else the team produces.</li>
+  </ul>
+
+  <h2>Schedule</h2>
+  <p>
+    A weekly LaunchAgent fires <code>npm run test-driver</code> from the
+    Optimus repo every Monday at 09:00. Output gets pushed straight to
+    the test-drive UI in Optimus. On-demand runs are a click away from
+    the same UI when the operator wants confirmation before a release.
+  </p>
+
+  <h2>What a manifest looks like</h2>
+  <pre><code>{`{
+  "run_id": "2026-05-04T20-22-30",
+  "kind": "walk",
+  "started_at": "2026-05-04T20:22:30Z",
+  "finished_at": "2026-05-04T20:24:11Z",
+  "duration_ms": 101_312,
+  "feature_slug": "goals-rollup",
+  "screen_count": 9,
+  "link_count": 14,
+  "exit_code": 0,
+  "totals": {
+    "high_severity": 0,
+    "medium_severity": 1,
+    "low_severity": 0,
+    "not_applicable": 2
+  },
+  "entries": [
+    {
+      "id": "TS-1",
+      "title": "Goal card opens detail pane on click",
+      "category": "table-stakes",
+      "rationale": "Regression risk after Svelte 5.50 store reactivity bugs.",
+      "result": "pass",
+      "severity": "N/A"
+    },
+    /* ... */
+  ]
+}`}</code></pre>
+
+  <h2>Dogfooding</h2>
+  <p>
+    Test-driver walks itself. The test-drive UI in Optimus is the first
+    feature that gets exercised on every scheduled run, so a regression
+    in the verification layer surfaces in its own evidence stream
+    before it reaches anywhere else.
+  </p>
+</ProjectPage>

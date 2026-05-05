@@ -3,7 +3,7 @@ title: 'Playwright MCP: The Swiss Army Knife for AI Agents'
 description: 'How a browser automation protocol became the most versatile tool in our AI agent arsenal — from debugging and design analysis to test preconditions and speeding through unfamiliar domains.'
 pubDate: 'Mar 22 2026'
 heroImage: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MzE0MDd8MHwxfHNlYXJjaHwxfHxkYXNoYm9hcmQlMjBtb25pdG9yfGVufDB8MHx8fDE3NzQxNjA5NzV8MA&ixlib=rb-4.1.0&q=80&w=1080'
-draft: true
+draft: false
 ---
 
 Most people think of Playwright as a testing framework. Run some E2E tests, validate some selectors, call it a day.

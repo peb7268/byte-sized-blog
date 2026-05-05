@@ -1,0 +1,126 @@
+---
+import ProjectPage from '../../layouts/ProjectPage.astro';
+---
+
+<ProjectPage
+  eyebrow="// optimus / nexus"
+  title="Nexus"
+  tagline="A universal world-context primitive. Every artifact a team produces lives in one composable, embedding-aware table — one query language, every source."
+  status="16 types · in production"
+  description="Nexus — the data primitive at the heart of Optimus. 16 ContextTypes in one composable, embedding-aware table."
+>
+  <h2>The problem</h2>
+  <p>
+    Knowledge in a modern team is fragmented across Notion, Slack,
+    GitHub, Obsidian, Linear, Calendar, and a long tail of one-off
+    sources. Agents that need to reason across that fragmentation
+    spend most of their tokens on retrieval glue — auth, pagination,
+    schema reconciliation, format conversion — instead of work.
+  </p>
+  <p>
+    Federation is the wrong abstraction for this. Federations make every
+    query a join across systems with different latency budgets, retention
+    policies, and uptime guarantees. The right abstraction is the union
+    itself: <strong>one storage primitive that every source ingests
+    into</strong>, typed enough to preserve meaning and uniform enough
+    to be queried as one thing.
+  </p>
+
+  <h2>The schema</h2>
+  <p>
+    A Nexus row is a tagged tuple — type, slug, title, content,
+    metadata, embedding, source pointer, hash. Hash makes ingest
+    idempotent. Source pointer makes back-trace cheap. Metadata is
+    schema-free per type. The embedding is the same vector dimension
+    everywhere so cross-type retrieval is one cosine away.
+  </p>
+  <pre><code>{`-- ContextType: 'docs' | 'stories' | 'plans' | 'git_history' | 'goals'
+--               | 'comments' | 'agents' | 'daily' | 'memory' | 'readwise'
+--               | 'calendar' | 'test_runs' | 'notes' | 'protocols'
+--               | 'roadmaps' | 'checkpoints'
+
+create table nexus_items (
+  id            uuid primary key,
+  type          text not null,           -- one of 16 ContextTypes
+  slug          text not null,
+  title         text,
+  content       text,
+  metadata      jsonb,                   -- type-specific shape
+  embedding     vector(1536),
+  source_kind   text,                    -- 'obsidian' | 'github' | …
+  source_pointer text,                   -- file path / url / row id
+  hash          text not null,           -- ingest idempotency
+  inserted_at   timestamptz default now(),
+  updated_at    timestamptz default now()
+);
+
+create table nexus_links (
+  src_id        uuid references nexus_items(id),
+  dst_id        uuid references nexus_items(id),
+  relation      text,                    -- 'contributes_to' | 'blocks' | …
+  primary key (src_id, dst_id, relation)
+);`}</code></pre>
+
+  <h2>The 16 ContextTypes</h2>
+  <ul class="type-grid">
+    <li>docs</li>
+    <li>stories</li>
+    <li>plans</li>
+    <li>roadmaps</li>
+    <li>git_history</li>
+    <li>checkpoints</li>
+    <li>goals</li>
+    <li>comments</li>
+    <li>agents</li>
+    <li>daily</li>
+    <li>memory</li>
+    <li>readwise</li>
+    <li>calendar</li>
+    <li>test_runs</li>
+    <li>notes</li>
+    <li>protocols</li>
+  </ul>
+
+  <h2>How retrieval works</h2>
+  <p>
+    Nexus exposes one query interface that returns ranked results
+    across types in one call. Retrieval is the union of (a) semantic
+    similarity to an embedded query, (b) structural neighborhood via
+    <code>nexus_links</code>, and (c) recency-weighted boost. Filters
+    by type, source, or metadata narrow the set without splitting the
+    pipeline.
+  </p>
+  <pre><code>{`// Find anything related to "goals rollup", any type, recent first.
+const results = await nexus.query({
+  text: 'goals rollup auto status',
+  types: ['stories', 'goals', 'plans', 'docs'],
+  since: '7d',
+  k: 12,
+});
+
+// Walk neighbors of a specific item.
+const linked = await nexus.links({
+  from: storyId,
+  relations: ['contributes_to', 'blocks'],
+});`}</code></pre>
+
+  <h2>Why one table, not five</h2>
+  <p>
+    Every adapter — Obsidian docs, GitHub commits, Stripe events, Slack
+    messages — lands in the same row shape. That makes cross-type
+    retrieval a single SQL query, not an orchestrated fan-out. It also
+    makes write-side observability trivial: every ingest is one
+    upsert with a hash, so dedupe is free and provenance is traceable
+    end-to-end.
+  </p>
+  <p>
+    The cost is a less ergonomic per-type schema. The benefit is
+    that <strong>every new source costs one adapter</strong>, not a
+    new query path, a new index, and a new auth integration.
+  </p>
+
+  <blockquote>
+    Storing data once in a typed primitive beats stitching three sources
+    at query time.
+  </blockquote>
+</ProjectPage>

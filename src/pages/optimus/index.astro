@@ -1,0 +1,87 @@
+---
+import ProjectPage from '../../layouts/ProjectPage.astro';
+---
+
+<ProjectPage
+  eyebrow="// optimus"
+  title="Optimus"
+  tagline="An agent-native engineering platform. The thing that lets one operator and a fleet of agents ship like a large team."
+  status="v0.9 · in production"
+  description="Optimus — an agent-native engineering platform built around a universal world-context engine."
+>
+  <h2>Why I built it</h2>
+  <p>
+    The real bottleneck in agentic development isn't the agents. It's the
+    <strong>context they share, the verification that bounds them, and
+    the orchestration that holds them accountable.</strong> Run thirty
+    agents against a codebase without those three pieces and you get
+    confident slop. Get those three pieces right and a small operator
+    starts to ship like a team an order of magnitude larger.
+  </p>
+  <p>
+    Optimus is the platform I needed and couldn't buy. It treats every
+    artifact a team produces — plans, stories, docs, git commits, goals,
+    daily notes, calendar events, agent memory — as a row in one
+    composable, embedding-aware table, and gives every agent a single
+    interface for asking the world what it knows.
+  </p>
+
+  <h2>The thesis</h2>
+  <p>
+    A team's "world" isn't a kanban board. It's the union of every
+    artifact the team has ever produced, plus every signal from the
+    systems they operate. Most tools store one slice of that world
+    really well — Notion stores docs, Linear stores stories, GitHub
+    stores commits — and ignore the rest. Agents that have to crawl
+    five sources and reconcile them by hand are slow and brittle.
+  </p>
+  <p>
+    Optimus puts the union itself first. The data layer
+    (<a href="/optimus/nexus">Nexus</a>) is a single table whose rows
+    are typed and cross-linked, not a federation. The verification layer
+    (<a href="/optimus/test-driver">Test-driver</a>) writes its evidence
+    back into that same table. Agents read and write through one
+    interface — nothing leaks past the boundary as a side-channel.
+  </p>
+
+  <h2>What's inside</h2>
+  <h3>Nexus — the data layer</h3>
+  <p>
+    A universal world-context primitive. 16 ContextTypes (docs, stories,
+    plans, git history, goals, daily notes, calendar, memory, …) live
+    in one table, cross-linked, embedding-aware, queried through one
+    API. <a href="/optimus/nexus">Read more →</a>
+  </p>
+
+  <h3>Test-driver — the verification layer</h3>
+  <p>
+    An agent that walks features end-to-end, captures evidence,
+    scores severity, and writes the run manifest back into nexus_items.
+    Runs on a weekly LaunchAgent or on demand.
+    <a href="/optimus/test-driver">Read more →</a>
+  </p>
+
+  <h3>Harness — the inference layer</h3>
+  <p>
+    Provider-abstracted LLM routing. Every AI feature speaks one interface;
+    the harness picks the model. Swap Claude → GPT → Gemini without
+    touching feature code. Insurance against tokenizer drift and
+    pricing whiplash.
+  </p>
+
+  <h3>Goals + Daily Flow — the orchestration layer</h3>
+  <p>
+    Goals auto-rollup status from the stories that contribute to them.
+    Daily Flow is the rhythm — what got shipped, what's stuck, what's
+    contributing where — surfaced as a generated daily note that the
+    operator can read in 30 seconds.
+  </p>
+
+  <h2>Operating principles</h2>
+  <ul>
+    <li><strong>One operator, agentic fleet.</strong> Build for the case where one careful human is the only human in the loop and twenty agents are the workforce.</li>
+    <li><strong>Composable context, not federation.</strong> Storing data once in a typed primitive beats stitching three sources at query time.</li>
+    <li><strong>Verification is first-class.</strong> Test-driver isn't a plugin — it's a peer of the data and inference layers.</li>
+    <li><strong>Provider-abstract everything LLM.</strong> Lock-in to a single model is the only failure mode that's strictly self-inflicted.</li>
+  </ul>
+</ProjectPage>
