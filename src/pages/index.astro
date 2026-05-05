@@ -4,7 +4,9 @@ import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import FormattedDate from '../components/FormattedDate.astro';
-import Header from '../components/Header.astro';
+// Header intentionally not rendered on the landing page — the hero
+// IS the introduction. In-page CTAs cover navigation. Header stays
+// in place on /blog, /about, and post detail pages where chrome helps.
 import {
   SITE_DESCRIPTION,
   SITE_TITLE,
@@ -58,8 +60,6 @@ const nowBuilding = [
     <BaseHead title={`${AUTHOR_NAME} — ${AUTHOR_TAGLINE}`} description={SITE_DESCRIPTION} />
   </head>
   <body class="personal">
-    <Header />
-
     <main>
       <!-- ===================================================================
            HERO — digital business card
@@ -212,7 +212,7 @@ const nowBuilding = [
          HERO
       ============================================================ */
       .hero {
-        padding: 5rem 0 4rem;
+        padding: 7rem 0 4rem;
         border-bottom: 1px solid var(--rule);
       }
 
