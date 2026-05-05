@@ -1,0 +1,160 @@
+---
+import CVLayout from '../../layouts/CVLayout.astro';
+---
+
+<CVLayout
+  variant="agentic-enablement"
+  eyebrow="// cv / head-of-agentic-enablement"
+  headline="Head of Agentic Enablement & Engineering Platform"
+  tagline="Building agentic delivery systems since the ground floor — from custom Claude/MCP harnesses in 2024 to a production-grade, model-agnostic agent platform in 2026. Currently leads the agentic enablement function at MyComplianceOffice across regulated, multi-team eComms delivery."
+  description="Paul Barrick — Head of Agentic Enablement CV. Custom agent harnesses, multi-agent orchestration, HITL pipelines, and model-agnostic agent platforms in regulated environments."
+>
+
+<h2>Profile</h2>
+
+<p>
+  I have been building <strong>agent-orchestrated software delivery systems
+  since the ground floor of the practice</strong> — starting in early 2024,
+  before mainstream agentic frameworks existed, with a custom Claude + MCP
+  harness in our enterprise codebase. Three years on, I lead the agentic
+  enablement function at MyComplianceOffice: a production agent platform that
+  coordinates 8+ specialized agents, integrates with Jira / Confluence /
+  GitLab via MCP, runs four-phase human-in-the-loop pipelines, and ships
+  delivery packages that engineers actually merge.
+</p>
+
+<p>
+  My approach: <strong>agents are operational systems, not demos.</strong>
+  Every agent in our stack has explicit stage contracts, observability hooks,
+  cost tracking, resumability across sessions, and policy-enforced safety
+  guardrails. The harness layer is provider-abstracted so the org isn't
+  coupled to a single LLM vendor — Claude today, anything tomorrow.
+</p>
+
+<h2>Core Strengths</h2>
+
+<div class="tag-row">
+  <span class="tag">Agent harness design</span>
+  <span class="tag">Multi-agent orchestration</span>
+  <span class="tag">HITL delivery pipelines</span>
+  <span class="tag">MCP integration</span>
+  <span class="tag">Model-agnostic architectures</span>
+  <span class="tag">Agent observability & evals</span>
+  <span class="tag">Compliance-safe AI adoption</span>
+  <span class="tag">Long-context reasoning</span>
+  <span class="tag">Tool orchestration</span>
+  <span class="tag">Cost & budget controls</span>
+</div>
+
+<h2>What I've Built (Selected — MyComplianceOffice / Fairwords)</h2>
+
+<h3>Custom agent platform</h3>
+<ul>
+  <li><strong>Planner v3.0</strong> — a four-phase HITL delivery orchestrator with mandatory phase gates, Phase.Stage numbering, Confluence/Jira integration, and stage-contract enforcement. Generates structured delivery packages (PRDs, task breakdowns, complexity analysis, test plans). v1 → v3 evolution from April 2024 → April 2026.</li>
+  <li><strong>PR Orchestrator</strong> — multi-agent coordination for cross-repository code review. Delegates to six specialized sub-agents (security, backend, UI, performance, cost, code quality) with weighted PR scoring (security 30%, code quality 20%, testing 20%, cost 10%, …) and critical-issue caps.</li>
+  <li><strong>Implementer Agent</strong> — hierarchical execution agent with discovery cache, phase resumability, per-task artifact structure, structured blocker capture, and automated standup reporting. Treats execution like a real operational system, not a one-shot prompt.</li>
+  <li><strong>Specialized agents</strong> — analyzer (codebase intelligence), task-orchestrator (multi-task sequencing), ui-orchestrator, detection-expert, cost-tracker. Each registered through a unified agent framework with dual Claude Code + Kilo Code compatibility.</li>
+</ul>
+
+<h3>Custom harness layer (agentic-wrapper)</h3>
+<ul>
+  <li>Built a <strong>provider-abstracted harness</strong> via MCP — Taskmaster-AI for planning, Context7 for codebase analysis, Atlassian HTTP MCP for Jira/Confluence (read-only, audit-friendly), Figma + GitLab as needed.</li>
+  <li><strong>Unified <code>.mcp.json</code></strong> as single source of truth for all MCP servers; <code>AGENTS.md</code> as authoritative source for agent registration across runtimes.</li>
+  <li><strong>Environment & secrets isolation</strong> — wrapper scripts (<code>scripts/with-env.sh</code>, <code>scripts/with-secret.sh</code>) load secrets without exposing them to LLM context.</li>
+  <li><strong>Repo started 2024.</strong> Year-over-year evolution from agent stubs to production-grade execution framework — the receipts are in the git history.</li>
+</ul>
+
+<h3>Custom context engineering</h3>
+<ul>
+  <li><strong>Context library</strong> in <code>docs/system/context/</code> — repository architecture, business-domain knowledge base (compliance communications regulatory requirements), cross-repo orchestration patterns. Every agent draws context from a curated source, not raw codebase searches.</li>
+  <li><strong>Pipeline configurations</strong> in <code>docs/system/pipeline-configs/</code> — planner-pipeline-config (4-phase HITL with stage contracts, resumability), pr-scoring-algo, test-pipeline-config. Pipelines are declarative and versioned.</li>
+  <li><strong>Protocol library</strong> — Playwright MCP, GraphQL debugging, structured logging. Agents follow these protocols; humans audit them.</li>
+</ul>
+
+<h3>Production characteristics</h3>
+<ul>
+  <li><strong>G9 two-tier observability hooks</strong> — pre-task and post-phase, full execution audit trails. Every run is reviewable.</li>
+  <li><strong>Cost tracking</strong> — automated daily monitoring (<code>cost-monitor:start</code>, <code>cost:summary</code>) so token spend is visible per-team and per-pipeline.</li>
+  <li><strong>Safety guardrails</strong> — ASCII-only source-file rule, critical-issue caps on PR scoring, mandatory HITL gates between phases. Compliance-friendly defaults.</li>
+  <li><strong>Session resumability protocol</strong> — halt/resume gates with task-progress preservation across interruptions. Long-running pipelines survive restarts.</li>
+  <li><strong>Test harness</strong> — unified test pipeline config with per-task artifact structure.</li>
+</ul>
+
+<h3>Strategic transformation work</h3>
+<ul>
+  <li>Led the org-wide shift from <strong>traditional PI planning to agent-orchestrated delivery</strong> with humans in the loop. Sprint preparation cycle time dropped, consistency across teams went up.</li>
+  <li>Introduced <strong>model-agnostic agent design</strong> — outcomes decoupled from specific LLM providers. We can swap Claude → GPT → Gemini at the harness layer without touching agent definitions or pipeline configs.</li>
+  <li>Partnered with engineering, product, and leadership to scale AI-assisted workflows safely across the eComms organization, an environment with strict regulatory and audit constraints.</li>
+</ul>
+
+<h2>Professional Experience</h2>
+
+<h3>MyComplianceOffice (formerly Fairwords, acquired 2023)</h3>
+<h4>VP of Engineering — eComms Platform & Head of Agentic Enablement</h4>
+<p class="meta">2021 – Present</p>
+
+<p>
+  Hired as Director of Engineering at Fairwords; promoted to VP prior to the
+  acquisition. Retain platform and organizational leadership for the eComms
+  division and own the company-wide agentic enablement function.
+</p>
+
+<p><strong>Agentic enablement (lead):</strong></p>
+<ul>
+  <li>Designed and shipped the agent platform described above — planner / PR-orchestrator / implementer / 5+ specialized agents, harness layer, context library, pipeline configs.</li>
+  <li>Lead architect on the model-agnostic harness, MCP integration strategy, and HITL gate design.</li>
+  <li>Partner with security, compliance, and legal to ensure agentic workflows meet the same audit and governance bar as the rest of the eComms platform.</li>
+</ul>
+
+<p><strong>eComms platform leadership:</strong></p>
+<ul>
+  <li>Own all technology decisions for the eComms division — architecture, platform evolution, compliance alignment.</li>
+  <li>Lead three multinational, fully remote engineering teams (up to 21 engineers, QA, technical leads).</li>
+  <li>Architectural lead for ingestion, archival, analytics, and compliance workflows.</li>
+  <li>Senior engineering sponsor for major platform initiatives and cross-team architectural decisions.</li>
+</ul>
+
+<p class="tech">
+  <strong>Agentic stack:</strong> Claude Agent SDK · MCP (Taskmaster-AI, Context7, Atlassian HTTP, Figma, GitLab) · custom harness · multi-agent orchestration<br />
+  <strong>Platform stack:</strong> Node.js · TypeScript · Angular · GraphQL · MongoDB Atlas · Apache Kafka · AWS · Docker
+</p>
+
+<h3>Paya</h3>
+<h4>Tech Lead</h4>
+<p class="meta">2019 – 2021</p>
+<ul>
+  <li>Built and scaled a payment-gateway platform with high reliability and security requirements.</li>
+  <li>Owned local dev environments, CI/CD pipelines, cloud deployment workflows.</li>
+  <li>Designed integrations and asynchronous pipelines across multiple systems.</li>
+</ul>
+<p class="tech"><strong>Technologies:</strong> Node.js · AWS (Lambda, SQS) · Serverless Framework · React · Ember · Docker</p>
+
+<h3>Intengo</h3>
+<h4>Senior Full-Stack Engineer</h4>
+<p class="meta">2012 – 2019</p>
+<ul>
+  <li>Designed and shipped enterprise analytics platforms used for large-scale market research.</li>
+  <li>Led architectural migration from monolith/LAMP to MEAN-based microservices.</li>
+  <li>Implemented GraphQL APIs, WebSockets, and real-time data streaming.</li>
+</ul>
+<p class="tech"><strong>Technologies:</strong> Angular · Node.js · Express · MongoDB · GraphQL · Docker · AWS · Laravel</p>
+
+<h3>Imperative Design, Inc.</h3>
+<h4>Founder / Lead Engineer</h4>
+<p class="meta">2007 – Present</p>
+<ul>
+  <li>Built and shipped multiple products and client systems from scratch.</li>
+  <li>Translated ambiguous requirements into working software for direct clients.</li>
+  <li>Currently the home of <strong>Optimus</strong> — an agent-native engineering platform with its own production-grade nexus (data layer), test-driver (verification layer), and harness (inference layer). Public companion site at <a href="https://paul.barrick.dev/optimus">paul.barrick.dev/optimus</a>.</li>
+</ul>
+
+<h2>Education</h2>
+<p>
+  <strong>North Georgia College & State University</strong><br />
+  Bachelor of Marketing · Associate Degree in Spanish · Studied abroad in Costa Rica.
+</p>
+
+<h2>Languages</h2>
+<p>Fluent in <strong>Spanish</strong> and <strong>Romanian</strong>.</p>
+
+</CVLayout>

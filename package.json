@@ -4,7 +4,9 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && npm run pdf",
+    "build:no-pdf": "astro build",
+    "pdf": "bash bin/render-cvs.sh",
     "preview": "astro preview",
     "astro": "astro"
   },

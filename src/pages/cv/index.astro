@@ -1,0 +1,226 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+
+// Index is intentionally NOT gated — recruiters land here, see the
+// three variants, click into the one they were given a password for.
+// Individual CV pages + their PDFs are gated at the NPM/edge layer.
+
+const variants = [
+  {
+    slug: 'vp-engineering',
+    eyebrow: '// vp / engineering',
+    title: 'VP of Engineering',
+    framing: 'eComms Platform & Agentic Enablement',
+    summary:
+      'For roles that want a VP-level technical and organizational leader. Owns all technology decisions for the eComms division at MyComplianceOffice, leads multinational teams, and is currently driving the company-wide agentic AI enablement function.',
+  },
+  {
+    slug: 'agentic-enablement',
+    eyebrow: '// head / agentic-enablement',
+    title: 'Head of Agentic Enablement',
+    framing: 'Agent platform · custom harness · multi-agent orchestration',
+    summary:
+      'For roles that want someone who has been building agent-orchestrated systems since the ground floor of the practice. Anchored in the production agent platform, custom harness, and HITL pipelines I have shipped at MyComplianceOffice since 2024.',
+  },
+  {
+    slug: 'senior-ic',
+    eyebrow: '// principal / staff+ ic',
+    title: 'Principal Engineer · Staff+ IC',
+    framing: 'AI & Distributed Systems · end-to-end ownership',
+    summary:
+      'For roles that want a hands-on senior IC. 15+ years of distributed-systems and API design, recent year focused on production agentic AI with multi-turn tool orchestration and HITL controls. Comfortable in high ambiguity, owning problems end-to-end.',
+  },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead
+      title="CV — Paul Barrick"
+      description="Three CV variants for different role types: VP of Engineering, Head of Agentic Enablement, and Principal/Staff+ IC. Each requires the password I sent you."
+    />
+    <meta name="robots" content="noindex, nofollow" />
+  </head>
+  <body class="cv-index">
+    <main>
+      <header class="hero">
+        <p class="eyebrow mono">// cv</p>
+        <h1>CV</h1>
+        <p class="tagline">
+          Three variants for three different shapes of role. Each is gated —
+          I'll send you the password for the one most relevant to your search.
+        </p>
+
+        <p class="contact-row">
+          <a href="mailto:paul@byte-sized.io" class="mono">paul@byte-sized.io</a>
+          <span class="sep" aria-hidden="true">·</span>
+          <span class="mono">Denver, CO</span>
+          <span class="sep" aria-hidden="true">·</span>
+          <a href="https://www.linkedin.com/in/peb7268/" class="mono" target="_blank" rel="noopener">linkedin.com/in/peb7268</a>
+          <span class="sep" aria-hidden="true">·</span>
+          <a href="https://github.com/peb7268" class="mono" target="_blank" rel="noopener">github.com/peb7268</a>
+        </p>
+      </header>
+
+      <section class="variants" aria-label="CV variants">
+        {variants.map((v) => (
+          <a class="variant-card" href={`/cv/${v.slug}`}>
+            <p class="variant-eyebrow mono">{v.eyebrow}</p>
+            <h2>{v.title}</h2>
+            <p class="variant-framing">{v.framing}</p>
+            <p class="variant-summary">{v.summary}</p>
+            <p class="variant-cta mono">View →</p>
+          </a>
+        ))}
+      </section>
+
+      <footer class="page-foot">
+        <p>
+          If you don't have a password yet, email me at
+          <a href="mailto:paul@byte-sized.io">paul@byte-sized.io</a> and I'll
+          send you the right one. The
+          <a href="/">main site</a> covers what I'm currently building.
+        </p>
+      </footer>
+    </main>
+
+    <style is:global>
+      :root {
+        --ink: #0F1219;
+        --ink-soft: #2B3243;
+        --paper: #FAFAFA;
+        --paper-warm: #F4EFE6;
+        --gold: #D4AF37;
+        --rule: rgba(15, 18, 25, 0.12);
+        --mono-stack: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
+        --serif-stack: Georgia, 'Times New Roman', serif;
+      }
+
+      body.cv-index {
+        background: var(--paper);
+        color: var(--ink);
+      }
+
+      body.cv-index main {
+        width: min(880px, calc(100% - 2rem));
+        margin: 0 auto;
+        padding: 4rem 1rem 4rem;
+      }
+
+      .hero {
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--rule);
+        margin-bottom: 2.5rem;
+      }
+      .eyebrow {
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+        opacity: 0.7;
+        letter-spacing: 0.04em;
+        margin: 0 0 0.5rem;
+      }
+      .hero h1 {
+        font-family: var(--serif-stack);
+        font-size: clamp(3rem, 6vw, 4.5rem);
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        margin: 0 0 1rem;
+        color: var(--ink);
+      }
+      .tagline {
+        font-size: 1.15rem;
+        line-height: 1.55;
+        color: var(--ink-soft);
+        margin: 0 0 1.5rem;
+        max-width: 60ch;
+      }
+      .contact-row {
+        font-size: 0.85rem;
+        color: var(--ink-soft);
+        margin: 0;
+        line-height: 1.8;
+      }
+      .contact-row a {
+        color: var(--ink-soft);
+        text-decoration: none;
+        transition: color 0.15s ease;
+      }
+      .contact-row a:hover { color: var(--gold); }
+      .contact-row .sep { opacity: 0.4; margin: 0 0.4rem; }
+      .mono { font-family: var(--mono-stack); }
+
+      .variants {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+      }
+
+      .variant-card {
+        position: relative;
+        display: block;
+        padding: 1.75rem;
+        border: 1px solid var(--rule);
+        border-radius: 12px;
+        text-decoration: none;
+        color: inherit;
+        background: #fff;
+        transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      }
+      .variant-card:hover {
+        border-color: var(--gold);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 28px -16px rgba(15, 18, 25, 0.25);
+      }
+
+      .variant-eyebrow {
+        font-size: 0.75rem;
+        color: var(--ink-soft);
+        opacity: 0.7;
+        margin: 0 0 0.4rem;
+      }
+      .variant-card h2 {
+        font-family: var(--serif-stack);
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin: 0 0 0.25rem;
+        color: var(--ink);
+        line-height: 1.15;
+      }
+      .variant-framing {
+        font-family: var(--serif-stack);
+        font-style: italic;
+        font-size: 1rem;
+        color: var(--ink-soft);
+        margin: 0 0 0.85rem;
+      }
+      .variant-summary {
+        font-size: 0.95rem;
+        line-height: 1.55;
+        color: var(--ink-soft);
+        margin: 0 0 1rem;
+      }
+      .variant-cta {
+        font-size: 0.82rem;
+        color: var(--gold);
+        margin: 0;
+        opacity: 0.85;
+      }
+
+      .page-foot {
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--rule);
+        font-size: 0.92rem;
+        color: var(--ink-soft);
+      }
+      .page-foot a {
+        color: var(--ink);
+        text-decoration: underline;
+        text-decoration-color: var(--gold);
+        text-underline-offset: 3px;
+      }
+    </style>
+  </body>
+</html>

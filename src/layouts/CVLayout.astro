@@ -1,0 +1,362 @@
+---
+// Shared layout for /cv/<variant> pages.
+// Same visual tokens as the personal-brand landing — Georgia serif,
+// JetBrains Mono section labels, gold accents — plus a tight
+// @media print stylesheet so the page renders cleanly to PDF.
+
+import BaseHead from '../components/BaseHead.astro';
+
+interface Props {
+  variant: string;            // e.g. 'vp-engineering'
+  eyebrow: string;            // monospace label above headline
+  headline: string;           // big serif title — role positioning
+  tagline: string;            // 1-2 line description below headline
+  description?: string;       // SEO description
+}
+
+const { variant, eyebrow, headline, tagline, description } = Astro.props;
+const ogTitle = `${headline} — Paul Barrick`;
+const ogDescription = description ?? tagline;
+const pdfHref = `/cv/${variant}.pdf`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <BaseHead title={ogTitle} description={ogDescription} />
+    <!-- Don't index gated CVs in search engines -->
+    <meta name="robots" content="noindex, nofollow" />
+  </head>
+  <body class="cv">
+    <main>
+      <a href="/cv/" class="back-link">← Back to all CVs</a>
+
+      <header class="cv-hero">
+        <p class="eyebrow mono">{eyebrow}</p>
+        <h1>Paul Barrick</h1>
+        <p class="role">{headline}</p>
+        <p class="tagline">{tagline}</p>
+
+        <div class="contact-row">
+          <a href="mailto:paul@byte-sized.io" class="mono">paul@byte-sized.io</a>
+          <span class="sep" aria-hidden="true">·</span>
+          <span class="mono">Denver, CO</span>
+          <span class="sep" aria-hidden="true">·</span>
+          <a href="https://github.com/peb7268" class="mono" target="_blank" rel="noopener">github.com/peb7268</a>
+          <span class="sep" aria-hidden="true">·</span>
+          <a href="https://www.linkedin.com/in/peb7268/" class="mono" target="_blank" rel="noopener">linkedin.com/in/peb7268</a>
+        </div>
+
+        <div class="actions" aria-label="Actions">
+          <a href={pdfHref} class="btn btn-primary" download>Download PDF ↓</a>
+          <button class="btn btn-ghost" type="button" onclick="window.print()">Print this page</button>
+        </div>
+      </header>
+
+      <article class="cv-body">
+        <slot />
+      </article>
+
+      <nav class="cv-foot no-print">
+        <a href="/cv/" class="btn btn-ghost">← All CVs</a>
+        <a href="/" class="btn btn-ghost">paul.barrick.dev →</a>
+      </nav>
+    </main>
+
+    <style is:global>
+      :root {
+        --ink: #0F1219;
+        --ink-soft: #2B3243;
+        --paper: #FAFAFA;
+        --paper-warm: #F4EFE6;
+        --gold: #D4AF37;
+        --rule: rgba(15, 18, 25, 0.12);
+        --mono-stack: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
+        --serif-stack: Georgia, 'Times New Roman', serif;
+      }
+
+      body.cv {
+        background: var(--paper);
+        color: var(--ink);
+      }
+
+      body.cv main {
+        width: min(820px, calc(100% - 2rem));
+        margin: 0 auto;
+        padding: 2.5rem 1rem 3.5rem;
+      }
+
+      .back-link {
+        display: inline-block;
+        font-family: var(--serif-stack);
+        font-size: 0.95rem;
+        color: var(--ink-soft);
+        text-decoration: none;
+        margin-bottom: 2rem;
+        transition: color 0.15s ease;
+      }
+      .back-link:hover { color: var(--gold); }
+
+      /* ============================================================
+         HERO
+      ============================================================ */
+      .cv-hero {
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--rule);
+        margin-bottom: 2.5rem;
+      }
+
+      .eyebrow {
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+        opacity: 0.7;
+        letter-spacing: 0.04em;
+        margin: 0 0 0.5rem;
+      }
+
+      .cv-hero h1 {
+        font-family: var(--serif-stack);
+        font-size: clamp(2.5rem, 5vw, 3.75rem);
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        margin: 0 0 0.5rem;
+        color: var(--ink);
+      }
+
+      .role {
+        font-family: var(--serif-stack);
+        font-size: 1.4rem;
+        font-style: italic;
+        color: var(--ink-soft);
+        margin: 0 0 1.25rem;
+      }
+
+      .tagline {
+        font-size: 1.05rem;
+        line-height: 1.6;
+        color: var(--ink-soft);
+        margin: 0 0 1.75rem;
+        max-width: 64ch;
+      }
+
+      .contact-row {
+        font-size: 0.85rem;
+        color: var(--ink-soft);
+        margin: 0 0 1.5rem;
+        line-height: 1.8;
+      }
+      .contact-row a {
+        color: var(--ink-soft);
+        text-decoration: none;
+        transition: color 0.15s ease;
+      }
+      .contact-row a:hover { color: var(--gold); }
+      .contact-row .sep { opacity: 0.4; margin: 0 0.5rem; }
+
+      .actions {
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        display: inline-block;
+        padding: 0.65rem 1.25rem;
+        border-radius: 999px;
+        font-size: 0.92rem;
+        font-weight: 500;
+        text-decoration: none;
+        cursor: pointer;
+        line-height: 1.2;
+        font-family: inherit;
+        transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+      }
+      .btn-primary {
+        background: var(--ink);
+        color: var(--paper);
+        border: 1px solid var(--ink);
+      }
+      .btn-primary:hover {
+        background: var(--gold);
+        color: var(--ink);
+        border-color: var(--gold);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--ink);
+        border: 1px solid var(--rule);
+      }
+      .btn-ghost:hover { border-color: var(--ink); }
+
+      .mono { font-family: var(--mono-stack); }
+
+      /* ============================================================
+         BODY
+      ============================================================ */
+      .cv-body h2 {
+        font-family: var(--serif-stack);
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        letter-spacing: -0.005em;
+        margin: 2.5rem 0 0.75rem;
+        color: var(--ink);
+        padding-bottom: 0.4rem;
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .cv-body h3 {
+        font-family: var(--serif-stack);
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin: 1.5rem 0 0.25rem;
+        color: var(--ink);
+      }
+
+      .cv-body h4 {
+        font-family: var(--serif-stack);
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 1.25rem 0 0.4rem;
+        color: var(--ink-soft);
+      }
+
+      .cv-body .meta {
+        font-family: var(--mono-stack);
+        font-size: 0.78rem;
+        color: var(--ink-soft);
+        opacity: 0.75;
+        margin: 0 0 0.75rem;
+      }
+
+      .cv-body p {
+        font-size: 1rem;
+        line-height: 1.65;
+        color: var(--ink-soft);
+        margin: 0 0 1rem;
+      }
+
+      .cv-body strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+
+      .cv-body ul {
+        padding-left: 1.3rem;
+        margin: 0.5rem 0 1.25rem;
+      }
+      .cv-body li {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: var(--ink-soft);
+        margin-bottom: 0.35rem;
+      }
+      .cv-body li::marker { color: var(--gold); }
+
+      .cv-body ul ul {
+        margin: 0.4rem 0 0.4rem;
+      }
+      .cv-body ul ul li::marker { color: var(--ink-soft); opacity: 0.5; }
+
+      .cv-body code {
+        font-family: var(--mono-stack);
+        font-size: 0.88em;
+        background: rgba(15, 18, 25, 0.06);
+        padding: 0.05em 0.35em;
+        border-radius: 3px;
+      }
+
+      .cv-body .tech {
+        font-family: var(--mono-stack);
+        font-size: 0.85rem;
+        color: var(--ink-soft);
+        background: var(--paper-warm);
+        border-left: 3px solid var(--gold);
+        padding: 0.5rem 0.85rem;
+        margin: 0.5rem 0 1.25rem;
+      }
+
+      .cv-body .tag-row {
+        display: flex;
+        gap: 0.4rem;
+        flex-wrap: wrap;
+        margin: 0.75rem 0 1.25rem;
+      }
+      .cv-body .tag {
+        font-family: var(--mono-stack);
+        font-size: 0.75rem;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        background: var(--paper-warm);
+        color: var(--ink-soft);
+      }
+
+      /* ============================================================
+         FOOT
+      ============================================================ */
+      .cv-foot {
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--rule);
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      /* ============================================================
+         PRINT — prepares the page for PDF rendering.
+         Dropping the actions/back-link/footer chrome and tuning
+         color/padding for letter-size paper.
+      ============================================================ */
+      @media print {
+        @page {
+          size: letter;
+          margin: 0.6in 0.65in;
+        }
+
+        body.cv {
+          background: white;
+          font-size: 10.5pt;
+          line-height: 1.4;
+        }
+
+        body.cv main {
+          width: 100%;
+          max-width: none;
+          padding: 0;
+          margin: 0;
+        }
+
+        .no-print, .actions, .back-link, .cv-foot { display: none !important; }
+
+        .cv-hero { padding-bottom: 1rem; margin-bottom: 1.25rem; }
+        .cv-hero h1 { font-size: 24pt; margin-bottom: 0.15rem; }
+        .role { font-size: 12pt; margin-bottom: 0.5rem; }
+        .tagline { font-size: 10.5pt; margin-bottom: 0.75rem; max-width: none; }
+        .contact-row { font-size: 9pt; margin-bottom: 0; }
+        .eyebrow { display: none; }
+
+        .cv-body h2 { font-size: 14pt; margin: 1.1rem 0 0.4rem; padding-bottom: 0.2rem; }
+        .cv-body h3 { font-size: 11.5pt; margin: 0.85rem 0 0.15rem; }
+        .cv-body h4 { font-size: 10.5pt; margin: 0.6rem 0 0.2rem; }
+        .cv-body .meta { font-size: 8.5pt; }
+        .cv-body p, .cv-body li { font-size: 10pt; line-height: 1.4; }
+        .cv-body ul { padding-left: 1.1rem; margin: 0.25rem 0 0.6rem; }
+        .cv-body li { margin-bottom: 0.15rem; }
+        .cv-body .tech { font-size: 9pt; padding: 0.3rem 0.6rem; margin: 0.3rem 0 0.6rem; }
+
+        a { color: inherit !important; text-decoration: none; }
+      }
+
+      /* ============================================================
+         RESPONSIVE
+      ============================================================ */
+      @media (max-width: 640px) {
+        .cv-hero h1 { font-size: 2.25rem; }
+        .role { font-size: 1.15rem; }
+        .actions { gap: 0.5rem; }
+      }
+    </style>
+  </body>
+</html>
