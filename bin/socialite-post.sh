@@ -19,9 +19,16 @@
 #   # Dry-run — print what would be posted, don't hit Postiz:
 #   bin/socialite-post.sh <dir> --dry-run
 #
+#   # Render markdown **bold** as Unicode mathematical bold characters
+#   # (off by default; LinkedIn renders these as bold-looking text):
+#   bin/socialite-post.sh <dir> --unicode-bold
+#
 # Secrets: pulls POSTIZ_API_KEY from Infisical via universal-auth (creds in
 # ~/Desktop/NAS-Tunnels/.env). Integration IDs are resolved by calling
 # `postiz integrations:list` at runtime.
+#
+# Thumbnails: if a file at `<staging>/thumbnails/<platform>.{png,jpg,jpeg}`
+# exists, it is uploaded via `postiz upload` and attached to the post.
 #
 # Pre-publish gate:
 # - Refuses to post if any platform.md still contains the placeholder
@@ -33,10 +40,12 @@ STAGING="${1:-}"
 shift || true
 DRY_RUN=0
 SCHEDULE=""
+UNICODE_BOLD=0
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --dry-run) DRY_RUN=1; shift;;
     --schedule) SCHEDULE="$2"; shift 2;;
+    --unicode-bold) UNICODE_BOLD=1; shift;;
     *) echo "unknown flag: $1" >&2; exit 2;;
   esac
 done
@@ -184,6 +193,60 @@ is_already_posted() {
   [[ -n "$val" && "$val" != "null" ]]
 }
 
+# Find a thumbnail for a platform — returns the file path, or empty string
+# if none exists. Looks for thumbnails/<platform>.{png,jpg,jpeg}.
+find_thumbnail() {
+  local platform="$1"
+  for ext in png jpg jpeg; do
+    local p="$STAGING/thumbnails/${platform}.${ext}"
+    if [[ -f "$p" ]]; then echo "$p"; return; fi
+  done
+}
+
+# Upload a file to Postiz, return the media path (used as -m argument).
+# Postiz upload prints "✅ File uploaded successfully!" then a JSON object
+# containing { id, path } — we extract path.
+upload_thumbnail() {
+  local file="$1"
+  postiz upload "$file" 2>&1 | python3 - <<'PY'
+import sys, json, re
+out = sys.stdin.read()
+m = re.search(r'\{[\s\S]*\}', out)
+if not m:
+    sys.exit(0)
+try:
+    obj = json.loads(m.group(0))
+except json.JSONDecodeError:
+    sys.exit(0)
+print(obj.get("path") or obj.get("url") or "")
+PY
+}
+
+# Optional: convert markdown **bold** to Unicode mathematical bold characters.
+# LinkedIn renders these visually as bold; screen readers butcher them.
+# Off by default. Italics (*text*) are NOT converted to avoid breaking
+# normal asterisk usage.
+maybe_unicode_bold() {
+  if [[ "$UNICODE_BOLD" -ne 1 ]]; then
+    cat
+    return
+  fi
+  python3 <<'PY'
+import sys, re
+text = sys.stdin.read()
+def to_bold(s):
+    out = []
+    for ch in s:
+        cp = ord(ch)
+        if 65 <= cp <= 90:    out.append(chr(0x1D400 + cp - 65))
+        elif 97 <= cp <= 122: out.append(chr(0x1D41A + cp - 97))
+        elif 48 <= cp <= 57:  out.append(chr(0x1D7CE + cp - 48))
+        else: out.append(ch)
+    return ''.join(out)
+sys.stdout.write(re.sub(r'\*\*(.+?)\*\*', lambda m: to_bold(m.group(1)), text, flags=re.S))
+PY
+}
+
 # 6. Post one platform — single post (linkedin / instagram).
 post_single() {
   local platform="$1" file="$2" iid="$3"
@@ -201,20 +264,36 @@ post_single() {
     return
   fi
 
-  local body; body="$(extract_single_body "$file")"
+  local body; body="$(extract_single_body "$file" | maybe_unicode_bold)"
   if [[ -z "$body" ]]; then
     echo "  [skip] $platform — could not extract body"
     return
   fi
 
+  local thumb; thumb="$(find_thumbnail "$platform")"
+  local thumb_path=""
+
   if [[ "$DRY_RUN" -eq 1 ]]; then
-    echo "  [dry-run] $platform → integration $iid (chars: ${#body})"
+    local note=""
+    [[ -n "$thumb" ]] && note=" + thumbnail $(basename "$thumb")"
+    echo "  [dry-run] $platform → integration $iid (chars: ${#body})${note}"
     echo "    preview: $(echo "$body" | head -c 80)…"
     return
   fi
 
+  if [[ -n "$thumb" ]]; then
+    echo "  [upload] $platform thumbnail $(basename "$thumb")"
+    thumb_path="$(upload_thumbnail "$thumb")"
+    if [[ -z "$thumb_path" ]]; then
+      echo "  [warn] $platform — thumbnail upload failed; posting text-only"
+    fi
+  fi
+
+  local args=(posts:create -c "$body" -s "$SCHEDULE_ISO" -i "$iid" -t schedule)
+  [[ -n "$thumb_path" ]] && args+=(-m "$thumb_path")
+
   local resp
-  if resp="$(postiz posts:create -c "$body" -s "$SCHEDULE_ISO" -i "$iid" -t schedule 2>&1)"; then
+  if resp="$(postiz "${args[@]}" 2>&1)"; then
     local id
     id="$(echo "$resp" | python3 -c 'import sys,json,re
 out = sys.stdin.read()
@@ -223,7 +302,7 @@ if m:
     try: print(json.loads(m.group(0)).get("id","unknown"))
     except: print("unknown")
 else: print("unknown")')"
-    echo "  [posted] $platform — postiz post $id"
+    echo "  [posted] $platform — postiz post $id$([ -n "$thumb_path" ] && echo ' (with thumbnail)')"
     mark_posted "$file" "$id"
   else
     echo "  [FAIL] $platform — postiz response: $resp"
@@ -255,18 +334,39 @@ post_thread() {
     return
   fi
 
+  local thumb; thumb="$(find_thumbnail "$platform")"
+  local thumb_path=""
+
   if [[ "$DRY_RUN" -eq 1 ]]; then
-    echo "  [dry-run] $platform → integration $iid (thread of $count posts)"
+    local note=""
+    [[ -n "$thumb" ]] && note=" + thumbnail $(basename "$thumb")"
+    echo "  [dry-run] $platform → integration $iid (thread of $count posts)${note}"
     echo "$posts_json" | python3 -c 'import sys,json
 for i,p in enumerate(json.load(sys.stdin),1):
     print(f"    {i}: {p[:70]}…")'
     return
   fi
 
-  # Build -c args from JSON
-  local args=()
+  if [[ -n "$thumb" ]]; then
+    echo "  [upload] $platform thumbnail $(basename "$thumb")"
+    thumb_path="$(upload_thumbnail "$thumb")"
+    if [[ -z "$thumb_path" ]]; then
+      echo "  [warn] $platform — thumbnail upload failed; posting text-only"
+    fi
+  fi
+
+  # Build -c args from JSON. Run each post through maybe_unicode_bold.
+  local args=() first=1
   while IFS= read -r p; do
+    p="$(printf '%s' "$p" | maybe_unicode_bold)"
     args+=(-c "$p")
+    # Attach thumbnail to the FIRST post only (Twitter convention).
+    if [[ "$first" -eq 1 && -n "$thumb_path" ]]; then
+      args+=(-m "$thumb_path")
+      first=0
+    elif [[ "$first" -eq 1 ]]; then
+      first=0
+    fi
   done < <(echo "$posts_json" | python3 -c 'import sys,json
 for p in json.load(sys.stdin): print(p)')
 
