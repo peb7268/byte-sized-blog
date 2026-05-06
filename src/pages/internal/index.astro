@@ -1,0 +1,172 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Header from '../../components/Header.astro';
+
+const posts = (await getCollection('internal')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+
+// Group posts by category (subdirectory)
+const grouped = posts.reduce((acc, post) => {
+	const parts = post.id.split('/');
+	const category = parts.length > 1 ? parts[0] : 'uncategorized';
+	if (!acc[category]) acc[category] = [];
+	acc[category].push(post);
+	return acc;
+}, {} as Record<string, typeof posts>);
+
+const categoryLabels: Record<string, string> = {
+	prds: 'Product Requirements',
+	kb: 'Knowledge Base',
+	drafts: 'Drafts',
+	uncategorized: 'Other',
+};
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title="Internal" description="Internal content — authenticated access only" />
+		<style>
+			main {
+				width: 960px;
+				max-width: calc(100% - 2em);
+				margin: auto;
+				padding: 1em;
+			}
+			.internal-banner {
+				background: #1a1a2e;
+				color: #e0e0e0;
+				border: 1px solid #333;
+				border-radius: 8px;
+				padding: 0.6em 1.2em;
+				margin-bottom: 2em;
+				display: flex;
+				align-items: center;
+				gap: 0.6em;
+				font-size: 0.85em;
+				font-weight: 500;
+			}
+			.internal-banner .badge {
+				background: #c0392b;
+				color: #fff;
+				padding: 0.15em 0.5em;
+				border-radius: 4px;
+				font-size: 0.8em;
+				font-weight: 700;
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+			}
+			.category {
+				margin-bottom: 2em;
+			}
+			.category h2 {
+				font-size: 1.2em;
+				color: rgb(var(--gray));
+				border-bottom: 1px solid rgb(var(--gray-light));
+				padding-bottom: 0.3em;
+				margin-bottom: 1em;
+			}
+			ul {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+			}
+			ul li {
+				margin-bottom: 1em;
+			}
+			ul li a {
+				display: block;
+				padding: 0.8em 1em;
+				border-radius: 8px;
+				text-decoration: none;
+				color: rgb(var(--black));
+				border: 1px solid rgb(var(--gray-light));
+				transition: box-shadow 0.2s ease, border-color 0.2s ease;
+			}
+			ul li a:hover {
+				box-shadow: var(--box-shadow);
+				border-color: rgb(var(--gray));
+			}
+			.title {
+				margin: 0;
+				font-size: 1.1em;
+				line-height: 1.3;
+			}
+			.meta {
+				display: flex;
+				gap: 1em;
+				margin-top: 0.3em;
+				font-size: 0.85em;
+				color: rgb(var(--gray));
+			}
+			.description {
+				margin: 0.3em 0 0;
+				font-size: 0.9em;
+				color: rgb(var(--gray));
+			}
+			.tags {
+				display: flex;
+				gap: 0.4em;
+				margin-top: 0.4em;
+				flex-wrap: wrap;
+			}
+			.tag {
+				background: rgb(var(--gray-light));
+				color: rgb(var(--gray-dark));
+				padding: 0.1em 0.5em;
+				border-radius: 4px;
+				font-size: 0.75em;
+			}
+			.empty {
+				color: rgb(var(--gray));
+				font-style: italic;
+			}
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="internal-banner">
+				<span class="badge">Internal</span>
+				Authenticated Access Only — This content is not publicly listed
+			</div>
+
+			{Object.keys(grouped).length === 0 && (
+				<p class="empty">No internal content yet.</p>
+			)}
+
+			{Object.entries(grouped).map(([category, posts]) => (
+				<div class="category">
+					<h2>{categoryLabels[category] || category}</h2>
+					<ul>
+						{posts.map((post) => (
+							<li>
+								<a href={`/internal/${post.id}/`}>
+									<h4 class="title">{post.data.title}</h4>
+									<div class="meta">
+										<FormattedDate date={post.data.pubDate} />
+									</div>
+									{post.data.description && (
+										<p class="description">{post.data.description}</p>
+									)}
+									{post.data.tags && post.data.tags.length > 0 && (
+										<div class="tags">
+											{post.data.tags.map((tag: string) => (
+												<span class="tag">{tag}</span>
+											))}
+										</div>
+									)}
+								</a>
+							</li>
+						))}
+					</ul>
+				</div>
+			))}
+		</main>
+		<Footer />
+	</body>
+</html>

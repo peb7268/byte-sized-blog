@@ -1,33 +1,31 @@
 #!/usr/bin/env bash
 #
-# Read a Socialite staging directory and post each platform.md to Buffer.
+# Read a Socialite staging directory and post each platform.md via Postiz.
 #
-# Stages a `posted_at` + `posted_url` value back into each platform.md
-# frontmatter so re-runs are idempotent — a file with `posted_at` set
-# is skipped (you can manually unset to re-post).
+# Stages a `posted_at` value back into each platform.md frontmatter so
+# re-runs are idempotent — a file with `posted_at` set is skipped (manually
+# unset the value to re-post).
 #
 # Usage:
 #   bin/socialite-post.sh <staging-dir> [--dry-run] [--schedule <ISO-8601>]
 #
 # Examples:
-#   # Stage to Buffer's queue (no specific time — Buffer's profile
-#   # schedule decides):
+#   # Post now (queues immediately on Postiz):
 #   bin/socialite-post.sh ~/Documents/Main/Resources/Social/2026-05-05--what-happens-when-the-partys-over
 #
 #   # Schedule for a specific time:
 #   bin/socialite-post.sh <dir> --schedule "2026-05-07T13:00:00Z"
 #
-#   # Dry-run — print what would be posted, don't hit Buffer:
+#   # Dry-run — print what would be posted, don't hit Postiz:
 #   bin/socialite-post.sh <dir> --dry-run
 #
-# Secrets: pulls BUFFER_API_TOKEN from Infisical (Agent Infrastructure
-# project, /social path). Profile IDs are resolved by querying Buffer's
-# /profiles.json endpoint at runtime — no per-machine config needed.
+# Secrets: pulls POSTIZ_API_KEY from Infisical via universal-auth (creds in
+# ~/Desktop/NAS-Tunnels/.env). Integration IDs are resolved by calling
+# `postiz integrations:list` at runtime.
 #
 # Pre-publish gate:
 # - Refuses to post if any platform.md still contains the placeholder
-#   `<<PUBLIC_URL_GOES_HERE>>` token. The user must promote the source
-#   blog post and search-and-replace before posting.
+#   `<<PUBLIC_URL_GOES_HERE>>` token. Promote the source blog post first.
 
 set -euo pipefail
 
@@ -49,10 +47,10 @@ if [[ -z "$STAGING" || ! -d "$STAGING" ]]; then
   exit 1
 fi
 
-# 1. Pre-publish gate — block placeholder URLs
+# 1. Pre-publish gate
 if grep -rq "<<PUBLIC_URL_GOES_HERE>>" "$STAGING" 2>/dev/null; then
   echo "[socialite-post] BLOCKED: staging dir still contains <<PUBLIC_URL_GOES_HERE>> placeholder."
-  echo "  Source blog post is still in draft. Promote to public, then sed-replace the placeholder"
+  echo "  Promote the source blog post to public, then sed-replace the placeholder"
   echo "  with the real URL before posting."
   echo
   echo "  Files containing the placeholder:"
@@ -60,150 +58,239 @@ if grep -rq "<<PUBLIC_URL_GOES_HERE>>" "$STAGING" 2>/dev/null; then
   exit 3
 fi
 
-# 2. Pull Buffer token via Infisical
-echo "[socialite-post] fetching BUFFER_API_TOKEN from Infisical"
-if ! command -v infisical >/dev/null 2>&1; then
-  echo "infisical CLI not on PATH — install from infisical.com/docs/cli/overview" >&2
+# 2. Fetch POSTIZ_API_KEY from Infisical via universal-auth
+echo "[socialite-post] fetching POSTIZ_API_KEY from Infisical"
+INFISICAL_ENV_FILE="${INFISICAL_ENV_FILE:-$HOME/Desktop/NAS-Tunnels/.env}"
+if [[ ! -f "$INFISICAL_ENV_FILE" ]]; then
+  echo "Infisical universal-auth creds not found at $INFISICAL_ENV_FILE" >&2
   exit 4
 fi
-TOKEN="$(infisical secrets get BUFFER_API_TOKEN \
-  --projectId="b3187c3b-409b-4c2a-b01b-23bfaf2a5c83" \
-  --env=prod \
-  --path="/social" \
-  --plain 2>/dev/null || true)"
-if [[ -z "$TOKEN" ]]; then
-  echo "BUFFER_API_TOKEN not found at Agent Infrastructure /social — store it via 007 first." >&2
-  exit 5
-fi
+set -a; source "$INFISICAL_ENV_FILE"; set +a
+: "${INFISICAL_HOST:?}" "${INFISICAL_CLIENT_ID:?}" "${INFISICAL_CLIENT_SECRET:?}"
 
-# 3. Resolve Buffer profile IDs (LinkedIn / Twitter / Instagram)
-echo "[socialite-post] resolving Buffer profiles"
-profiles_json="$(curl -fsS -H "Authorization: Bearer $TOKEN" \
-  https://api.bufferapp.com/1/profiles.json 2>/dev/null || true)"
-if [[ -z "$profiles_json" ]]; then
-  echo "Buffer /profiles.json failed — check token validity" >&2
+LOGIN=$(curl -fsS -X POST "$INFISICAL_HOST/api/v1/auth/universal-auth/login" \
+  -H "Content-Type: application/json" \
+  --data-binary "{\"clientId\":\"$INFISICAL_CLIENT_ID\",\"clientSecret\":\"$INFISICAL_CLIENT_SECRET\"}")
+AT=$(printf '%s' "$LOGIN" | sed -n 's/.*"accessToken":"\([^"]*\)".*/\1/p')
+[[ -n "$AT" ]] || { echo "infisical auth failed" >&2; exit 5; }
+
+# Note: secret name has trailing dot per current Infisical entry. If renamed
+# upstream, update this name accordingly.
+fetch_secret() {
+  curl -fsS -G "$INFISICAL_HOST/api/v3/secrets/raw/$1" \
+    --data-urlencode "workspaceId=b3187c3b-409b-4c2a-b01b-23bfaf2a5c83" \
+    --data-urlencode "environment=prod" \
+    --data-urlencode "secretPath=/postiz" \
+    -H "Authorization: Bearer $AT" \
+    | sed -n 's/.*"secretValue":"\([^"]*\)".*/\1/p'
+}
+
+POSTIZ_API_KEY="$(fetch_secret 'POSTIZ_API_KEY')"
+if [[ -z "$POSTIZ_API_KEY" ]]; then
+  echo "POSTIZ_API_KEY not found in Infisical at /postiz" >&2
   exit 6
 fi
 
-resolve_profile() {
-  local service="$1"
-  python3 - "$service" "$profiles_json" <<'PY'
-import json, sys
-service = sys.argv[1]
-profiles = json.loads(sys.argv[2])
-for p in profiles:
-    if p.get("service") == service:
-        print(p["id"])
-        break
-PY
-}
+export POSTIZ_API_KEY
+export POSTIZ_API_URL="${POSTIZ_API_URL:-https://postiz.byte-sized.io/api}"
 
-LINKEDIN_PID="$(resolve_profile linkedin)"
-TWITTER_PID="$(resolve_profile twitter)"
-INSTAGRAM_PID="$(resolve_profile instagram)"
-
-if [[ -z "$LINKEDIN_PID" && -z "$TWITTER_PID" && -z "$INSTAGRAM_PID" ]]; then
-  echo "No connected profiles found in Buffer. Connect LinkedIn / Twitter / Instagram in the Buffer UI first." >&2
+if ! command -v postiz >/dev/null 2>&1; then
+  echo "postiz CLI not on PATH — install with: npm install -g postiz" >&2
   exit 7
 fi
 
-# 4. Post one platform file. Reads the Markdown body (everything below
-#    the first '# Post' or '# Caption' or '# Thread' heading), strips
-#    other sections, and POSTs to Buffer.
-post_platform() {
-  local platform="$1" file="$2" pid="$3"
-  if [[ -z "$pid" ]]; then
-    echo "  [skip] $platform — no Buffer profile connected"
+# 3. Resolve integration IDs from Postiz
+echo "[socialite-post] resolving Postiz integrations"
+INTEGRATIONS_JSON="$(postiz integrations:list 2>/dev/null | sed -n '/^\[/,/^\]/p' || true)"
+if [[ -z "$INTEGRATIONS_JSON" ]]; then
+  echo "Postiz integrations:list returned nothing — check API key + URL" >&2
+  exit 8
+fi
+
+resolve_integration() {
+  local ident="$1"
+  python3 - "$ident" "$INTEGRATIONS_JSON" <<'PY'
+import json, sys
+ident = sys.argv[1]
+data = json.loads(sys.argv[2])
+for i in data:
+    if i.get("identifier") == ident and not i.get("disabled"):
+        print(i["id"]); break
+PY
+}
+
+LINKEDIN_ID="$(resolve_integration linkedin)"
+TWITTER_ID="$(resolve_integration x || true)"
+[[ -z "$TWITTER_ID" ]] && TWITTER_ID="$(resolve_integration twitter || true)"
+INSTAGRAM_ID="$(resolve_integration instagram || true)"
+[[ -z "$INSTAGRAM_ID" ]] && INSTAGRAM_ID="$(resolve_integration instagram-standalone || true)"
+
+# 4. Compute schedule timestamp (Postiz requires -s)
+if [[ -n "$SCHEDULE" ]]; then
+  SCHEDULE_ISO="$SCHEDULE"
+else
+  # +60s from now, ISO-8601 UTC. Postiz queues immediately at the slot.
+  SCHEDULE_ISO="$(date -u -v+60S '+%Y-%m-%dT%H:%M:%SZ' 2>/dev/null || date -u -d '+60 seconds' '+%Y-%m-%dT%H:%M:%SZ')"
+fi
+echo "[socialite-post] target schedule: $SCHEDULE_ISO"
+
+# 5. Extract a single post body (linkedin/instagram) — text under '# Post' or '# Caption'.
+extract_single_body() {
+  python3 - "$1" <<'PY'
+import sys, re
+text = open(sys.argv[1]).read()
+# Strip frontmatter
+m = re.match(r'^---\n.*?\n---\n', text, re.DOTALL)
+if m: text = text[m.end():]
+section = re.search(r'^#\s+(?:Post|Caption)\s*\n(.*?)(?=\n#\s+\w|\Z)', text, re.S | re.M)
+print((section.group(1) if section else "").strip())
+PY
+}
+
+# Extract a Twitter thread — list of posts split by '---' lines under '# Thread'.
+extract_thread_posts() {
+  python3 - "$1" <<'PY'
+import sys, re, json
+text = open(sys.argv[1]).read()
+m = re.match(r'^---\n.*?\n---\n', text, re.DOTALL)
+if m: text = text[m.end():]
+section = re.search(r'^#\s+Thread\s*\n(.*?)(?=\n#\s+\w|\Z)', text, re.S | re.M)
+if not section:
+    print(json.dumps([])); sys.exit()
+body = section.group(1)
+posts = [p.strip() for p in re.split(r'\n---\n', body) if p.strip()]
+print(json.dumps(posts))
+PY
+}
+
+mark_posted() {
+  local file="$1" id="$2"
+  local iso; iso="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  if grep -q "^posted_at:" "$file"; then
+    sed -i.bak "s|^posted_at:.*$|posted_at: $iso|" "$file"
+  else
+    sed -i.bak "/^---$/{s|^---$|---\\nposted_at: $iso|;:a;n;ba}" "$file"
+  fi
+  if grep -q "^posted_url:" "$file"; then
+    sed -i.bak "s|^posted_url:.*$|posted_url: postiz://$id|" "$file"
+  fi
+  rm -f "${file}.bak"
+}
+
+is_already_posted() {
+  # Posted iff posted_at is set to a real value (not null, not empty).
+  local val
+  val="$(grep -E '^posted_at:' "$1" 2>/dev/null | head -1 | sed -E 's/^posted_at:[[:space:]]*//' | tr -d '"')"
+  [[ -n "$val" && "$val" != "null" ]]
+}
+
+# 6. Post one platform — single post (linkedin / instagram).
+post_single() {
+  local platform="$1" file="$2" iid="$3"
+  if [[ -z "$iid" ]]; then
+    echo "  [skip] $platform — no Postiz integration connected"
     return
   fi
   if [[ ! -f "$file" ]]; then
     echo "  [skip] $platform — $file missing"
     return
   fi
-
-  # Idempotency: skip if posted_at is already set
-  if grep -qE "^posted_at:\s*[^n]" "$file" 2>/dev/null; then
-    local pa
-    pa="$(grep -E "^posted_at:" "$file" | head -1 | awk '{print $2}')"
+  if is_already_posted "$file"; then
+    local pa; pa="$(grep '^posted_at:' "$file" | head -1 | awk '{print $2}')"
     echo "  [skip] $platform — already posted at $pa"
     return
   fi
 
-  # Extract the body — for linkedin/instagram, everything under '# Post' or '# Caption'.
-  # For twitter threads, we'll need to split posts on `---` separators.
-  local body
-  body="$(python3 - "$file" "$platform" <<'PY'
-import sys, re
-path = sys.argv[1]
-platform = sys.argv[2]
-text = open(path).read()
-
-# Strip frontmatter
-m = re.match(r'^---\n.*?\n---\n', text, re.DOTALL)
-if m:
-    text = text[m.end():]
-
-# For twitter thread, return all posts joined with a separator nginx will recognize.
-# For now, single-post flow only — Buffer's /updates/create.json doesn't natively
-# do threads (you'd need /updates/create.json calls per post with thread_id linking).
-if platform == "twitter-thread":
-    # split by '---' lines, strip headers
-    posts = re.split(r'\n---\n', text)
-    cleaned = []
-    for p in posts:
-        # strip section headers like '# Thread', '# Image', '# Notes'
-        p = re.sub(r'^#[^\n]*\n', '', p, flags=re.M)
-        p = p.strip()
-        if p and not p.startswith('#'):
-            cleaned.append(p)
-    print('\n---POST---\n'.join(cleaned))
-else:
-    # find # Post or # Caption header
-    section = re.search(r'^#\s+(?:Post|Caption)\s*\n(.*?)(?=\n#\s+\w|\Z)', text, re.S | re.M)
-    if section:
-        print(section.group(1).strip())
-PY
-)"
-
+  local body; body="$(extract_single_body "$file")"
   if [[ -z "$body" ]]; then
     echo "  [skip] $platform — could not extract body"
     return
   fi
 
   if [[ "$DRY_RUN" -eq 1 ]]; then
-    echo "  [dry-run] $platform — $(echo "$body" | head -c 80)…"
+    echo "  [dry-run] $platform → integration $iid (chars: ${#body})"
+    echo "    preview: $(echo "$body" | head -c 80)…"
     return
   fi
 
-  # POST to Buffer. scheduled_at is unix-seconds-since-epoch if --schedule given,
-  # else "now" (which Buffer queues to the next available slot in the profile schedule).
-  local args=(-d "access_token=$TOKEN" -d "profile_ids[]=$pid")
-  if [[ -n "$SCHEDULE" ]]; then
-    local epoch
-    epoch="$(date -j -u -f '%Y-%m-%dT%H:%M:%SZ' "$SCHEDULE" '+%s' 2>/dev/null || date -d "$SCHEDULE" +%s)"
-    args+=(-d "scheduled_at=$epoch")
+  local resp
+  if resp="$(postiz posts:create -c "$body" -s "$SCHEDULE_ISO" -i "$iid" -t schedule 2>&1)"; then
+    local id
+    id="$(echo "$resp" | python3 -c 'import sys,json,re
+out = sys.stdin.read()
+m = re.search(r"\{.*\}", out, re.S)
+if m:
+    try: print(json.loads(m.group(0)).get("id","unknown"))
+    except: print("unknown")
+else: print("unknown")')"
+    echo "  [posted] $platform — postiz post $id"
+    mark_posted "$file" "$id"
   else
-    args+=(-d "now=true")
-  fi
-  args+=(--data-urlencode "text=$body")
-
-  resp="$(curl -fsS -X POST "${args[@]}" https://api.bufferapp.com/1/updates/create.json)"
-  if echo "$resp" | grep -q '"success":true'; then
-    update_id="$(echo "$resp" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d.get("updates",[{}])[0].get("id","?"))')"
-    echo "  [posted] $platform — buffer update $update_id"
-    # Patch posted_at into frontmatter
-    iso="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-    sed -i.bak "s/^posted_at:.*$/posted_at: $iso/" "$file" && rm -f "${file}.bak"
-  else
-    echo "  [FAIL] $platform — buffer response: $resp"
+    echo "  [FAIL] $platform — postiz response: $resp"
   fi
 }
 
-# 5. Run the three posts
+# 7. Post a Twitter thread — multiple -c flags + -d delay.
+post_thread() {
+  local platform="$1" file="$2" iid="$3"
+  if [[ -z "$iid" ]]; then
+    echo "  [skip] $platform — no Postiz integration connected"
+    return
+  fi
+  if [[ ! -f "$file" ]]; then
+    echo "  [skip] $platform — $file missing"
+    return
+  fi
+  if is_already_posted "$file"; then
+    local pa; pa="$(grep '^posted_at:' "$file" | head -1 | awk '{print $2}')"
+    echo "  [skip] $platform — already posted at $pa"
+    return
+  fi
+
+  # Read JSON array of posts and convert to repeated -c args.
+  local posts_json; posts_json="$(extract_thread_posts "$file")"
+  local count; count="$(echo "$posts_json" | python3 -c 'import sys,json; print(len(json.load(sys.stdin)))')"
+  if [[ "$count" -eq 0 ]]; then
+    echo "  [skip] $platform — no thread posts found"
+    return
+  fi
+
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    echo "  [dry-run] $platform → integration $iid (thread of $count posts)"
+    echo "$posts_json" | python3 -c 'import sys,json
+for i,p in enumerate(json.load(sys.stdin),1):
+    print(f"    {i}: {p[:70]}…")'
+    return
+  fi
+
+  # Build -c args from JSON
+  local args=()
+  while IFS= read -r p; do
+    args+=(-c "$p")
+  done < <(echo "$posts_json" | python3 -c 'import sys,json
+for p in json.load(sys.stdin): print(p)')
+
+  local resp
+  if resp="$(postiz posts:create "${args[@]}" -s "$SCHEDULE_ISO" -i "$iid" -t schedule -d 0 2>&1)"; then
+    local id; id="$(echo "$resp" | python3 -c 'import sys,json,re
+out = sys.stdin.read()
+m = re.search(r"\{.*\}", out, re.S)
+if m:
+    try: print(json.loads(m.group(0)).get("id","unknown"))
+    except: print("unknown")
+else: print("unknown")')"
+    echo "  [posted] $platform — postiz post $id ($count tweets)"
+    mark_posted "$file" "$id"
+  else
+    echo "  [FAIL] $platform — postiz response: $resp"
+  fi
+}
+
+# 8. Run the three platforms
 echo "[socialite-post] posting"
-post_platform linkedin       "$STAGING/linkedin.md"   "$LINKEDIN_PID"
-post_platform twitter        "$STAGING/twitter.md"    "$TWITTER_PID"
-post_platform instagram      "$STAGING/instagram.md"  "$INSTAGRAM_PID"
+post_single linkedin  "$STAGING/linkedin.md"  "$LINKEDIN_ID"
+post_thread twitter   "$STAGING/twitter.md"   "$TWITTER_ID"
+post_single instagram "$STAGING/instagram.md" "$INSTAGRAM_ID"
 
 echo
 echo "[socialite-post] done."
