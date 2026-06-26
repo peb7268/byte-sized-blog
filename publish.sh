@@ -4,7 +4,7 @@ set -e
 
 BLOG_DIR="$(cd "$(dirname "$0")" && pwd)"
 CONTENT_LINK="$BLOG_DIR/src/content/blog"
-VAULT_DIR="$HOME/Library/CloudStorage/GoogleDrive-peb7268@gmail.com/My Drive/Main/Resources/Learning/Blog"
+VAULT_DIR="$HOME/Documents/Main/Resources/Learning/Blog"
 
 # If symlink, replace with real files for git
 if [ -L "$CONTENT_LINK" ]; then
