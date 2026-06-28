@@ -21,6 +21,9 @@ cd "$BLOG_DIR"
 # Stage, commit, push
 git add -A
 git commit -m "Publish: sync content from vault" || echo "Nothing to commit"
+# pull-first: the blog repo is now multi-writer (Mac + NAS scheduled-publisher),
+# so integrate any NAS commits before pushing to avoid non-fast-forward rejections.
+git pull --no-rebase --no-edit origin main || echo "[publish] WARN: pull/merge needs attention"
 git push
 
 # Restore symlink

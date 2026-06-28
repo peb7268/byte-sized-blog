@@ -23,6 +23,8 @@ const blog = defineCollection({
 		series: z.string().optional(),
 		seriesOrder: z.number().optional(),
 		tags: z.array(z.string()).optional(),
+		// Social hashtags (without the #). Socialite uses these VERBATIM when syndicating.
+		hashtags: z.array(z.string()).optional(),
 	}),
 });
 
@@ -46,6 +48,8 @@ const internal = defineCollection({
 		series: z.string().optional(),
 		seriesOrder: z.number().optional(),
 		tags: z.array(z.string()).optional(),
+		// Social hashtags (without the #). Socialite uses these VERBATIM when syndicating.
+		hashtags: z.array(z.string()).optional(),
 	}),
 });
 
