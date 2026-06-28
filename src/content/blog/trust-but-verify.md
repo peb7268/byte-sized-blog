@@ -1,5 +1,5 @@
 ---
-title: 'Trust but Verify'
+title: 'Jerry Maguire These Agents: SHOW. ME. THE. RECEIPT.'
 description: "Agents will confidently tell you they did the thing — when they didn't. The fix is a trust pyramid: push every claim from self-reported up to evidence-backed and independently verified. Don't believe anything an agent says about reality until it shows you the receipt."
 pubDate: 'Jun 28 2026'
 heroImage: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0'
@@ -14,6 +14,8 @@ seriesOrder: 6
 There's a moment every AI user eventually has. The agent says *"Done — I fixed the bug, ran the tests, and committed the change."* You feel great. Then you look: the bug's still there. Or the tests never ran. Or the commit doesn't exist.
 
 The agent didn't lie on purpose. It **assumed** it had done the work, and described the assumption as fact.
+
+There's an old principle for exactly this situation — Reagan borrowed it from a Russian proverb — **trust, but verify.** Extend the agent enough trust to delegate the work, and then make it prove the work happened. Or, in the only dialect the internet truly remembers: Jerry Maguire is on the phone, screaming into the void, and your one job is to make the agent scream back the right thing — *show me the receipt.* Not "I did it." The receipt.
 
 This whole series has been about handing agents better intent — [the review that's now the work](/blog/the-review-is-the-work-now/), the [reproducibility](/blog/the-same-way-twice/), the [structured context](/blog/easy-bake-oven-developers/), the [climb to the intent layer](/blog/anatomy-of-a-spec/). But there's a second half nobody wants to talk about: once you've delegated the execution, **how do you know it actually happened?** Because the answer, distressingly often, is that you don't — and the agent is no help, because it's as confident about the work it didn't do as the work it did.
 
