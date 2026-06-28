@@ -1,0 +1,94 @@
+---
+// GATED DRAFT INDEX — DO NOT REMOVE. Lists the `internal` collection (vault drafts/)
+// behind the Cloudflare Access app "Blog Internal Content". See scribble.md / AGENTS.md.
+import { getCollection } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Header from '../../components/Header.astro';
+
+const posts = (await getCollection('internal')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title="Internal — Drafts" description="Authenticated draft preview" noindex={true} />
+		<style>
+			main {
+				width: 960px;
+				max-width: calc(100% - 2em);
+				margin: auto;
+				padding: 1em;
+			}
+			.internal-banner {
+				background: #1a1a2e;
+				color: #e0e0e0;
+				border: 1px solid #333;
+				border-radius: 8px;
+				padding: 0.6em 1.2em;
+				margin-bottom: 2em;
+				display: flex;
+				align-items: center;
+				gap: 0.6em;
+				font-size: 0.85em;
+				font-weight: 500;
+			}
+			.internal-banner .badge {
+				background: #c0392b;
+				color: #fff;
+				padding: 0.15em 0.5em;
+				border-radius: 4px;
+				font-size: 0.8em;
+				font-weight: 700;
+				text-transform: uppercase;
+				letter-spacing: 0.05em;
+			}
+			ul { list-style-type: none; margin: 0; padding: 0; }
+			ul li { margin-bottom: 1em; }
+			ul li a {
+				display: block;
+				padding: 0.8em 1em;
+				border-radius: 8px;
+				text-decoration: none;
+				color: rgb(var(--black));
+				border: 1px solid rgb(var(--gray-light));
+				transition: box-shadow 0.2s ease, border-color 0.2s ease;
+			}
+			ul li a:hover { box-shadow: var(--box-shadow); border-color: rgb(var(--gray)); }
+			.title { margin: 0; font-size: 1.1em; line-height: 1.3; }
+			.meta { display: flex; gap: 1em; margin-top: 0.3em; font-size: 0.85em; color: rgb(var(--gray)); }
+			.description { margin: 0.3em 0 0; font-size: 0.9em; color: rgb(var(--gray)); }
+			.empty { color: rgb(var(--gray)); font-style: italic; }
+		</style>
+	</head>
+	<body>
+		<Header />
+		<main>
+			<div class="internal-banner">
+				<span class="badge">Internal</span>
+				Authenticated draft preview — these posts are not publicly listed
+			</div>
+
+			{posts.length === 0 && <p class="empty">No drafts in progress.</p>}
+
+			<ul>
+				{posts.map((post) => (
+					<li>
+						<a href={`/internal/${post.id}/`}>
+							<h4 class="title">{post.data.title}</h4>
+							<div class="meta">
+								<FormattedDate date={post.data.pubDate} />
+								{post.data.series && <span>{post.data.series}{post.data.seriesOrder ? ` · #${post.data.seriesOrder}` : ''}</span>}
+							</div>
+							{post.data.description && <p class="description">{post.data.description}</p>}
+						</a>
+					</li>
+				))}
+			</ul>
+		</main>
+		<Footer />
+	</body>
+</html>
