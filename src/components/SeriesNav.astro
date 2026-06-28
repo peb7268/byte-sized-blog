@@ -11,7 +11,9 @@ let items: CollectionEntry<'blog'>[] = [];
 let index = -1;
 if (series) {
   items = (await getCollection('blog'))
-    .filter((p) => !p.data.draft && p.data.series === series)
+    // include all published siblings, plus the current post even while it's a draft
+    // (so a draft preview counts itself — "Part 2 of 2" — without exposing it on published posts)
+    .filter((p) => p.data.series === series && (!p.data.draft || p.id === post.id))
     .sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
   index = items.findIndex((p) => p.id === post.id);
 }
