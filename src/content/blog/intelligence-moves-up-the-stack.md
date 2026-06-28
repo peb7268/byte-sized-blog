@@ -3,8 +3,9 @@ title: 'Intelligence Moves Up the Stack'
 description: "Agentic development isn't a chat window — it's a cognitive abstraction on top of one. Control just inverted again, all the way up to intent. The people who thrive are the ones who can turn intent into concrete, deterministic output."
 pubDate: 'Jun 27 2026'
 heroImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475'
-draft: true
+draft: false
 hashtags: ['agenticdevelopment', 'softwareengineering', 'contextengineering']
+socialQuote: "Intent without structure is a vibe. Intent with structure is a program."
 ---
 
 There's a particular flavor of dread going around right now, and it isn't the one the headlines are selling. It's not "AI is going to replace developers." It's quieter and stranger than that.
