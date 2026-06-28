@@ -1,0 +1,43 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import { SITE_TITLE } from '../consts';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Not found — ${SITE_TITLE}`} description="That page doesn't exist." noindex={true} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section class="notfound">
+				<p class="code">404</p>
+				<h1>This page doesn't exist</h1>
+				<p>The page you're looking for isn't here — it may have moved, been unpublished, or never existed.</p>
+				<p class="links">
+					<a href="/">Home</a>
+					<span aria-hidden="true">·</span>
+					<a href="/blog">Read the writing</a>
+				</p>
+			</section>
+		</main>
+		<Footer />
+		<style>
+			main { width: 720px; max-width: calc(100% - 2em); margin: auto; padding: 4em 1em; }
+			.notfound { text-align: center; }
+			.code {
+				font-size: 5rem;
+				font-weight: 700;
+				line-height: 1;
+				margin: 0 0 0.2em;
+				color: rgb(var(--gray-light));
+			}
+			.notfound h1 { font-size: 1.8rem; margin-bottom: 0.6em; }
+			.links { margin-top: 2em; display: flex; gap: 1em; justify-content: center; }
+			.links a { color: var(--accent); text-decoration: none; }
+		</style>
+	</body>
+</html>
