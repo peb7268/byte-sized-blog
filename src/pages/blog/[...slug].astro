@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
+import SeriesNav from '../../components/SeriesNav.astro';
 import RelatedPosts from '../../components/RelatedPosts.astro';
 
 export async function getStaticPaths() {
@@ -25,5 +26,6 @@ const relatedPosts = allPosts
 
 <BlogPost {...post.data}>
 	<Content />
+	<SeriesNav post={post} />
 	<RelatedPosts posts={relatedPosts} />
 </BlogPost>

@@ -1,0 +1,109 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+const { post } = Astro.props;
+const series = post.data.series;
+
+let items: CollectionEntry<'blog'>[] = [];
+let index = -1;
+if (series) {
+  items = (await getCollection('blog'))
+    .filter((p) => !p.data.draft && p.data.series === series)
+    .sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
+  index = items.findIndex((p) => p.id === post.id);
+}
+
+const total = items.length;
+const order = post.data.seriesOrder ?? (index >= 0 ? index + 1 : 0);
+const first = items[0] ?? null;
+const prev = index > 0 ? items[index - 1] : null;
+const next = index >= 0 && index < total - 1 ? items[index + 1] : null;
+// Only show "First" when it isn't the current post and isn't already the "Previous" link.
+const showFirst = first && first.id !== post.id && (!prev || prev.id !== first.id);
+---
+
+{series && total > 0 && (
+  <nav class="series-nav" aria-label={`${series} series navigation`}>
+    <div class="series-head">
+      <span class="series-kicker">Series</span>
+      <span class="series-title">{series}</span>
+      <span class="series-progress">Part {order} of {total}</span>
+    </div>
+    {(showFirst || prev || next) ? (
+      <div class="series-links">
+        {showFirst && (
+          <a href={`/blog/${first.id}/`} class="series-link">
+            <span class="series-dir">↞ First in series</span>
+            <span class="series-name">{first.data.title}</span>
+          </a>
+        )}
+        {prev && (
+          <a href={`/blog/${prev.id}/`} class="series-link">
+            <span class="series-dir">‹ Previous</span>
+            <span class="series-name">{prev.data.title}</span>
+          </a>
+        )}
+        {next && (
+          <a href={`/blog/${next.id}/`} class="series-link series-next">
+            <span class="series-dir">Next ›</span>
+            <span class="series-name">{next.data.title}</span>
+          </a>
+        )}
+      </div>
+    ) : (
+      <p class="series-only">This is the only post in the series so far — more coming.</p>
+    )}
+  </nav>
+)}
+
+<style>
+  .series-nav {
+    width: 720px;
+    max-width: calc(100% - 2em);
+    margin: 2.5em auto 1em;
+    padding: 1.25em 1.5em;
+    border: 1px solid rgb(var(--gray-light));
+    border-radius: 12px;
+    background: rgba(var(--gray-light), 0.25);
+  }
+  .series-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6em;
+    flex-wrap: wrap;
+    margin-bottom: 1em;
+  }
+  .series-kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.7em;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .series-title { font-weight: 700; color: rgb(var(--gray-dark)); }
+  .series-progress { margin-left: auto; font-size: 0.85em; color: rgb(var(--gray)); }
+  .series-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75em;
+  }
+  .series-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+    padding: 0.7em 0.9em;
+    border: 1px solid rgb(var(--gray-light));
+    border-radius: 8px;
+    text-decoration: none;
+    background: #fff;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .series-link:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .series-next { text-align: right; }
+  .series-dir { font-size: 0.75em; font-weight: 700; color: var(--accent); }
+  .series-name { font-size: 0.95em; color: rgb(var(--gray-dark)); line-height: 1.25; }
+  .series-only { margin: 0; font-size: 0.9em; color: rgb(var(--gray)); }
+</style>

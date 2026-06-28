@@ -18,6 +18,11 @@ const blog = defineCollection({
 		// Accept string URLs for hero images (Unsplash, local paths, etc.)
 		heroImage: z.string().optional(),
 		draft: z.boolean().optional(),
+		// Series grouping: posts sharing a `series` are linked via SeriesNav (First/Prev/Next),
+		// ordered by `seriesOrder`. `tags` drive the "You might also like" (similar) selection.
+		series: z.string().optional(),
+		seriesOrder: z.number().optional(),
+		tags: z.array(z.string()).optional(),
 	}),
 });
 

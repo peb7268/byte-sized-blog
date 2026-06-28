@@ -4,6 +4,9 @@ description: "Developers fear agentic AI is pulling them out of the code and tha
 pubDate: 'Jun 26 2026'
 heroImage: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97'
 draft: false
+series: 'Agentic Governance'
+seriesOrder: 1
+tags: ['agentic-ai', 'code-review', 'engineering-leadership']
 ---
 
 A developer I work with said something that's stuck with me. He was describing what it feels like to build a feature when agents are driving the implementation, and he put the discomfort more precisely than I've heard anyone manage:
