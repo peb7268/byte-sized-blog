@@ -3,7 +3,7 @@ title: 'Anatomy of a Spec'
 description: "The series kept insisting you need a spec. None of it told you how to write one. Here's the anatomy — the parts most specs are missing, the altitude problem that's the actual craft, and the test that tells you it's done."
 pubDate: 'Jun 28 2026'
 heroImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e'
-draft: true
+draft: false
 hashtags: ['agenticdevelopment', 'contextengineering', 'softwareengineering']
 socialQuote: "A vague spec is a wish. A precise spec is a program you didn't have to type."
 series: 'Agentic Engineering'

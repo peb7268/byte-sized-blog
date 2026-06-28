@@ -3,7 +3,7 @@ title: 'Trust but Verify'
 description: "Agents will confidently tell you they did the thing — when they didn't. The fix is a trust pyramid: push every claim from self-reported up to evidence-backed and independently verified. Don't believe anything an agent says about reality until it shows you the receipt."
 pubDate: 'Jun 28 2026'
 heroImage: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0'
-draft: true
+draft: false
 hashtags: ['agenticdevelopment', 'aiengineering', 'softwareengineering']
 socialQuote: "An agent's 'done' is a hypothesis. Don't accept it until it shows you the receipt."
 socialImage: "/Users/pbarrick/Documents/Main/Resources/General/Assets/Images/trust-pyramid.png"

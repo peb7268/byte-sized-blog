@@ -3,7 +3,7 @@ title: 'Garbage In, Gospel Out: Agentic Cognitive Bias'
 description: "Humans have confirmation bias — we read new evidence as support for the hypothesis we already hold. Agents have it worse, because they can't tell where a 'fact' in their context came from. Once something false enters the window, every next token treats it as gospel. That's context poisoning, and it's the failure mode underneath most agent train wrecks."
 pubDate: 'Jun 28 2026'
 heroImage: 'https://images.unsplash.com/photo-1530026405186-ed1f139313f8'
-draft: true
+draft: false
 hashtags: ['agenticdevelopment', 'aiengineering', 'softwareengineering']
 socialQuote: "Context poisoning is confirmation bias with no immune system: once a false fact is in the window, every next token treats it as gospel."
 series: 'Agentic Engineering'

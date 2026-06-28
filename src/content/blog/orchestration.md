@@ -3,7 +3,7 @@ title: 'Orchestration'
 description: "A spec you write and walk away from is a New Year's resolution. The hard part isn't defining intent — it's keeping it in force: guardrails that hold the line, a workflow that drives the spec, a plan that outlives the session, and drift detection that catches the gap."
 pubDate: 'Jun 28 2026'
 heroImage: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64'
-draft: true
+draft: false
 hashtags: ['agenticdevelopment', 'aiengineering', 'softwareengineering']
 socialQuote: "Conversations are RAM. Implementation plans are disk. Encode your intent in the durable substrate or watch it evaporate at the next /clear."
 series: 'Agentic Engineering'
