@@ -17,11 +17,11 @@ That is exactly the thing most agentic setups are missing. And it's the quietest
 
 ## The two-runs test
 
-Here's a test I've started running on any agentic workflow before I'll trust it with anything that matters. Give the agent the same task twice, in two fresh sessions. Then diff the two results.
+Here's a test I've started running on any agentic workflow before I'll trust it with anything that matters. Give the agent the same task twice, in two fresh sessions. Then diff the two results. This is called deterministic output.
 
 The first time I did this seriously, the output wasn't *wrong* either time. Both runs shipped something that worked. But they worked *differently* — different file layout, different names, a helper extracted in one and inlined in the other, a slightly different interpretation of an ambiguous requirement. Two competent strangers, handed the same ticket, producing two competent-but-divergent solutions.
 
-For a human pair that's fine; you talk it out. For an agent you're trying to *scale*, it's a problem dressed up as a feature. Because if the agent does the task a different way every time, you haven't bought leverage. You've bought a thing you have to fully re-review on every single run, forever, because you can never carry forward a mental model of "how it does this" — there is no *how*. There's just this run's how.
+For a human pair that's fine; you talk it out. For an agent you're trying to *scale*, it's a problem dressed up as a feature. Because if the agent does the task a different way every time, you haven't bought leverage. You've bought a thing you have to fully re-review on every single run, forever, because you can never carry forward a mental model of "how it does this" — there is no *how*. There's just this run's how. In other words: technical *and* cognitive debt.
 
 That's the tell. The same word from last time — *organically* — was the developer fear of losing the model in his own head. This is the structural version of the same loss: **there's no stable model of the system's behavior to hold, because the behavior isn't stable.**
 
@@ -39,7 +39,7 @@ This is where spec-driven development stops being a documentation chore and star
 
 A spec — a real one, the kind that names the inputs, the outputs, the invariants, the acceptance criteria, the explicit *non*-goals — does one thing above all: it removes the ambiguity the model would otherwise resolve differently each run. Every place your spec is silent is a place the agent will improvise, and improvisation is exactly where the two runs diverged. The spec is the score. It's the difference between "play something triumphant here" and the actual notes.
 
-Tighten the spec and the distribution narrows. Tighten it enough — inputs, outputs, the shape of the solution, the things it must *not* do — and two runs converge. Not because the model got more deterministic under the hood, but because you removed the degrees of freedom it was using to wander. You collapsed the cloud to the point you specified.
+Tighten the spec and the distribution narrows. Tighten it enough — inputs, outputs, the shape of the solution, the things it must *not* do — and two runs converge. Not because the model got more deterministic under the hood, but because you removed the degrees of freedom it was using to wander. You collapsed the cloud to the point you specified. You added *guardrails*.
 
 That reframes "the spec docs are too technical and take too long to read" — the complaint I flagged last time — into something sharper. The fix isn't fewer specs. It's *legible* specs that are nonetheless *complete enough to pin behavior.* Legibility and precision aren't in tension here; vagueness is the enemy of both. A vague spec is both hard to review and useless at collapsing the cloud. The bar is the conductor's score again: precise enough that the orchestra converges, readable enough that you can follow it at a glance.
 
