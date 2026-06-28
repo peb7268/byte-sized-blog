@@ -6,6 +6,7 @@ heroImage: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0'
 draft: true
 hashtags: ['agenticdevelopment', 'aiengineering', 'softwareengineering']
 socialQuote: "An agent's 'done' is a hypothesis. Don't accept it until it shows you the receipt."
+socialImage: "/Users/pbarrick/Documents/Main/Resources/General/Assets/Images/trust-pyramid.png"
 series: 'Agentic Engineering'
 seriesOrder: 6
 ---
@@ -29,6 +30,8 @@ This matters more than it first seems, because the failure isn't just operationa
 ## The trust pyramid
 
 Here's the model I use, lifted straight from a workshop I ran on this. Sort every agent claim into one of four levels:
+
+![The Trust Pyramid — Untrusted → Self-reported → Evidence-backed → Independently verified; push the work up](/img/trust-pyramid.png)
 
 | Level | What the agent gives you | What you should do |
 |---|---|---|
