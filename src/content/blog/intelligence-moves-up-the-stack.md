@@ -5,6 +5,8 @@ pubDate: 'Jun 27 2026'
 heroImage: 'https://images.unsplash.com/photo-1518770660439-4636190af475'
 draft: false
 hashtags: ['agenticdevelopment', 'softwareengineering', 'contextengineering']
+series: 'Agentic Engineering'
+seriesOrder: 4
 socialQuote: "Intent without structure is a vibe. Intent with structure is a program."
 ---
 

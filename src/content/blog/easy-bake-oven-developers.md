@@ -6,6 +6,8 @@ heroImage: 'https://images.unsplash.com/photo-1495147466023-ac5c588e2e94'
 draft: false
 tags: ['vibecoding', 'agenticdevelopment', 'contextengineering']
 hashtags: ['vibecoding', 'agenticdevelopment', 'contextengineering']
+series: 'Agentic Engineering'
+seriesOrder: 3
 ---
 
 In the [last piece](/blog/the-same-way-twice/) I argued that the real deliverable from an agent isn't capability, it's *reproducibility* — doing the task the same way twice — and that you get there by feeding it a structured spec instead of a vibe. I want to stay on that thread, but come at it from the human side. Because the spec problem is really a *mental model* problem, and the broken mental model has a shape I can't unsee anymore.

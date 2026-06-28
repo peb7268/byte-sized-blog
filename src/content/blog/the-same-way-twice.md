@@ -4,7 +4,7 @@ description: "An agent that does the same task two different ways hasn't given y
 pubDate: 'Jun 28 2026'
 heroImage: 'https://images.unsplash.com/photo-1465847899084-d164df4dedc6'
 draft: false
-series: 'Agentic Governance'
+series: 'Agentic Engineering'
 seriesOrder: 2
 tags: ['agentic-ai', 'spec-driven-development', 'runtime-governance']
 ---
