@@ -77,7 +77,7 @@ For engineers (including me):
 - **Run toward step three.** The moment you lose the thread is the moment your judgment — your OI — is most needed, not least. That discomfort is the signal, not the failure.
 - **Stay engaged on purpose.** The atrophy is real, and the only known defense is active verification. Read the spec. Reconstruct the intent. Disagree with the agent out loud.
 
-But — and this is the half the engineers are right about — **leaders and tool-builders own the other side of this.**
+**For leaders and tool-builders** (the half the engineers are right about):
 
 When developers say the spec-driven development docs are "too technical and take too long to read," that is not only a developer problem. If the oversight surface isn't *legible*, we've just relocated the slop into the governance layer. A planning agent that emits exhaustive-but-unreadable docs taxes the review instead of enabling it. The Microsoft study is clear that the new skill is verification and stewardship; our job as leaders is to make that skill *cheap to exercise* — to design oversight artifacts that let an engineer understand step three in thirty seconds, not thirty minutes.
 
