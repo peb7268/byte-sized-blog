@@ -3,7 +3,8 @@ title: 'Easy Bake Oven Developers'
 description: "There's a kind of developer who treats AI like a toy oven — toss in random ingredients, expect a finished cake, and blame the appliance when it doesn't work. The problem was never the model. It's GIGO, and it's a mental-model problem."
 pubDate: 'Jun 27 2026'
 heroImage: 'https://images.unsplash.com/photo-1495147466023-ac5c588e2e94'
-draft: true
+draft: false
+tags: ['vibecoding', 'agenticdevelopment', 'asdlc']
 ---
 
 In the [last piece](/blog/the-same-way-twice/) I argued that the real deliverable from an agent isn't capability, it's *reproducibility* — doing the task the same way twice — and that you get there by feeding it a structured spec instead of a vibe. I want to stay on that thread, but come at it from the human side. Because the spec problem is really a *mental model* problem, and the broken mental model has a shape I can't unsee anymore.
