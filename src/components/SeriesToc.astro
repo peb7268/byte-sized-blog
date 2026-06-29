@@ -1,0 +1,95 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'blog'> | CollectionEntry<'internal'>;
+  // Which collection to source siblings from, and the URL base to link them.
+  // Public posts: blog + /blog/. Gated drafts: internal + /internal/.
+  collection?: 'blog' | 'internal';
+  basePath?: string;
+}
+const { post, collection = 'blog', basePath = '/blog/' } = Astro.props;
+const series = post.data.series;
+
+let items: Array<CollectionEntry<'blog'> | CollectionEntry<'internal'>> = [];
+if (series) {
+  const all = collection === 'internal'
+    ? await getCollection('internal')
+    : await getCollection('blog');
+  items = all
+    // public route: published siblings + self; internal route: all siblings (drafts included)
+    .filter((p) => p.data.series === series && (collection === 'internal' || !p.data.draft || p.id === post.id))
+    .sort((a, b) => (a.data.seriesOrder ?? 0) - (b.data.seriesOrder ?? 0));
+}
+const total = items.length;
+const order = post.data.seriesOrder ?? 0;
+---
+
+{series && total > 0 && (
+  <nav class="series-toc-top" aria-label={`${series} series contents`}>
+    <div class="stt-head">
+      <span class="stt-kicker">Series</span>
+      <span class="stt-title">{series}</span>
+      <span class="stt-progress">Part {order || '—'} of {total}</span>
+    </div>
+    <ol class="stt-list">
+      {items.map((it) => (
+        <li class={it.id === post.id ? 'current' : ''} aria-current={it.id === post.id ? 'true' : undefined}>
+          {it.id === post.id ? (
+            <span><span class="stt-num">{it.data.seriesOrder ?? ''}.</span>{it.data.title}</span>
+          ) : (
+            <a href={`${basePath}${it.id}/`}><span class="stt-num">{it.data.seriesOrder ?? ''}.</span>{it.data.title}</a>
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}
+
+<style>
+  .series-toc-top {
+    margin: 0 0 2em;
+    padding: 1em 1.25em;
+    border: 1px solid rgb(var(--gray-light));
+    border-left: 4px solid var(--accent);
+    border-radius: 10px;
+    background: rgba(var(--gray-light), 0.25);
+  }
+  .stt-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6em;
+    flex-wrap: wrap;
+    margin-bottom: 0.6em;
+  }
+  .stt-kicker {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.68em;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stt-title { font-weight: 700; color: rgb(var(--gray-dark)); }
+  .stt-progress { margin-left: auto; font-size: 0.82em; color: rgb(var(--gray)); }
+  .stt-list {
+    list-style: none;
+    margin: 0;
+    padding: 0.4em 0 0;
+    border-top: 1px solid rgb(var(--gray-light));
+  }
+  .stt-list li {
+    font-size: 0.95em;
+    line-height: 1.35;
+    padding: 0.2em 0;
+  }
+  .stt-num {
+    display: inline-block;
+    min-width: 1.9em;
+    color: rgb(var(--gray));
+    font-variant-numeric: tabular-nums;
+  }
+  .stt-list a { color: rgb(var(--gray-dark)); text-decoration: none; }
+  .stt-list a:hover { color: var(--accent); text-decoration: underline; }
+  .stt-list li.current > span { font-weight: 700; color: rgb(var(--black)); }
+  .stt-list li.current .stt-num { color: var(--accent); }
+</style>

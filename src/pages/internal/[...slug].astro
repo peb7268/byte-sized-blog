@@ -4,6 +4,7 @@
 // "Blog Internal Content". See scribble.md / AGENTS.md "gated draft route".
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
+import SeriesToc from '../../components/SeriesToc.astro';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('internal');
@@ -23,6 +24,7 @@ const { Content } = await render(post);
 		<span class="badge">Internal</span>
 		Authenticated draft preview — not publicly listed
 	</div>
+	<SeriesToc post={post} collection="internal" basePath="/internal/" />
 	<Content />
 </BlogPost>
 

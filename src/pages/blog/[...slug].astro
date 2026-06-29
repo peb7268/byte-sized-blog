@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry, getCollection, render } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
+import SeriesToc from '../../components/SeriesToc.astro';
 import SeriesNav from '../../components/SeriesNav.astro';
 import RelatedPosts from '../../components/RelatedPosts.astro';
 
@@ -25,6 +26,7 @@ const relatedPosts = allPosts
 ---
 
 <BlogPost {...post.data}>
+	<SeriesToc post={post} collection="blog" basePath="/blog/" />
 	<Content />
 	<SeriesNav post={post} />
 	<RelatedPosts posts={relatedPosts} />
