@@ -14,7 +14,7 @@ const { title, description, pubDate, updatedDate, heroImage, draft, noindex } = 
 
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} noindex={noindex ?? draft} />
+		<BaseHead title={title} description={description} image={heroImage} noindex={noindex ?? draft} />
 		<style>
 			main {
 				width: calc(100% - 2em);
@@ -31,7 +31,7 @@ const { title, description, pubDate, updatedDate, heroImage, draft, noindex } = 
 				box-shadow: var(--box-shadow);
 			}
 			.prose {
-				width: 720px;
+				width: 780px;
 				max-width: calc(100% - 2em);
 				margin: auto;
 				padding: 1em;
