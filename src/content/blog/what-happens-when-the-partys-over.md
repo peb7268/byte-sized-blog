@@ -1,5 +1,7 @@
 ---
 title: "What happens when the party's over."
+series: 'Sustainable AI'
+seriesOrder: 3
 description: 'Token prices have been falling for two years. They will not fall forever. Here is how I am architecting agentic systems to survive the day one provider stops being economical.'
 pubDate: 'May 04 2026'
 heroImage: 'https://images.unsplash.com/photo-1708289312702-d39a7e77ee12?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MzE0MDd8MHwxfHNlYXJjaHwyfHxlbXB0eSUyMHBhcnR5JTIwYWZ0ZXJtYXRoJTIwY29uZmV0dGl8ZW58MHwwfHx8MTc3Nzk4MzUxM3ww&ixlib=rb-4.1.0&q=80&w=1080'

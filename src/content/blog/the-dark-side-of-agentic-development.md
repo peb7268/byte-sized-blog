@@ -1,5 +1,7 @@
 ---
 title: 'The Dark Side of Agentic Development: When Your AI Army Burns You Out'
+series: 'Sustainable AI'
+seriesOrder: 1
 description: 'AI agents promise infinite productivity. But when you are the orchestrator of 50+ agents across multiple runtimes, the cognitive load can be crushing. Here is what nobody talks about.'
 pubDate: 'Mar 22 2026'
 heroImage: 'https://images.unsplash.com/photo-1632893037506-aac33bf18107?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MzE0MDd8MHwxfHNlYXJjaHwxfHxidXJub3V0JTIwZXhoYXVzdGlvbiUyMGxhcHRvcCUyMGRhcmt8ZW58MHwwfHx8MTc3NDE2MDk3NXww&ixlib=rb-4.1.0&q=80&w=1080'

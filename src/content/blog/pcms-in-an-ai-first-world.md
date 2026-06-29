@@ -1,5 +1,7 @@
 ---
 title: 'Your AI Doesn''t Know You: The Case for a Personal Context Management System'
+series: 'PCMS'
+seriesOrder: 1
 description: 'LLMs are powerful but context-blind by default. A PCMS — your notes, daily logs, and projects, structured so an AI can read them — is the real leverage in an AI-first world.'
 pubDate: 'May 20 2026'
 heroImage: 'https://images.unsplash.com/photo-1732704573802-8ec393009148?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&w=1080&q=80'

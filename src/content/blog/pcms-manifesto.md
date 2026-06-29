@@ -1,5 +1,7 @@
 ---
 title: 'The PCMS Manifesto: Building a Personal Context Management System'
+series: 'PCMS'
+seriesOrder: 2
 description: 'Why Personal Knowledge Management Systems fall short in the age of AI agents — and how a Personal Context Management System built on Obsidian, Qdrant, and Supabase changes everything.'
 pubDate: 'Mar 23 2026'
 heroImage: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3MzE0MDd8MHwxfHNlYXJjaHwxfHxtYXRyaXglMjBkYXRhJTIwY29kZXxlbnwwfDB8fHwxNzc0MTYwOTc1fDA&ixlib=rb-4.1.0&q=80&w=1080'
