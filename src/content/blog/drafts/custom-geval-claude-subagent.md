@@ -1,80 +1,207 @@
 ---
 title: 'A Custom G-Eval Grade with a Claude Subagent'
-description: "When off-the-shelf metrics don't fit your domain, you stop borrowing someone else's rubric and write your own. Here's how to build a custom G-Eval criterion, use a Claude subagent as the grader, and dodge the four ways an LLM judge quietly lies to you."
+description: "Off-the-shelf metrics never fit your domain. Here's the concrete build: a Claude Code subagent that acts as a G-Eval judge, wired into Vitest so a rubric you wrote becomes a pass/fail in CI — with the full agent definition and the test code."
 pubDate: 'Jun 29 2026'
 draft: true
 series: 'Ship Confidence'
 seriesOrder: 3
-tags: ['llm-evaluation', 'ai-testing', 'quality-engineering']
-hashtags: ['llmevaluation', 'aitesting', 'agenticdevelopment']
+tags: ['evals', 'g-eval', 'vitest']
+hashtags: ['aiengineering', 'evals', 'llmasajudge']
 ---
 
-Earlier in this series I argued for **Trust but Verify**: you can let an agent do the work, but you don't get to believe the work is good just because the agent says so. The piece I left dangling was the obvious one — *verify how?* For a lot of agentic output there's no green checkmark to wait on. A unit test tells you `2 + 2 == 4`. Nothing built in tells you whether a generated answer was *actually grounded in the source*, or whether a summary *kept the one number that mattered*. Those are judgments, not assertions.
+In [What Are Evals?](/internal/what-are-evals/) I argued that "it worked when I tried it" isn't engineering. And in [An Intro to DeepEval](/internal/intro-to-deepeval/) the built-in metrics did a lot of the work for you. But the first time you try to grade something that's actually *yours* — "is this summary faithful to our docs?", "does this reply follow our refund policy?", "is this commit message any good?" — the canned metrics shrug. Nobody shipped a metric for your rubric.
 
-So you reach for a metric. And you discover the metrics on the shelf don't fit your problem.
-
-That's where this post lives: the moment you stop borrowing someone else's rubric and **write your own**. The tool for that is **G-Eval**, and the grader I reach for is a **Claude subagent**.
+That's what **G-Eval** is for. And the most useful judge I've found for a custom G-Eval isn't a library call — it's a **Claude Code subagent** with its own isolated context, doing nothing but grading. This post is the concrete build: the agent, the glue, and the [Vitest](https://vitest.dev/) tests that turn your rubric into a green check.
 
 ## What G-Eval actually is
 
-Strip the acronym. **G-Eval is using an LLM as the judge, scoring an output against a written criterion you supply.** That's it. Instead of a regex or an exact-match check, you hand a model a definition of "good" and ask it to grade.
+G-Eval is **LLM-as-a-judge with chain-of-thought**. Two ideas do the heavy lifting (per the [DeepEval docs](https://deepeval.com/docs/metrics-llm-evals) and [Confident AI's guide](https://www.confident-ai.com/blog/g-eval-the-definitive-guide)):
 
-The reason this matters is that most of what agents produce is *open-ended*. There's no single correct string. There's a space of acceptable answers and a fuzzy boundary around it, and the only cheap thing capable of judging that boundary at scale is another language model. The off-the-shelf metrics — relevancy, faithfulness, the standard pack — are themselves G-Eval criteria someone else wrote for the *general* case. They're a fine starting point. They're just not *your* case. Your domain has a definition of "good" that the generic faithfulness metric has never heard of.
+1. **Derive evaluation steps first, score last.** Instead of "rate this 1–5," you give the judge *criteria*, it expands them into 3–5 concrete checks, reasons through each against the output, and *then* scores. The reasoning grounds the number and makes it far more stable.
+2. **Anchored, independent criteria.** Three to five checks, each specific and observable, each with a clear sense of what passes vs fails. Vague criteria → vague scores.
 
-The move is the same altitude shift this whole series keeps circling. You're not writing the answer. You're **writing the standard the answer is held to.** Get the standard right and you can grade ten thousand outputs without reading them. Get it wrong and you've automated your own self-deception.
+The research is blunt about why this beats string-matching: G-Eval correlates with human judgment on things like coherence, faithfulness, and relevance that BLEU or exact-match can't see at all.
 
-## Writing a criterion that isn't garbage
+## Why a Claude Code subagent makes the right judge
 
-This is the part everyone underinvests in, and it's the entire ballgame. A vague criterion produces a vague judge, and a vague judge produces a number that *feels* like signal and is actually noise. [Garbage in, gospel out](/blog/garbage-in-gospel-out/) applies to the rubric exactly as hard as it applies to the prompt.
+You can call an LLM judge inline. But there's a failure mode the eval community keeps re-learning (the [doer/judge pattern writeup](https://pub.towardsai.net/from-claude-code-skills-to-adversarial-subagent-orchestrators-to-the-claude-agent-sdk-three-e1dedfd067b1) is good on this): **a model grading its own output, in its own context, grades generously.** It has already convinced itself.
 
-Here's the bad version, the one I see constantly:
+A **subagent** fixes this structurally:
 
-> *Score how good and helpful the response is from 1 to 10.*
+- **Isolated context.** The judge never sees the doer's reasoning — only the rubric, the input, and the output. It can't be charmed by how confidently the answer was produced. (Same "evidence over self-report" idea as [Jerry Maguire These Agents](/blog/trust-but-verify/).)
+- **One job, defined once.** The rubric, the chain-of-thought discipline, and the anti-bias rules live in the agent definition — not copy-pasted into every test.
+- **Structured verdict.** It returns strict JSON, so your harness gets a number, not a vibe.
+- **Reusable everywhere.** `claude --agent geval-judge` works from a test, a pre-commit hook, or CI.
 
-"Good" how? "Helpful" to whom? Two runs of this against the *same* output will disagree, because you've outsourced the definition to the model's mood. You haven't written a criterion. You've written a vibe.
+## Step 1 — the testing agent (the judge)
 
-Here's the rehab. A criterion worth trusting is **specific, observable, and rubber-anchored**.
+Drop this in `.claude/agents/geval-judge.md`. It's a real Claude Code subagent: it derives the eval steps, walks them, and emits a JSON verdict — nothing else.
 
-- **Specific** — name the one thing you're measuring. Not "quality." *"Whether every factual claim in the answer is supported by the provided context."* One axis per metric. If you're measuring three things, write three metrics.
-- **Observable** — the judge must be able to *point at evidence* in the output. "Is it well-written" is unobservable hand-waving. "Does it cite a source for each claim" is something a grader can find or fail to find.
-- **Rubric-anchored** — define the score band. Don't leave 1-through-5 to interpretation. Say what a 5 looks like, what a 1 looks like, and what the boundary between a 3 and a 4 is.
+```markdown
+---
+name: geval-judge
+description: LLM-as-judge for G-Eval-style grading. Given a task input, an actual
+  output, and a rubric, it derives evaluation steps (chain-of-thought), reasons
+  through them, and returns strict JSON {score, pass, steps, reasoning}. Invoke as
+  a SEPARATE subagent so a model never grades its own output.
+tools: Read
+---
 
-Lower the criterion onto something more like this:
+You are a strict, impartial evaluation judge implementing the G-Eval method. You do
+not write or fix the work under test — you only grade it.
 
-> *Evaluate whether the output is grounded in the provided context. A claim is "grounded" if it can be directly traced to the context. Score 1.0 only if every claim is grounded. Score 0.0 if any claim is fabricated or contradicts the context. Penalize confident claims that the context does not support more heavily than omissions.*
+## Input
+A message with fenced sections: CRITERIA (the rubric + optional threshold), INPUT
+(what the system was asked), OUTPUT (what to grade), and optional EXPECTED (a
+reference — a guide, not a strict diff).
 
-Notice what that does. It defines the unit ("a claim"), the test ("traceable to the context"), the anchors (1.0 and 0.0), *and* it states a priority — fabrication is worse than omission. Now two runs will agree, because there's almost nothing left to interpret. **The work isn't getting the judge to grade. It's removing every place the judge could improvise.**
+## How to grade, in order
+1. Derive 3–5 concrete, independent, observable evaluation steps from CRITERIA;
+   anchor each (what passes vs fails). Reason first, score last.
+2. Walk each step against OUTPUT, quoting specific evidence.
+3. Score 0.00–1.00 as the fraction of the rubric genuinely satisfied. Use the full
+   range; don't cluster at 0.5.
+4. pass = score ≥ threshold (default 0.7).
 
-## The grader is a Claude subagent
+## Anti-bias rules
+- Judge ONLY against CRITERIA. Ignore length, style, fluency, confident tone.
+- If unsure, score DOWN and say why. Penalize unsupported claims.
+- Be deterministic: same inputs → same verdict.
 
-A criterion needs something to run it. My grader is a **Claude subagent** — a separate, single-purpose agent whose only job is to apply that rubric and emit a score plus a one-line reason.
+## Output contract — CRITICAL
+Reply with ONLY one JSON object, no prose, no fences:
+{"score": 0.0, "pass": false, "steps": ["..."], "reasoning": "evidence-grounded paragraph"}
+```
 
-Why a subagent and not just a prompt I paste inline? Two reasons, and they're both about keeping the judge *clean*.
+That `tools: Read` line matters: the judge needs almost no power. It reads and reasons; it doesn't edit, run, or commit. Least privilege for the grader.
 
-First, **isolation**. The subagent gets its own context window. It sees the criterion, the input, the output to grade — and nothing else. It does not see the conversation that produced the output, it doesn't see your hopes for the result, it doesn't carry the framing that the generating agent was steeped in. That separation is the whole point. The thing being verified and the thing doing the verifying must not share a brain.
+## Step 2 — the glue: call the subagent, get a verdict
 
-Second, **reuse and consistency**. Once it's a defined subagent, every test in the suite invokes the same grader with the same rubric the same way. You're not re-deriving "good" per call. You're maintaining one judge.
+A tiny wrapper shells out to the subagent and parses the JSON. Headless Claude Code (`claude -p`) returns the agent's final message on stdout — which, by our contract, *is* the verdict.
 
-Asking for the *reason*, not just the number, is not optional. A bare score is unfalsifiable — you can't tell a correct 0.8 from a lucky one. A score with a one-line justification you can spot-check turns the judge from an oracle into something auditable. Which is the [whole thesis of this series](/blog/the-review-is-the-work-now/): the review is the work, and that includes reviewing your reviewer.
+```ts
+// geval-judge.ts
+import { execa } from "execa";
 
-## The four ways your judge lies to you
+export type Verdict = { score: number; pass: boolean; steps: string[]; reasoning: string };
 
-An LLM judge is a model, and models have failure modes. If you wire one in without knowing them, you've built a confidence machine that confidently reports nonsense. Four to defend against:
+export async function gevalJudge(opts: {
+  input: string;
+  output: string;
+  criteria: string;
+  expected?: string;
+  threshold?: number;
+}): Promise<Verdict> {
+  const { input, output, criteria, expected, threshold = 0.7 } = opts;
 
-**Self-bias.** A model rates output from its own family more generously than a neutral observer would. If the agent that *wrote* the answer and the judge that *grades* it are the same model with the same framing, the judge is grading its own homework. The subagent isolation above is the first defense; using a different model — or at minimum a hard-separated context — is the stronger one. **Never let the author be the sole judge.**
+  const prompt = [
+    `CRITERIA:\n${criteria}\nthreshold: ${threshold}`,
+    `INPUT:\n${input}`,
+    `OUTPUT:\n${output}`,
+    expected ? `EXPECTED:\n${expected}` : "",
+  ].filter(Boolean).join("\n\n");
 
-**Vague-criterion drift.** Covered above, but it's the most common failure by a mile. A loose rubric doesn't just produce wrong scores — it produces *inconsistent* ones, which is worse, because the variance hides in the average and you think you have a stable metric.
+  const { stdout } = await execa("claude", ["--agent", "geval-judge", "-p", prompt]);
 
-**Position bias.** When you ask a judge to compare A versus B, it tends to favor whichever came *first* (some models favor the last) regardless of content. If you're doing pairwise grading, run it both ways and average, or you're measuring presentation order, not quality.
+  // The agent emits only JSON; be defensive and grab the object even if anything wraps it.
+  const json = stdout.match(/\{[\s\S]*\}/);
+  if (!json) throw new Error(`judge returned no JSON:\n${stdout}`);
+  return JSON.parse(json[0]) as Verdict;
+}
+```
 
-**Leniency.** Left to its own instincts, an LLM judge is a soft grader. It wants to be agreeable, so it rounds up. A judge that gives everything a 0.85 is useless — it has no resolution where you need it. Fight this directly: demand evidence for high scores, define the failing band explicitly, and **calibrate against a handful of examples you've hand-graded.** If your known-bad case doesn't score low, your judge is broken, full stop. Test the test.
+(Prefer the programmatic route in CI? Swap `execa` for the [Claude Agent SDK](https://platform.claude.com/docs)'s `query()` with `agent: "geval-judge"` — same contract, no subprocess.)
 
-## Wiring it into the suite
+## Step 3 — write the rubric (this is the actual work)
 
-A judge you run by hand once is a party trick. The value is the same as any other check — it runs *every time*, unattended, and fails loud.
+The criteria *are* the metric. Spend your effort here, not on the plumbing.
 
-So the custom G-Eval metric goes where every other gate goes: in the suite, in CI, with a threshold. The grader subagent is invoked per test case, scores against your criterion, and the run fails if the score drops below the bar you set. Now a regression in grounding fails the build the same way a broken assertion does. You've converted a fuzzy human judgment into a standing, automated gate.
+```ts
+// rubrics.ts
+export const FAITHFUL_SUMMARY = `
+Grade whether the OUTPUT summary is faithful to the INPUT source.
+- Every claim in the summary is supported by the source (no hallucinations).
+- It captures the source's single most important point.
+- It never contradicts the source.
+- It omits nothing the source treats as critical.
+`;
+```
 
-That's the deeper move under "Trust but Verify," and it's the one I want to leave you with. Trust-but-verify, done by a human reading every output, doesn't scale — you become the bottleneck you were trying to remove. **Building the custom judge is how you make the verification itself scale.** You're not the verifier anymore. You're the person who *built* the verifier, wrote its standard, calibrated its bias, and pointed it at the firehose.
+Three to five checks, observable, independent. Notice none of them mention length or tone — those are exactly the traps the judge is told to ignore.
 
-Remember the trust pyramid: self-report is the bottom and worthless, and **evidence is the top**. A bare score from a vague judge is just self-report wearing a number costume. A score from a specific, calibrated, isolated judge — with a reason you can audit and a threshold that fails the build — is evidence. That's the whole game. Stop trusting the output. Build the thing that holds it to a standard, and let *that* run while you sleep.
+## Step 4 — make it a Vitest assertion
+
+The whole point is that this runs in your normal test suite. Plainest version — a custom matcher:
+
+```ts
+// setup.ts
+import { expect } from "vitest";
+import { gevalJudge } from "./geval-judge";
+
+expect.extend({
+  async toPassGEval(output: string, args: { input: string; criteria: string; threshold?: number }) {
+    const v = await gevalJudge({ output, ...args });
+    return {
+      pass: v.pass,
+      message: () => `G-Eval scored ${v.score} (threshold ${args.threshold ?? 0.7})\n${v.reasoning}`,
+    };
+  },
+});
+```
+
+```ts
+// summarize.eval.ts
+import { describe, it, expect } from "vitest";
+import { summarize } from "../src/summarize";
+import { FAITHFUL_SUMMARY } from "./rubrics";
+
+describe("summarizer", () => {
+  it("produces a faithful summary", async () => {
+    const input = "…source document…";
+    const output = await summarize(input);
+    await expect(output).toPassGEval({ input, criteria: FAITHFUL_SUMMARY, threshold: 0.8 });
+  });
+});
+```
+
+Run `vitest`. A faithful summary is green; a hallucinated one fails with the judge's *reasoning* printed — so a red test tells you **why**, not just "≠ expected".
+
+### Or lean on vitest-evals
+
+If you want datasets and thresholds handled for you, [`vitest-evals`](https://github.com/getsentry/vitest-evals) gives you `describeEval` and lets you plug in a **custom scorer** — which is exactly where our subagent goes. A scorer just returns `{ score, rationale }`:
+
+```ts
+import { describeEval } from "vitest-evals";
+import { gevalJudge } from "./geval-judge";
+import { FAITHFUL_SUMMARY } from "./rubrics";
+import { summarize } from "../src/summarize";
+
+// our Claude subagent, dressed as a vitest-evals scorer
+const GEval = (criteria: string, threshold = 0.7) => async (ctx: { input: string; output: string }) => {
+  const v = await gevalJudge({ input: ctx.input, output: ctx.output, criteria, threshold });
+  return { score: v.score, rationale: v.reasoning };
+};
+
+describeEval("summaries are faithful", {
+  data: async () => [{ input: "…source…", expected: "…optional reference…" }],
+  task: async (input: string) => summarize(input),
+  scorers: [GEval(FAITHFUL_SUMMARY, 0.8)],
+  threshold: 0.8,
+});
+```
+
+Same judge, same rubric — now with batch data and a suite-level threshold gate.
+
+## The traps (learned the hard way)
+
+- **Don't let the doer judge.** The whole reason this is a separate subagent. If your agent both writes and grades in one context, the grade is theater.
+- **Vague criteria = noisy scores.** "Is it good?" is not a rubric. Anchor every check.
+- **Position and verbosity bias are real.** Longer, more confident answers get over-rated unless you explicitly tell the judge to ignore that — which the agent above does.
+- **Pin the judge model.** A grader you can't reproduce isn't a measurement. Same model + same rubric → same verdict (ties to [The Same Way Twice](/blog/the-same-way-twice/)).
+- **Sanity-check the judge against yourself.** Grade ~10 examples by hand and compare. If the judge disagrees with you, fix the *rubric* before you trust the number.
+
+A custom G-Eval is just this: a rubric you believe in, a judge that can't cheat, and a green check that means something. Once it's wired, every change to your prompt or your model gets graded automatically — which is the whole on-ramp to the [self-improving harness](/internal/evals-self-improving-harnesses/) the next post is about.
+
+---
+
+*Sources: [DeepEval — G-Eval](https://deepeval.com/docs/metrics-llm-evals) · [Confident AI — G-Eval guide](https://www.confident-ai.com/blog/g-eval-the-definitive-guide) · [getsentry/vitest-evals](https://github.com/getsentry/vitest-evals) · [Running evals in Vitest](https://cra.mr/vitest-evals/) · [doer/judge subagents](https://pub.towardsai.net/from-claude-code-skills-to-adversarial-subagent-orchestrators-to-the-claude-agent-sdk-three-e1dedfd067b1).*
