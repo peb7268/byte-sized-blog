@@ -24,7 +24,7 @@ const { Content } = await render(post);
 		<span class="badge">Internal</span>
 		Authenticated draft preview — not publicly listed
 	</div>
-	<SeriesToc post={post} collection="internal" basePath="/internal/" />
+	<SeriesToc post={post} route="internal" />
 	<Content />
 </BlogPost>
 
