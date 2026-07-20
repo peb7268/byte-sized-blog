@@ -3,7 +3,7 @@ title: 'Upgrade Your Workflow'
 description: "Working with agents isn't a faster version of the old job — it's a different operating system. Here are the six meta-skills that run on it, and the series that unpacks each one."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1782945217386-300f33f22069'
-draft: true
+draft: false
 series: 'The New Ways of Working'
 seriesOrder: 2
 tags: ['agentic-workflow', 'meta-skills', 'developer-productivity']

@@ -3,7 +3,7 @@ title: 'Voice-Driven Dictation'
 description: "You can talk roughly three times faster than you type, and your agents don't care which one you use. Here's why voice is a first-class input to an agentic workflow — and where it's still genuinely clumsy."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1555965435-f88618f05915'
-draft: true
+draft: false
 series: 'The New Ways of Working'
 seriesOrder: 3
 tags: ['voice-input', 'agentic-workflow', 'developer-productivity']

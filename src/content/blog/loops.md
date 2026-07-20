@@ -3,7 +3,7 @@ title: 'Loops'
 description: "The one-shot prompt is the training wheels of agentic work. The real leverage is the standing loop — a job that runs on an interval or runs until a condition is met, working while you don't."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1680992046626-418f7e910589'
-draft: true
+draft: false
 series: 'The New Ways of Working'
 seriesOrder: 4
 tags: ['agentic-ai', 'automation-patterns', 'agent-loops']

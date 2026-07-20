@@ -3,7 +3,7 @@ title: 'Code the Interface, Delegate the Implementation'
 description: "The interface is intent made precise and verifiable. The implementation is the cheap, fungible part now. Here's the working pattern: you write the contract, the agent fills in the body."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1542621334-a254cf47733d'
-draft: true
+draft: false
 series: 'The New Ways of Working'
 seriesOrder: 5
 tags: ['agentic-ai', 'interface-design', 'software-craft']

@@ -3,7 +3,7 @@ title: 'When Agents Take Over the Office'
 description: "The migration from organic intelligence to AI feels like a threat because we keep framing it as replacement. It's a promotion — here's how to make the transition painless and free up the part of your brain that's worth paying for."
 pubDate: 'Jun 29 2026'
 heroImage: '/img/office-oi-to-ai.png'
-draft: true
+draft: false
 series: 'The New Ways of Working'
 seriesOrder: 6
 tags: ['agentic-ai', 'future-of-work', 'productivity']
