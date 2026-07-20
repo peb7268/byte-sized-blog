@@ -3,7 +3,7 @@ title: 'The New Caste System: Who''s Drowning in Agentic Dev — and Where the L
 description: 'A new caste system is forming around agentic AI. It has nothing to do with talent and everything to do with fluency. Here is the ladder — and how to climb it before the cheap-token party ends.'
 pubDate: 'Jul 18 2026'
 heroImage: 'https://images.unsplash.com/photo-1625303058423-3f8104c91e21'
-draft: true
+draft: false
 hashtags: ['agenticai', 'engineeringleadership', 'aifluency']
 socialQuote: "I would rather conduct the train than be run over by it."
 series: 'The New Ways of Working'
@@ -83,7 +83,13 @@ The identities we built careers on are being washed away. The clean lines betwee
 
 That process is **profoundly uncomfortable**, and pretending otherwise is how you lose people. This is real. "AI psychosis" — the disorientation, the anxiety, the loss of professional identity — is a real cost, not a meme. If we're going to ask people to re-invent who they are at work, we owe them support while they do it.
 
-<!-- ⚠️ ELABORATE: this is the most human section and currently the thinnest. Needs Paul's real POV on HOW to support people through the transformation — e.g. psychological safety to be a beginner again, explicit "you will be bad at this for a while and that's expected" messaging, fluency ladders that reward learning not just output, protecting people from being measured on old metrics mid-transition. 3-5 concrete supports, in your voice. This is the emotional core of the piece; don't leave it abstract. -->
+So what does support actually look like? A few things I keep coming back to:
+
+- **Make it safe to be a beginner again.** Say it out loud: *you will be bad at this for a while, and that is expected.* A senior engineer fumbling with agents is not a performance problem — it's the first week of swim lessons.
+- **Reward the learning, not just the output.** If the only thing you measure is shipped tickets, you punish everyone who's investing in fluency this quarter to be 5x next quarter. Build a fluency ladder and celebrate movement on it.
+- **Don't measure people on old metrics mid-transition.** The rules changed underneath them. Grading someone on the old rubric while demanding the new behavior is how you break good people.
+- **Give the transformation a name and a map.** "Re-invent yourself" is terrifying. "Here's the ladder, here's your next rung, here's who'll help you climb it" is doable.
+- **Protect the humans.** AI psychosis is real; the anxiety is real. Leaders who treat this as a purely technical rollout — and not a human one — will watch their best people burn out or leave.
 
 ### Who specs a feature now?
 
@@ -149,10 +155,7 @@ Caste 2 is the most dangerous place to be, because it *feels* like awareness. Bu
 ### Caste 3 — On the right track, but still journeymen
 
 - **3.1 — Developers** who know how to accelerate planning, have moved past one-off code-snippet generation, and are living in Cursor or Claude Code. What they don't know yet is how to *amplify* themselves. They're in between — no longer just a player with an instrument, not yet conducting an orchestra.
-- **3.2 — Product** journeymen.
-
-<!-- ⚠️ ELABORATE: 3.2 is a "fill this out" in the outline — currently a stub. Draft below is my PROPOSAL for your review, not your words yet. Confirm/rewrite:
-Proposed 3.2: Product owners who have stopped fighting it and started using it — they draft requirements with Claude, use it to accelerate research, maybe generate a first-pass spec. But they still treat it as a smarter search box, not a team. They haven't learned to express intent as structured context an agent can execute against, and they still hand off to engineering the old way. One foot in the new world, one in the old. -->
+- **3.2 — Product owners** who have stopped fighting it and started using it — they draft requirements with Claude, accelerate their research, maybe generate a first-pass spec. But they still treat it as a smarter search box, not a team. They haven't learned to express intent as *structured context* an agent can execute against, and they still hand off to engineering the old way. One foot in the new world, one in the old.
 
 ### Caste 4 — Orchestrators: they can make the band play their music
 
