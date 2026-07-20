@@ -2,9 +2,10 @@
 title: 'Code the Interface, Delegate the Implementation'
 description: "The interface is intent made precise and verifiable. The implementation is the cheap, fungible part now. Here's the working pattern: you write the contract, the agent fills in the body."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1542621334-a254cf47733d'
 draft: true
 series: 'The New Ways of Working'
-seriesOrder: 4
+seriesOrder: 5
 tags: ['agentic-ai', 'interface-design', 'software-craft']
 hashtags: ['agenticdevelopment', 'aiengineering', 'softwaredesign']
 ---
@@ -19,13 +20,15 @@ So here's the pattern I want to make explicit, because once you see it you can't
 
 > **Code the interface. Delegate the implementation.** You own the shape of the thing — the boundary, the names, the types, the acceptance criteria. The agent owns the body. The boundary is where your judgment lives now. The body is fungible.
 
+![A hand drafting a precise rigid frame while an agent fills in the interior — you draw the seams, the agent pours the concrete.](/img/code-the-interface/draw-the-box.png)
+
 ## The boundary was always the expensive part
 
 We've had this backwards for a while, and AI just made the backwardness obvious.
 
 For most of software history, typing the implementation *felt* like the work because it took the most hours. But the hours were never where the value was. The value was always in the decisions encoded at the **boundary** — what this function promises, what it refuses, what shape the data takes, what "correct" means. The body was just the cost of cashing those decisions out into syntax.
 
-When I wrote that [intelligence moves up the stack](/blog/intelligence-moves-up-the-stack/), this is the concrete, hands-on-keyboard version of it. The thing that climbed the stack is *exactly* this: the boundary stays with you, and the body — the cheap, mechanical translation of a contract into a working block of code — falls to the agent. Generation got cheap. Specification did not. The interface is the specification at the smallest possible scope.
+When I wrote that [intelligence moves up the stack](/blog/intelligence-moves-up-the-stack/), this is the concrete, hands-on-keyboard version of it. The thing that climbed the stack is *exactly* this: the boundary stays with you, and the body — the cheap, mechanical translation of a contract into a working block of code — falls to the agent. Generation got cheap. Specification did not — that gap is the whole premise behind [spec-driven development](https://developer.microsoft.com/blog/spec-driven-development-ai-native-engineering/), the pattern frontier teams are converging on. The interface is the specification at the smallest possible scope.
 
 And it ties straight back to the [anatomy of a spec](/blog/anatomy-of-a-spec/): a spec **is** an interface. A type signature is a spec the compiler can check. A test is a spec the runtime can check. An acceptance criterion is a spec a human can check. They're the same artifact at different altitudes — a promise written down precisely enough that something other than your good intentions can verify it was kept.
 
@@ -63,6 +66,8 @@ I have now done the hard part. I've decided what a `Break` is, that `STALE` is a
 What I did **not** do is describe the loop, the lookup map, the comparison. I don't care. Three different implementations that all turn the tests green are equivalent to me, and I'll take whichever the agent produces. That's what I mean by the body being fungible — it's interchangeable precisely because the interface constrains it from every side that matters.
 
 ## Why this beats vibe-prompting, every time
+
+![A chaotic slot machine with spinning reels transforming into a clean deterministic machine that emits one fixed shape every time — turning a slot machine into a function.](/img/code-the-interface/slot-machine-to-function.png)
 
 It comes down to one word: **verifiable**.
 

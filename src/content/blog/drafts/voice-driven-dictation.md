@@ -2,9 +2,10 @@
 title: 'Voice-Driven Dictation'
 description: "You can talk roughly three times faster than you type, and your agents don't care which one you use. Here's why voice is a first-class input to an agentic workflow — and where it's still genuinely clumsy."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1555965435-f88618f05915'
 draft: true
 series: 'The New Ways of Working'
-seriesOrder: 2
+seriesOrder: 3
 tags: ['voice-input', 'agentic-workflow', 'developer-productivity']
 hashtags: ['voicedictation', 'agenticdevelopment', 'aiengineering']
 ---
@@ -19,13 +20,15 @@ Most people treat voice as a gimmick — a party trick for sending texts while d
 
 Start with the raw numbers, because they're lopsided in a way that's easy to wave off until you feel it.
 
-A fast typist hits maybe 70 words per minute. A *good* one, on a great day, 90. Comfortable conversational speech runs **130 to 150 words per minute** without trying. So before we say anything about AI, before any cleverness, the mouth is roughly twice the keyboard and often more. That gap has always existed. What's new is that it finally matters.
+A fast typist hits maybe 70 words per minute. A *good* one, on a great day, 90. Comfortable conversational speech [runs **130 to 150 words per minute**](https://en.wikipedia.org/wiki/Words_per_minute) without trying. So before we say anything about AI, before any cleverness, the mouth is roughly twice the keyboard and often more — [one Stanford study clocked speech input at three times faster than typing](https://engineering.stanford.edu/news/smartphone-speech-recognition-faster-and-more-accurate-typing). That gap has always existed. What's new is that it finally matters.
 
 It didn't matter before because the bottleneck wasn't getting words out of your head — it was getting *correct code* into a file. Typing speed was never the constraint on real engineering; thinking was. So the throughput advantage of speech had nowhere to go. You'd just talk yourself into a faster pile of wrong syntax.
 
 But [intelligence has moved up the stack](/blog/intelligence-moves-up-the-stack/). The agent handles the syntax now. What it needs from you is **intent** — described richly, with enough context that it can fill in the rest. And intent is exactly the thing speech is good at producing in volume. You're no longer dictating characters into a buffer. You're dictating *direction* into a system that turns direction into code. The bandwidth that used to be wasted suddenly lands on the part of the job that's left.
 
 ## Thinking out loud is a feature, not a side effect
+
+![A person mid-sentence with a smooth, unbroken ribbon of speech flowing into a microphone, contrasted with a cramped typed line — talking is effortless where typing is constrained.](/img/voice-driven-dictation/thinking-out-loud.png)
 
 Here's the part I didn't expect.
 
@@ -48,6 +51,8 @@ And capture is only step one. The reason this isn't just a fancier voice memo is
 That's the reframe. Voice isn't a faster way to type. It's a way to feed the machine when typing isn't even an option.
 
 ## Where voice is still genuinely clumsy
+
+![A firehose blasting water beside a precise surgical scalpel — dictation is a firehose, editing is a scalpel.](/img/voice-driven-dictation/firehose-vs-scalpel.png)
 
 I'd be lying if I sold this as frictionless, and you'd stop trusting me, correctly.
 

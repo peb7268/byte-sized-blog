@@ -2,9 +2,10 @@
 title: 'Loops'
 description: "The one-shot prompt is the training wheels of agentic work. The real leverage is the standing loop — a job that runs on an interval or runs until a condition is met, working while you don't."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1680992046626-418f7e910589'
 draft: true
 series: 'The New Ways of Working'
-seriesOrder: 3
+seriesOrder: 4
 tags: ['agentic-ai', 'automation-patterns', 'agent-loops']
 hashtags: ['agenticdevelopment', 'aiengineering', 'automation']
 ---
@@ -16,6 +17,8 @@ That's the whole shift I want to talk about. The one-shot prompt is the training
 I've started thinking about this as the difference between *asking* an agent and *deploying* one. And once you've deployed one, you don't really go back.
 
 ## The two shapes of a loop
+
+![Two machines side by side — one driven by a wall clock (recurring on a schedule), one driven by a gauge filling toward a target (runs until a condition is met).](/img/loops/two-shapes.png)
 
 Strip away the framing and there are only two kinds of loop worth knowing, and they split on a single question: **what stops them?**
 
@@ -39,6 +42,8 @@ I want to be honest here, because the failure mode at the other end of this is w
 
 ## The self-improving loop
 
+![A conveyor loop where each pass runs through a judge station that stamps it and feeds refinements back to the start — run, evaluate, adjust, re-run.](/img/loops/self-improving-judge.png)
+
 There's one pattern that deserves its own section, because it's where loops stop being convenient and start being genuinely powerful: the cycle that grades its own work.
 
 **Run → evaluate → adjust → re-run.**
@@ -55,7 +60,7 @@ I'm not going to sell you loops without the warning label, because the warning l
 
 **Runaway loops.** A loop with a bad exit condition — or no exit condition — doesn't fail loudly. It just keeps going. The self-paced loop whose success condition can never be met will retry forever. The recurring loop you forgot to turn off will still be running next month. Every loop needs an answer to "what stops this, and when?" written down *before* it starts, not discovered after.
 
-**Cost.** Every iteration costs tokens, and a loop is iterations by definition. A one-shot prompt is a known quantity; a loop is a *rate*. The overnight grind that felt clever can hand you a number in the morning that does not feel clever at all. The fix is boring and non-negotiable: **budgets**. Cap the iterations. Cap the spend. Cap the wall-clock time. A loop without a ceiling is a leak.
+**Cost.** Every iteration costs tokens, and a loop is iterations by definition. A one-shot prompt is a known quantity; a loop is a *rate* — and [cheaper per-token pricing hasn't stopped AI bills from climbing](https://www.ikangai.com/the-llm-cost-paradox-how-cheaper-ai-models-are-breaking-budgets/), because volume is the multiplier. The overnight grind that felt clever can hand you a number in the morning that does not feel clever at all. The fix is boring and non-negotiable: **budgets**. Cap the iterations. Cap the spend. Cap the wall-clock time. A loop without a ceiling is a leak.
 
 **No guardrails.** Speed without oversight is just a faster way to be wrong at scale. A loop that takes destructive actions — writes files, sends messages, moves money — needs limits on *what* it can do, not just *how long* it can do it. The blast radius of a one-shot mistake is one mistake. The blast radius of a looping mistake is one mistake times however many times it ran before anyone looked.
 

@@ -5,7 +5,7 @@ pubDate: 'Jun 29 2026'
 heroImage: '/img/office-oi-to-ai.png'
 draft: true
 series: 'The New Ways of Working'
-seriesOrder: 5
+seriesOrder: 6
 tags: ['agentic-ai', 'future-of-work', 'productivity']
 hashtags: ['agenticdevelopment', 'futureofwork', 'aiengineering']
 ---
@@ -36,6 +36,8 @@ If you've ever onboarded a sharp new hire who knows nothing about your specific 
 
 ## 2. Learn the edges of each model — then re-learn them
 
+![An engineer reaching for a glowing ceiling that keeps rising out of reach — operating at last year's ceiling while the ceiling keeps moving up.](/img/office-oi-to-ai/moving-ceiling.png)
+
 Here's the part nobody warns you about: **the tools change underneath you, constantly, and your intuition expires.**
 
 Every model release shifts what's possible. The thing that was impossible last quarter — the thing you built an elaborate workaround for — is now a single instruction away. And the workaround you're still using out of habit is now the slow path. The engineers getting the most out of these tools aren't the ones who learned the magic prompt once. They're the ones who *keep poking at the edges*, re-testing what the current model can do, throwing out yesterday's assumptions about its limits.
@@ -55,6 +57,8 @@ Every minute of that is a minute you can hand off. Not someday — now. And the 
 The cyborg manager from the hero image isn't impressive because he can file forty reports. He's impressive because he never has to *think* about filing them, which means all forty reports' worth of mental energy is now available for the one judgment call that defines his week. That's the upgrade. Not more output. More of *you* pointed at the thing that's actually hard.
 
 ## 4. Free the cognitive capacity — and actually use it
+
+![Freed mental energy rising upward from a person into high-level architecture and judgment work instead of boilerplate — redeploy your brain upward.](/img/office-oi-to-ai/redeploy-upward.png)
 
 Here's the catch, and it's the one I'm most insistent about.
 

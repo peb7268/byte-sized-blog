@@ -2,9 +2,10 @@
 title: 'Upgrade Your Workflow'
 description: "Working with agents isn't a faster version of the old job — it's a different operating system. Here are the six meta-skills that run on it, and the series that unpacks each one."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1782945217386-300f33f22069'
 draft: true
 series: 'The New Ways of Working'
-seriesOrder: 1
+seriesOrder: 2
 tags: ['agentic-workflow', 'meta-skills', 'developer-productivity']
 hashtags: ['agenticdevelopment', 'aiengineering', 'newwaysofworking']
 ---
@@ -37,6 +38,8 @@ The catch — and it's a real one — is that delegation is only safe if you can
 
 ## 3. Build systems to multi-thread yourself
 
+![A person at a desk whose attention splits into three glowing threads, each feeding a separate agent workstation — multi-threading yourself across agents.](/img/upgrade-your-workflow/multi-thread-yourself.png)
+
 This is the one that changes the felt experience of the job the most, so sit with it.
 
 You are single-threaded. You can hold one hard problem in your head at a time. Agents are not single-threaded — you can have three of them working at once. The meta-skill is building your workflow so that **while the agents work, you don't wait.** You think about the next problem. You explore the part of the codebase you've never understood. You review what the last agent produced. You write the spec for the thing after this one.
@@ -66,6 +69,8 @@ Every channel you open is a new moment where work can happen — a thought you c
 The narrower your interface to your models, the smaller your effective workforce, no matter how capable the underlying model is.
 
 ## 6. Untether
+
+![A conductor walking out of a concert hall while the orchestra keeps playing on its own — you leave and the work keeps running.](/img/upgrade-your-workflow/untether-conductor.png)
 
 And the last one follows directly: stop being chained to one screen.
 
