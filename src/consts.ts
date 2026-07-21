@@ -14,3 +14,23 @@ export const AUTHOR_TAGLINE =
   'Building agentic systems and marketing infrastructure that ships in days, not quarters.';
 export const AUTHOR_BIO_SHORT =
   'I build software with AI agents — Optimus (a context engine for engineering teams), the harness layer that lets it swap models, and a steady stream of musings on what changes when development becomes agentic.';
+
+// --- Series surface (blog index sidebar + heatmap) --------------------------
+// Pin a few series to the sidebar, in display order. Edit this list to re-pin.
+export const PINNED_SERIES = [
+  'Agentic Foundations',
+  'Agentic Engineering',
+  'The New Ways of Working',
+];
+
+// Per-series accent color + one-line blurb + optional badge label.
+// Any series not listed falls back to DEFAULT_SERIES_META.
+export const SERIES_META: Record<string, { color: string; blurb: string; label?: string }> = {
+  'Agentic Foundations': { color: '#0d9488', blurb: 'The on-ramp — read this first.', label: 'Start Here' },
+  'Agentic Engineering': { color: '#4f46e5', blurb: 'The flagship series.', label: 'The Flagship' },
+  'The New Ways of Working': { color: '#d4af37', blurb: 'How the job itself is changing.' },
+  'PCMS': { color: '#7c3aed', blurb: 'Personal context management, systematized.' },
+  'Sustainable AI': { color: '#e0662e', blurb: 'The honest tradeoffs.' },
+  'Standalone': { color: '#6b7280', blurb: 'One-off pieces.' },
+};
+export const DEFAULT_SERIES_META = { color: '#6b7280', blurb: '' };

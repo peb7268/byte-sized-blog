@@ -5,12 +5,69 @@ import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import Header from '../../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../../consts';
+import {
+	SITE_DESCRIPTION,
+	SITE_TITLE,
+	PINNED_SERIES,
+	SERIES_META,
+	DEFAULT_SERIES_META,
+} from '../../consts';
+
+const meta = (s: string) => SERIES_META[s] ?? DEFAULT_SERIES_META;
+const seriesOf = (p: any) => p.data.series ?? 'Standalone';
+const readTime = (p: any) =>
+	Math.max(1, Math.round(String(p.body ?? '').split(/\s+/).filter(Boolean).length / 200));
 
 const posts = (await getCollection('blog'))
 	.filter((post) => !post.data.draft)
-	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.map((p) => ({
+		id: p.id,
+		data: p.data,
+		series: seriesOf(p),
+		order: p.data.seriesOrder as number | undefined,
+		read: readTime(p),
+	}));
+
 const [featured, ...rest] = posts;
+
+// Group posts by series
+type Group = { name: string; posts: typeof posts; latest: number; color: string; blurb: string; label?: string };
+const groups = new Map<string, Group>();
+for (const p of posts) {
+	const s = p.series;
+	if (!groups.has(s)) groups.set(s, { name: s, posts: [], latest: 0, ...meta(s) });
+	const g = groups.get(s)!;
+	g.posts.push(p);
+	g.latest = Math.max(g.latest, p.data.pubDate.valueOf());
+}
+for (const g of groups.values())
+	g.posts.sort((a, b) => (a.order ?? 99) - (b.order ?? 99) || b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Latest series = most-recently-dated series (auto), excluding standalone
+const latestSeries = [...groups.values()]
+	.filter((g) => g.name !== 'Standalone')
+	.sort((a, b) => b.latest - a.latest)[0];
+
+const pinned = PINNED_SERIES.map((n) => groups.get(n)).filter(Boolean) as Group[];
+const allSeries = [...groups.values()]
+	.filter((g) => g.name !== 'Standalone')
+	.sort((a, b) => b.posts.length - a.posts.length);
+
+// Heatmap order: pinned first, then remaining series by size, standalone last
+const remaining = allSeries.filter((g) => !pinned.includes(g));
+const std = groups.get('Standalone');
+const mapOrder = [...pinned, ...remaining, ...(std ? [std] : [])];
+
+// Importance → tile size; recency → wash (older = more washed out)
+const sizeClass = (p: any) =>
+	p.order === 1 ? 'lg' : (p.order && p.order <= 3) || p.series === 'Standalone' ? 'md' : 'sm';
+const now = Date.now();
+const wash = (p: any) => {
+	const days = (now - p.data.pubDate.valueOf()) / 86_400_000;
+	return Math.min(0.55, Math.max(0, days / 240)).toFixed(2); // 0 (new) → .55 (old)
+};
+const chips = ['All', ...pinned.map((g) => g.name), ...remaining.map((g) => g.name)];
 ---
 
 <!doctype html>
@@ -18,129 +75,221 @@ const [featured, ...rest] = posts;
 	<head>
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 		<style>
-			main {
-				width: 1180px;
-			}
-			/* Featured (newest) post — full-width banner above the masonry */
-			.featured {
-				margin: 0 0 2.75rem;
-				text-align: center;
-			}
-			.featured a {
-				display: block;
-				text-decoration: none;
-			}
-			.featured img {
-				width: 100%;
-				border-radius: 14px;
-				margin-bottom: 0.75rem;
-			}
-			.featured .title {
-				font-size: 2.369rem;
-			}
-			/* Masonry — content-packing via CSS columns. Every post is a solid
-			   card (border + bg) so text-only posts read as blocks and pack
-			   tightly instead of floating in whitespace. */
-			.masonry {
-				columns: 320px;
-				column-gap: 1.5rem;
-				list-style: none;
-				margin: 0;
-				padding: 0;
-			}
-			.masonry li {
-				break-inside: avoid;
-				-webkit-column-break-inside: avoid;
-				margin: 0 0 1.5rem;
-			}
-			.masonry li a {
-				display: block;
-				text-decoration: none;
-				background: #fff;
-				border: 1px solid rgb(var(--gray-light));
-				border-radius: 14px;
-				overflow: hidden;
-				transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
-			}
-			.masonry li a:hover {
-				border-color: rgb(var(--accent));
-				box-shadow: var(--box-shadow);
-				transform: translateY(-3px);
-			}
-			.masonry li img {
-				width: 100%;
-				display: block;
-				margin: 0;
-				border-radius: 0;
-			}
-			.card-body {
-				padding: 0.85em 1.1em 1em;
-			}
-			.title {
-				margin: 0;
-				color: rgb(var(--black));
-				line-height: 1.18;
-			}
-			.date {
-				margin: 0.3rem 0 0;
-				color: rgb(var(--gray));
-				font-size: 0.9rem;
-			}
-			.featured a:hover .title,
-			.masonry li a:hover .title {
-				color: rgb(var(--accent));
-			}
-			.featured a:hover img {
-				box-shadow: var(--box-shadow);
+			main { width: min(1240px, 92vw); }
+			.blog-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 2.75rem; align-items: start; }
+
+			/* Featured */
+			.featured { margin: 0 0 2rem; }
+			.featured a { display: block; text-decoration: none; }
+			.featured img { width: 100%; border-radius: 14px; margin-bottom: 0.9rem; aspect-ratio: 21/9; object-fit: cover; }
+			.featured .title { font-size: 2.1rem; line-height: 1.1; }
+			.featured .desc { font-size: 1.05rem; color: rgb(var(--gray)); margin: 0.5rem 0 0; }
+
+			/* Series badge */
+			.badge { display: inline-block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.06em;
+				text-transform: uppercase; color: #fff; background: var(--sc, #6b7280);
+				padding: 0.18em 0.6em; border-radius: 999px; margin-bottom: 0.5rem; }
+
+			/* Filter chips */
+			.chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0 0 1.6rem; }
+			.chip { border: 1px solid rgb(var(--gray-light)); background: #fff; color: rgb(var(--gray-dark));
+				font-size: 0.82rem; padding: 0.32em 0.85em; border-radius: 999px; cursor: pointer; transition: all 0.15s; }
+			.chip:hover { border-color: rgb(var(--accent)); }
+			.chip.active { background: rgb(var(--black)); color: #fff; border-color: rgb(var(--black)); }
+
+			/* Masonry cards */
+			.masonry { columns: 300px; column-gap: 1.5rem; list-style: none; margin: 0; padding: 0; }
+			.masonry li { break-inside: avoid; -webkit-column-break-inside: avoid; margin: 0 0 1.5rem; }
+			.masonry li a { display: block; text-decoration: none; background: #fff; border: 1px solid rgb(var(--gray-light));
+				border-radius: 14px; overflow: hidden; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
+			.masonry li a:hover { border-color: rgb(var(--accent)); box-shadow: var(--box-shadow); transform: translateY(-3px); }
+			.masonry li img { width: 100%; display: block; }
+			.card-body { padding: 0.9em 1.1em 1em; }
+			.card-body .title { margin: 0; color: rgb(var(--black)); line-height: 1.2; font-size: 1.15rem; }
+			.card-body .desc { margin: 0.4rem 0 0; color: rgb(var(--gray)); font-size: 0.9rem; line-height: 1.45;
+				display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+			.meta { margin: 0.6rem 0 0; color: rgb(var(--gray)); font-size: 0.82rem; }
+			.featured a:hover .title, .masonry li a:hover .title { color: rgb(var(--accent)); }
+
+			/* Sidebar */
+			.blog-sidebar { position: sticky; top: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; }
+			.side-card { border: 1px solid rgb(var(--gray-light)); border-radius: 14px; padding: 1.1rem 1.2rem; background: #fff; }
+			.side-head { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+				color: rgb(var(--gray)); margin: 0 0 0.85rem; }
+			.latest a { text-decoration: none; display: block; }
+			.latest img { width: 100%; border-radius: 10px; aspect-ratio: 16/9; object-fit: cover; margin-bottom: 0.7rem; }
+			.latest .name { font-size: 1.25rem; font-weight: 700; color: rgb(var(--black)); line-height: 1.15; }
+			.latest .sub { color: rgb(var(--gray)); font-size: 0.85rem; margin: 0.25rem 0 0.6rem; }
+			.latest .go { font-size: 0.85rem; font-weight: 600; color: rgb(var(--accent)); }
+			.latest a:hover .name { color: rgb(var(--accent)); }
+
+			.pin { display: block; text-decoration: none; padding: 0.55rem 0; border-top: 1px solid rgb(var(--gray-light)); }
+			.pin:first-of-type { border-top: 0; padding-top: 0; }
+			.pin .label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--sc); }
+			.pin .name { display: block; color: rgb(var(--black)); font-weight: 600; line-height: 1.2; }
+			.pin .count { color: rgb(var(--gray)); font-size: 0.82rem; }
+			.pin:hover .name { color: var(--sc); }
+
+			.all-row { display: flex; align-items: center; gap: 0.5rem; padding: 0.32rem 0; text-decoration: none; color: rgb(var(--gray-dark)); font-size: 0.9rem; }
+			.all-row .dot { width: 9px; height: 9px; border-radius: 3px; background: var(--sc); flex: none; }
+			.all-row .n { margin-left: auto; color: rgb(var(--gray)); font-variant-numeric: tabular-nums; }
+			.all-row:hover { color: var(--sc); }
+
+			/* Series heatmap */
+			.series-map { margin: 3.5rem 0 1rem; }
+			.series-map > h2 { font-size: 1.4rem; margin: 0 0 0.4rem; }
+			.series-map > p { color: rgb(var(--gray)); margin: 0 0 1.75rem; font-size: 0.92rem; }
+			.cluster { margin: 0 0 1.75rem; }
+			.cluster-label { display: flex; align-items: baseline; gap: 0.6rem; margin: 0 0 0.65rem; }
+			.cluster-label .sq { width: 12px; height: 12px; border-radius: 3px; background: var(--sc); }
+			.cluster-label .nm { font-weight: 700; color: rgb(var(--black)); }
+			.cluster-label .ct { color: rgb(var(--gray)); font-size: 0.82rem; }
+			.tiles { display: flex; flex-wrap: wrap; gap: 8px; }
+			.tile { position: relative; text-decoration: none; color: #fff; background: var(--sc); border-radius: 8px;
+				padding: 0.6rem 0.7rem; display: flex; flex-direction: column; justify-content: space-between;
+				overflow: hidden; box-shadow: inset 0 0 0 999px rgba(255,255,255, var(--wash, 0));
+				transition: transform 0.15s, box-shadow 0.15s; }
+			.tile:hover { transform: translateY(-3px) scale(1.02); box-shadow: inset 0 0 0 999px rgba(255,255,255,0), 0 6px 18px rgba(0,0,0,0.18); z-index: 2; }
+			.tile .ord { font-size: 0.72rem; font-weight: 700; opacity: 0.85; }
+			.tile .tt { font-weight: 600; line-height: 1.15; text-shadow: 0 1px 2px rgba(0,0,0,0.25); }
+			.tile.lg { width: 232px; min-height: 128px; }
+			.tile.lg .tt { font-size: 1.05rem; }
+			.tile.md { width: 168px; min-height: 96px; }
+			.tile.md .tt { font-size: 0.9rem; }
+			.tile.sm { width: 120px; min-height: 72px; }
+			.tile.sm .tt { font-size: 0.78rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+			@media (max-width: 900px) {
+				.blog-layout { grid-template-columns: 1fr; }
+				.blog-sidebar { position: static; flex-direction: column; }
 			}
 			@media (max-width: 720px) {
-				.featured .title {
-					font-size: 1.563em;
-				}
-				.masonry {
-					columns: 1;
-				}
+				.featured .title { font-size: 1.6em; }
+				.masonry { columns: 1; }
 			}
 		</style>
 	</head>
 	<body>
 		<Header />
 		<main>
-			<section>
-				{featured && (
-					<div class="featured">
-						<a href={`/blog/${featured.id}/`}>
-							{featured.data.heroImage && (
-								<Image width={1180} height={560} src={featured.data.heroImage} alt="" />
-							)}
-							<h2 class="title">{featured.data.title}</h2>
-							<p class="date">
-								<FormattedDate date={featured.data.pubDate} />
-							</p>
-						</a>
+			<div class="blog-layout">
+				<!-- LEFT: featured + chips + masonry -->
+				<div class="blog-main">
+					{featured && (
+						<div class="featured">
+							<a href={`/blog/${featured.id}/`}>
+								{featured.data.heroImage && (
+									<Image width={1180} height={506} src={featured.data.heroImage} alt="" />
+								)}
+								<span class="badge" style={`--sc:${meta(featured.series).color}`}>
+									{meta(featured.series).label ?? featured.series}{featured.order ? ` · ${String(featured.order).padStart(2, '0')}` : ''}
+								</span>
+								<h2 class="title">{featured.data.title}</h2>
+								{featured.data.description && <p class="desc">{featured.data.description}</p>}
+								<p class="meta"><FormattedDate date={featured.data.pubDate} /> · {featured.read} min read</p>
+							</a>
+						</div>
+					)}
+
+					<div class="chips">
+						{chips.map((c) => (
+							<button class={`chip${c === 'All' ? ' active' : ''}`} data-filter={c === 'All' ? 'all' : c}>{c === 'All' ? 'All' : (meta(c).label ?? c)}</button>
+						))}
 					</div>
-				)}
-				<ul class="masonry">
-					{
-						rest.map((post) => (
-							<li>
+
+					<ul class="masonry">
+						{rest.map((post) => (
+							<li data-series={post.series}>
 								<a href={`/blog/${post.id}/`}>
-									{post.data.heroImage && (
-										<Image width={680} height={382} src={post.data.heroImage} alt="" />
-									)}
+									{post.data.heroImage && <Image width={680} height={382} src={post.data.heroImage} alt="" />}
 									<div class="card-body">
+										<span class="badge" style={`--sc:${meta(post.series).color}`}>
+											{meta(post.series).label ?? post.series}{post.order ? ` · ${String(post.order).padStart(2, '0')}` : ''}
+										</span>
 										<h4 class="title">{post.data.title}</h4>
-										<p class="date">
-											<FormattedDate date={post.data.pubDate} />
-										</p>
+										{post.data.description && <p class="desc">{post.data.description}</p>}
+										<p class="meta"><FormattedDate date={post.data.pubDate} /> · {post.read} min read</p>
 									</div>
 								</a>
 							</li>
-						))
-					}
-				</ul>
+						))}
+					</ul>
+				</div>
+
+				<!-- RIGHT: sidebar -->
+				<aside class="blog-sidebar">
+					{latestSeries && (
+						<div class="side-card latest">
+							<p class="side-head">✨ Latest Series</p>
+							<a href={`/blog/${latestSeries.posts[0].id}/`}>
+								{latestSeries.posts[0].data.heroImage && (
+									<Image width={320} height={180} src={latestSeries.posts[0].data.heroImage} alt="" />
+								)}
+								<span class="name">{latestSeries.name}</span>
+								<span class="sub">{latestSeries.posts.length} posts · updated <FormattedDate date={new Date(latestSeries.latest)} /></span>
+								<span class="go">Read the latest →</span>
+							</a>
+						</div>
+					)}
+
+					<div class="side-card">
+						<p class="side-head">📌 Pinned Series</p>
+						{pinned.map((g) => (
+							<a class="pin" href={`/blog/${g.posts[0].id}/`} style={`--sc:${g.color}`}>
+								{g.label && <span class="label">{g.label}</span>}
+								<span class="name">{g.name}</span>
+								<span class="count">{g.posts.length} posts · {g.blurb}</span>
+							</a>
+						))}
+					</div>
+
+					<div class="side-card">
+						<p class="side-head">All Series</p>
+						{allSeries.map((g) => (
+							<a class="all-row" href={`/blog/${g.posts[0].id}/`} style={`--sc:${g.color}`}>
+								<span class="dot"></span>{g.name}<span class="n">{g.posts.length}</span>
+							</a>
+						))}
+					</div>
+				</aside>
+			</div>
+
+			<!-- SERIES HEATMAP -->
+			<section class="series-map">
+				<h2>The Series Map</h2>
+				<p>Every series at a glance — bigger tiles are the foundational posts to start from; brighter tiles are more recent.</p>
+				{mapOrder.map((g) => (
+					<div class="cluster">
+						<div class="cluster-label" style={`--sc:${g.color}`}>
+							<span class="sq"></span><span class="nm">{g.name}</span><span class="ct">{g.posts.length} {g.posts.length === 1 ? 'post' : 'posts'}</span>
+						</div>
+						<div class="tiles">
+							{g.posts.map((p) => (
+								<a class={`tile ${sizeClass(p)}`} href={`/blog/${p.id}/`} title={p.data.title} style={`--sc:${g.color}; --wash:${wash(p)}`}>
+									<span class="ord">{p.order ? String(p.order).padStart(2, '0') : '—'}</span>
+									<span class="tt">{p.data.title}</span>
+								</a>
+							))}
+						</div>
+					</div>
+				))}
 			</section>
 		</main>
 		<Footer />
+
+		<script>
+			const chips = document.querySelectorAll<HTMLButtonElement>('.chip');
+			const cards = document.querySelectorAll<HTMLLIElement>('.masonry li');
+			chips.forEach((chip) =>
+				chip.addEventListener('click', () => {
+					chips.forEach((c) => c.classList.remove('active'));
+					chip.classList.add('active');
+					const f = chip.dataset.filter;
+					cards.forEach((li) => {
+						li.style.display = f === 'all' || li.dataset.series === f ? '' : 'none';
+					});
+				}),
+			);
+		</script>
 	</body>
 </html>
