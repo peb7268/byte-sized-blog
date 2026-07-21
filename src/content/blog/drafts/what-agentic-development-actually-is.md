@@ -10,6 +10,12 @@ tags: ['agentic-ai', 'fundamentals', 'developer-workflow']
 hashtags: ['agenticdevelopment', 'aiengineering', 'softwareengineering']
 ---
 
+# Agency
+
+## *The capacity to take action toward a goal on your behalf — to plan, act, observe the result, and adjust, without being told each step.*
+
+---
+
 I keep writing about what changes when agents take over execution — that your value moves up to judgment, that intent becomes the artifact, that [the review is the work now](/blog/the-review-is-the-work-now/). And a fair reader could stop me three sentences in and ask the question the whole series quietly skips:
 
 **What do you actually mean by "agentic"?**
