@@ -2,7 +2,8 @@
 title: 'Eval-Driven Development'
 description: "TDD said: write the test first, then the code that passes it. EDD says the same thing one level up — write the eval first, then build the AI system that scores against it. Here's the discipline, and why Meta's just-in-time testing is the same idea arriving from the other direction."
 pubDate: 'Jul 21 2026'
-draft: true
+heroImage: 'https://images.unsplash.com/photo-1564353779909-9140fd426002'
+draft: false
 series: 'Ship Confidence'
 seriesOrder: 5
 tags: ['evals', 'edd', 'test-driven-development', 'agentic-ai']
@@ -27,6 +28,8 @@ This is exactly the discipline from [Trust but Verify](/blog/trust-but-verify/),
 
 ## The loop
 
+![An archery target being freshly painted onto a straw butt, an arrow nocked on a bow in the soft-focus foreground but not yet loosed — you paint the bullseye before you take the shot.](/img/eval-driven-development/write-the-eval-first-target.png)
+
 EDD runs the same five-beat loop as the [self-improving harness](/blog/evals-self-improving-harnesses/), just pointed at a feature you're building rather than a harness you're maintaining:
 
 1. **Write the eval.** Cases + expected qualities + grader + threshold. This is the spec, expressed as something executable.
@@ -38,6 +41,8 @@ EDD runs the same five-beat loop as the [self-improving harness](/blog/evals-sel
 The corners people cut are always the same two: they skip step 1 (build first, measure never), or they change five things in step 3 and learn nothing in step 4. Both collapse EDD back into vibes. The rule that keeps it honest is [one change, one re-eval](/blog/evals-self-improving-harnesses/) — the same reason [repeatability](/blog/the-same-way-twice/) is non-negotiable. A measurement you can't attribute to a cause isn't a measurement.
 
 ## Meta just described the same idea from the other end
+
+![Two tunnel-boring crews meeting in the middle of a mountain from opposite directions, headlamp beams aligning at the breakthrough where the last rock wall just broke open — two efforts converging on the same point.](/img/eval-driven-development/edd-jit-convergence-tunnels.png)
 
 Here's what makes me think EDD isn't just my tidy analogy: a much larger shop arrived at a structurally identical conclusion, coming at it from traditional testing instead of from evals.
 

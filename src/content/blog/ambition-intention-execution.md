@@ -2,7 +2,8 @@
 title: 'Ambition → Intention → Execution'
 description: "Every built thing travels the same path: from wanting it, to specifying it, to making it. Agentic development didn't change the path — it changed which step is scarce. Execution got cheap. Intention became the whole job."
 pubDate: 'Jul 21 2026'
-draft: true
+heroImage: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e'
+draft: false
 series: 'The New Ways of Working'
 seriesOrder: 7
 tags: ['agentic-ai', 'intention', 'spec-driven-development', 'ways-of-working']
@@ -23,6 +24,8 @@ This isn't new. It's how a cathedral got built and how you make breakfast. What 
 
 ## Execution fell off a cliff
 
+![A single factory frame split in two: on the left a person at a wooden drafting desk working slowly and deliberately over plans; on the right a robotic assembly arm moving so fast it's a motion blur — the making stage automated to near-zero cost, the thinking stage still human.](/img/ambition-intention-execution/execution-automated-conveyor.png)
+
 Be honest about what an agent actually collapsed. It did not collapse *wanting* things and it did not collapse *deciding what good looks like.* It collapsed the middle-hours part — the typing, the boilerplate, the wiring, the "I know exactly what this should be, I just have to sit here and produce it." That was most of the job, by hours, for decades. It's the part that's now measured in minutes.
 
 This is the same current I traced in [Intelligence Moves Up the Stack](/blog/intelligence-moves-up-the-stack/): when the machine absorbs the mechanical layer, your value doesn't disappear — it relocates to the layer above. The trap is that we spent careers building identity and craft around execution. We are *proud* of being fast at the thing that just got automated. So we keep pouring attention into a stage that no longer needs it, and starve the stage that now does all the deciding.
@@ -37,6 +40,8 @@ The reflex — the old reflex — is to blame execution and iterate on the outpu
 
 ## Intention is the job now — so what's it made of
 
+![An overhead view of an architect's drafting table: a precise ink drawing of a rectangular enclosure with clean dimension lines and callout leaders, brass calipers, a set square and a pencil resting on the vellum — drawing the box precisely before anything is built.](/img/ambition-intention-execution/intention-blueprint-drafting.png)
+
 If intention is where the leverage moved, "just be clearer" is useless advice. Let me be concrete about what a real intention contains, because these are the things an agent cannot infer and will invent if you don't supply them:
 
 - **The actual outcome, not the gesture at it.** "How the business is doing" is a gesture. "Weekly revenue, churn, and new signups, versus the prior week, for the last quarter" is an outcome. The specificity isn't bureaucracy — it's the difference between one build and five re-rolls.
@@ -44,7 +49,7 @@ If intention is where the leverage moved, "just be clearer" is useless advice. L
 - **What "done" means, in advance.** The acceptance criteria you'd check against. State them before you see the output or you'll grade on a curve — the whole argument behind [eval-driven development](/blog/what-are-evals/): write the bar down while you're still honest.
 - **The shared vocabulary.** The names, the conventions, the two-letter shorthand you think in — so "ship it to the usual place" actually resolves. This is its own discipline; it's why [a common vocabulary](/blog/context-is-king/) is worth teaching your system once.
 
-Notice that none of this is execution. It's all *design of the intent* — and it's exactly the move I made the case for in [Code the Interface, Delegate the Implementation](/blog/code-the-interface-delegate-the-implementation/). You draw the box precisely; you let the machine fill it. Drawing the box *is* intention. It's the skill that used to be optional because you were going to write the code yourself anyway and could course-correct as you typed. You're not typing anymore. The box is all the agent gets.
+Notice that none of this is execution. It's all *design of the intent* — the same shift the industry has started calling [spec-driven development](https://developer.microsoft.com/blog/spec-driven-development-ai-native-engineering/), and exactly the move I made the case for in [Code the Interface, Delegate the Implementation](/blog/code-the-interface-delegate-the-implementation/). You draw the box precisely; you let the machine fill it. Drawing the box *is* intention. It's the skill that used to be optional because you were going to write the code yourself anyway and could course-correct as you typed. You're not typing anymore. The box is all the agent gets.
 
 ## This is a promotion, and it feels like a demotion
 
