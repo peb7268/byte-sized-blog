@@ -3,7 +3,7 @@ title: 'The Team Dimension'
 description: "Everything in this series so far has been about you — your judgment, your intent, your review. But moving up the stack is a team sport, and a team that climbs unevenly doesn't just move slower. It rots while shipping more."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1514496959998-c01c40915c5f'
-draft: true
+draft: false
 series: 'Agentic Engineering'
 seriesOrder: 10
 tags: ['agentic-ai', 'team-adoption', 'engineering-leadership']

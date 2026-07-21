@@ -3,7 +3,7 @@ title: 'Multi-Agent / Distributed Intent'
 description: "Directing one agent is orchestration. Directing many is composition — and the moment your intent fans out across agents, behavior nobody specified starts showing up in the gaps between them. Here's how to compose intent without losing the plot."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1516434233442-0c69c369b66d'
-draft: true
+draft: false
 series: 'Agentic Engineering'
 seriesOrder: 11
 tags: ['multi-agent', 'intent-composition', 'agentic-governance']

@@ -3,7 +3,7 @@ title: 'When the Stack Pushes Back'
 description: "This whole series argues that your value moves up — to intent, to orchestration. This is the honest counterweight: the places where climbing the stack costs more than it pays, and how to tell you're standing on one."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1601224748193-d24f166b5c77'
-draft: true
+draft: false
 series: 'Agentic Engineering'
 seriesOrder: 9
 tags: ['agentic-ai', 'engineering-judgment', 'limits']

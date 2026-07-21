@@ -18,7 +18,7 @@ And vibes are exactly how most AI systems are shipped right now.
 
 I want to draw a hard line in this series, and this post is where I draw it. On one side: vibes — spot-checking, eyeballing, "looks right to me." On the other side: **evals** — repeatable, measured tests of an AI system's output quality. The whole point of this mini-series is to move you from one side of that line to the other. So before anything else, let's be precise about what's actually on the other side.
 
-> An eval is a repeatable test that measures the quality of an AI system's output. Inputs go in, you define what a good answer looks like, something grades the result, and you get a **score you can track over time.** That's it. That's the whole idea. Everything else is detail.
+> An eval is a repeatable test that measures the quality of an AI system's output. Inputs go in, you define what a good answer looks like, something grades the result, and you get a **score you can track over time.** That's it. That's the whole idea. Everything else is detail. It's like an **e2e** test you wrote for agentic output.
 
 ## Why "it worked when I tried it" silently rots
 
