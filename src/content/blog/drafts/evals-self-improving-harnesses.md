@@ -2,6 +2,7 @@
 title: 'How Evals Enable Self-Improving Harnesses'
 description: "Evals don't just catch regressions — they turn a harness into a system that gets better on purpose. Here's the empirical loop that compounds measurement into a flywheel, and why without it every change is a guess."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1709613439196-1c08b60af80c'
 draft: true
 series: 'Ship Confidence'
 seriesOrder: 4
@@ -56,6 +57,8 @@ The discipline — and it is a discipline — is **changing one of these at a ti
 
 ## The flywheel: why measurement compounds
 
+![A steel ratchet wheel and pawl mid-engagement, one tooth freshly locked so the wheel can't spin backward — the baseline as the ratchet tooth that stops the backslide.](/img/evals-self-improving-harnesses/baseline-ratchet-tooth-locked.png)
+
 Here's the part that makes this worth the setup cost. Each turn of the loop doesn't just fix a case — it *ratchets*. Because the baseline is locked, every improvement you keep becomes the new floor. You can't accidentally give it back later, because the next regression that would erase it gets caught by the same eval that caught the original failure.
 
 So the gains accumulate instead of sloshing around. Turn one takes you from 71 to 78 and locks 78 in. Turn two builds on 78, not on 71. A normal workflow without this loop oscillates — you fix a thing, something else drifts, you fix that, the first thing breaks again, and a year later you're roughly where you started but exhausted. The eval loop is what converts that oscillation into a climb. The locked baseline is the ratchet tooth that stops the backslide.
@@ -64,11 +67,13 @@ That's the flywheel. It's slow to start — building the eval cases is real work
 
 ## The two pieces of discipline that hold it together
 
+![A proving-ground drop-arm barrier across a test track, a bold red threshold line painted on the asphalt, a vehicle stopped exactly at the line — a regression gate.](/img/evals-self-improving-harnesses/regression-gate-proving-ground.png)
+
 The loop is simple to draw and easy to corrupt. Two habits keep it honest.
 
 **Lock the baseline, and treat it as sacred.** A baseline you quietly re-record every time the score dips isn't a baseline — it's a mood ring. The whole value is that it doesn't move unless you *decide*, deliberately and on the record, that the new behavior is the correct one. I've watched well-meaning people defeat their own eval suite by rebaselining the instant red appeared, which is exactly like deleting the failing test to get a green build. The baseline only protects you if you let it tell you things you don't want to hear.
 
-**Gate on regressions.** An eval that runs but doesn't *block* is a smoke detector you've taken the battery out of. The point of the suite is that a change which drops the score below baseline doesn't merge — full stop, no override-because-I'm-in-a-hurry. This is the same standard I argued for in [the review is the work now](/blog/the-review-is-the-work-now/): the verification isn't the overhead around the work, it *is* the work, and a gate is how you stop yourself from skipping it under pressure. Make the loop refuse to close on a regression and the harness can't quietly rot while you ship.
+**Gate on regressions.** An eval that runs but doesn't *block* is a smoke detector you've taken the battery out of. The point of the suite is that a change which drops the score below baseline doesn't merge — full stop, no override-because-I'm-in-a-hurry. This is the same standard I argued for in [the review is the work now](/blog/the-review-is-the-work-now/): the verification isn't the overhead around the work, it *is* the work, and a gate is how you stop yourself from skipping it under pressure. Make the loop refuse to close on a regression and the harness can't quietly rot while you ship. (It's why [Anthropic moved to running quality evals continuously on production](https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues), not just before a release.)
 
 Those two together — a baseline that doesn't flinch and a gate that doesn't bend — are what separate a real self-improving system from a dashboard nobody looks at.
 

@@ -2,6 +2,7 @@
 title: 'A Custom G-Eval Grade with a Claude Subagent'
 description: "Off-the-shelf metrics never fit your domain. Here's the concrete build: a Claude Code subagent that acts as a G-Eval judge, wired into Vitest so a rubric you wrote becomes a pass/fail in CI — with the full agent definition and the test code."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1564097147829-44f8c74a8549'
 draft: true
 series: 'Ship Confidence'
 seriesOrder: 3
@@ -20,9 +21,11 @@ G-Eval is **LLM-as-a-judge with chain-of-thought**. Two ideas do the heavy lifti
 1. **Derive evaluation steps first, score last.** Instead of "rate this 1–5," you give the judge *criteria*, it expands them into 3–5 concrete checks, reasons through each against the output, and *then* scores. The reasoning grounds the number and makes it far more stable.
 2. **Anchored, independent criteria.** Three to five checks, each specific and observable, each with a clear sense of what passes vs fails. Vague criteria → vague scores.
 
-The research is blunt about why this beats string-matching: G-Eval correlates with human judgment on things like coherence, faithfulness, and relevance that BLEU or exact-match can't see at all.
+[The research is blunt about why this beats string-matching](https://arxiv.org/abs/2303.16634): G-Eval correlates with human judgment on things like coherence, faithfulness, and relevance that BLEU or exact-match can't see at all.
 
 ## Why a Claude Code subagent makes the right judge
+
+![A competition judge seated behind a frosted glass partition, scoring only the object on the pedestal in front of them while the contestant stays hidden on the far side — an impartial judge with isolated context.](/img/custom-geval-claude-subagent/blind-judge-isolated-context.png)
 
 You can call an LLM judge inline. But there's a failure mode the eval community keeps re-learning (the [doer/judge pattern writeup](https://pub.towardsai.net/from-claude-code-skills-to-adversarial-subagent-orchestrators-to-the-claude-agent-sdk-three-e1dedfd067b1) is good on this): **a model grading its own output, in its own context, grades generously.** It has already convinced itself.
 
@@ -113,6 +116,8 @@ export async function gevalJudge(opts: {
 (Prefer the programmatic route in CI? Swap `execa` for the [Claude Agent SDK](https://platform.claude.com/docs)'s `query()` with `agent: "geval-judge"` — same contract, no subprocess.)
 
 ## Step 3 — write the rubric (this is the actual work)
+
+![A referee's printed scoring rubric on a clipboard — each line a checkbox anchored with a pass/fail mark, a red pen resting across it, one box unchecked and circled.](/img/custom-geval-claude-subagent/anchored-rubric-scorecard.png)
 
 The criteria *are* the metric. Spend your effort here, not on the plumbing.
 

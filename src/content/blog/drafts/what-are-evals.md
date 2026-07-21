@@ -2,6 +2,7 @@
 title: 'What Are Evals?'
 description: "The gap between 'it worked when I tried it' and engineering has a name: evals. They're repeatable, measured tests of an AI system's output quality — and they're the difference between shipping on confidence and shipping on hope."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1559819614-8e87b90b8e9b'
 draft: true
 series: 'Ship Confidence'
 seriesOrder: 1
@@ -29,11 +30,13 @@ Think about what you actually do when you manually check AI output. You run the 
 - **"Looks right" is not "is right."** AI output is *designed* to look plausible. That's the whole technology. A confidently wrong answer and a correct one are visually indistinguishable until you check against something real. Skimming output and nodding is the single easiest way to ship a bug, because the bug is wearing a nice suit.
 - **It doesn't survive change.** You tweak the prompt to fix one case. Did you just break four others? You have no idea, because re-checking by hand is tedious and you've got other work. So you don't. You change one line and pray.
 
-That last one is the killer. An AI system isn't static — you're constantly nudging the prompt, swapping the model, adding a tool, tightening an instruction. Every one of those changes can silently regress behavior you fixed last week. Manual checking can't catch silent regression, because by definition you're not looking. The system **rots,** and the first time you find out is when a user does.
+That last one is the killer. An AI system isn't static — you're constantly nudging the prompt, swapping the model, adding a tool, tightening an instruction. Every one of those changes can silently regress behavior you fixed last week. Manual checking can't catch silent regression, because by definition you're not looking. The system **rots,** and the first time you find out is when a user does — [exactly what happened when Anthropic's own evals missed a real degradation users were reporting](https://www.anthropic.com/engineering/a-postmortem-of-three-recent-issues).
 
 This is the same disease I wrote about in [The Review Is the Work Now](/blog/the-review-is-the-work-now/) — except there the failure was a human rubber-stamping AI output instead of engaging with it. Here it's a human rubber-stamping their *own* AI system instead of measuring it. Same root cause: confusing "I looked at it" with "I verified it."
 
 ## What an eval actually is
+
+![A QA inspection station on a workbench — raw samples entering, a spec card clipped above, an inspection arm, and a single lit numeric readout at the end.](/img/what-are-evals/eval-four-part-inspection-bench.png)
 
 Strip away the tooling and the jargon, and an eval has exactly four parts. If you can name these four, you understand evals better than most people shipping AI features today.
 
@@ -48,6 +51,8 @@ Strip away the tooling and the jargon, and an eval has exactly four parts. If yo
 Inputs, expected qualities, a grader, a score. That's an eval. Notice what it gives you that spot-checking never can: a number that holds still so you can tell whether your changes are making things better or worse.
 
 ## The mindset shift: from QA to a number that holds still
+
+![A balance scale with a translucent, wispy 'feeling' cloud on one pan and a solid engraved metal number tile on the other — the number pan resting firmly down.](/img/what-are-evals/vibe-vs-number-balance.png)
 
 The mechanics are simple. The mindset is the hard part, because it asks you to give up something comfortable.
 

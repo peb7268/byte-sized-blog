@@ -2,6 +2,7 @@
 title: 'An Intro to DeepEval'
 description: "You decided evals matter. Now you need to actually write one. Here's DeepEval from zero — what a test case is, how metrics judge it, and how to read your first red bar."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1517420704952-d9f39e95b43e'
 draft: true
 series: 'Ship Confidence'
 seriesOrder: 2
@@ -30,6 +31,8 @@ That `OPENAI_API_KEY` line matters and trips people up: the **judge** runs on a 
 
 ## The atom: a test case
 
+![A single specimen clamped in a measuring jig under a bench magnifier, three labeled probe leads touching it — one feeding in, one reading output, one holding a reference card.](/img/intro-to-deepeval/test-case-atom-specimen-jig.png)
+
 Everything in DeepEval orbits one object — the **test case**. Strip away the framework and a test case is three fields:
 
 ```python
@@ -54,6 +57,8 @@ One thing worth saying out loud: **DeepEval does not call your app for you.** Yo
 
 ## Metrics: the assertion that thinks
 
+![A litmus test strip lifted from a sample, its color band aligning against a printed 0-to-1 scale card, with a small handwritten note beside it — a score that also gives a reason.](/img/intro-to-deepeval/metric-litmus-score-with-reason.png)
+
 A test case on its own asserts nothing. You need a **metric** to render a verdict, and the metric is where DeepEval earns its keep. Each metric takes a test case, produces a **score between 0 and 1**, compares it to a **threshold** you set, and passes or fails — plus, crucially, it gives you a **reason** in plain English.
 
 The built-in metrics cover most of what you'll want on day one:
@@ -61,7 +66,7 @@ The built-in metrics cover most of what you'll want on day one:
 - **Answer Relevancy** — does the output actually address the input? (Catches confident, on-brand non-answers.)
 - **Faithfulness** — for RAG: is the output grounded in the retrieved context, or did the model invent things? (This is your hallucination detector.)
 - **Contextual Relevancy / Precision / Recall** — is your *retriever* even handing the model the right material?
-- **G-Eval** — the swiss-army knife: define your *own* criterion in a sentence and let an LLM judge it.
+- **[G-Eval](https://deepeval.com/docs/metrics-llm-evals)** — the swiss-army knife: define your *own* criterion in a sentence and let an LLM judge it.
 
 Wiring one up is three lines:
 
