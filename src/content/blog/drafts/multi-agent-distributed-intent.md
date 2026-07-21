@@ -2,6 +2,7 @@
 title: 'Multi-Agent / Distributed Intent'
 description: "Directing one agent is orchestration. Directing many is composition — and the moment your intent fans out across agents, behavior nobody specified starts showing up in the gaps between them. Here's how to compose intent without losing the plot."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1516434233442-0c69c369b66d'
 draft: true
 series: 'Agentic Engineering'
 seriesOrder: 11
@@ -13,7 +14,7 @@ This series started with one engineer losing the thread at step three of a deliv
 
 This is the capstone, so let me push it as far as it goes.
 
-Because the frontier isn't one agent anymore. It's five. Or twelve. A planner that fans work out to implementers, a reviewer watching their output, a test agent gating the merge, a docs agent trailing behind — all running at once, all chewing on the same codebase, all acting on some slice of an intent you expressed exactly once, somewhere upstream.
+Because the frontier isn't one agent anymore. It's five. Or twelve. A [planner that fans work out to implementers](https://www.anthropic.com/engineering/building-effective-agents), a reviewer watching their output, a test agent gating the merge, a docs agent trailing behind — all running at once, all chewing on the same codebase, all acting on some slice of an intent you expressed exactly once, somewhere upstream.
 
 > Directing one agent is orchestration. Directing many is **composition**. And composition is a genuinely different skill, because the thing you have to get right is no longer the agent — it's the *space between* the agents.
 
@@ -41,6 +42,8 @@ A concrete shape that works: a **single source of intent** (the spec, the delive
 
 ## The patterns that actually hold
 
+![Two precision-machined metal parts meeting at one exact interlocking seam — the contract at the seam that lets pieces decompose without silently disagreeing.](/img/multi-agent-distributed-intent/decomposition-by-contract-machined-seam.png)
+
 After enough of these, the durable patterns are unglamorous and few.
 
 **Decomposition by contract, not by task.** The instinct is to split work the way you'd split it for humans — by feature, by file, by ticket. That's not enough for agents, because agents won't have the hallway conversation that resolves the seam. Split by *contract*: define the interface between the pieces first, freeze it, then let each agent build to its side. The contract is the part you author by hand. The implementations are the part you delegate.
@@ -53,9 +56,11 @@ After enough of these, the durable patterns are unglamorous and few.
 
 ## Emergence: the part I won't soft-pedal
 
+![Three workers painting one wall, each to a slightly different chalk guideline that diverges where they meet — each stroke locally perfect, the whole subtly wrong.](/img/multi-agent-distributed-intent/emergence-three-diverging-guidelines.png)
+
 Here's the thing that genuinely keeps me up, and the reason this is also pillar #5 of the governance model — **multi-agent coordination and emergence.**
 
-When you run many agents against shared state, you get behavior that *no single prompt specified.* Not a bug in any one agent — an emergent property of the system. Agent A renames a thing; agent B, running concurrently, builds against the old name; the test agent, reading a third snapshot, validates against neither. Each was correct. The system produced something none of them was told to produce.
+When you run many agents against shared state, you get [behavior that *no single prompt specified*](https://www.anthropic.com/engineering/multi-agent-research-system). Not a bug in any one agent — an emergent property of the system. Agent A renames a thing; agent B, running concurrently, builds against the old name; the test agent, reading a third snapshot, validates against neither. Each was correct. The system produced something none of them was told to produce.
 
 This is the qualitatively new risk, and it's why I keep insisting the skill is the space between the agents. In a single-agent world, every behavior traces back to an instruction — you can always ask "what told it to do that?" In a multi-agent world, **some behavior has no author.** It emerged from timing, ordering, and shared state. You cannot review your way to it by reading any one transcript, because it isn't *in* any one transcript. It's in the interaction.
 

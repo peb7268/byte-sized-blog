@@ -2,6 +2,7 @@
 title: 'The Team Dimension'
 description: "Everything in this series so far has been about you — your judgment, your intent, your review. But moving up the stack is a team sport, and a team that climbs unevenly doesn't just move slower. It rots while shipping more."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1514496959998-c01c40915c5f'
 draft: true
 series: 'Agentic Engineering'
 seriesOrder: 10
@@ -25,11 +26,13 @@ And here's the part that makes it political rather than merely technical: the Ea
 
 ## The artifacts go from private to shared
 
+![A sealed, glowing idea inside one person's head on the left; on the right, the same idea rebuilt as a legible blueprint on a wall that several people read at once.](/img/the-team-dimension/private-to-shared-blueprint-wall.png)
+
 When you worked organically — hands on keyboard, line by line — your understanding of the system was a **private** artifact. It lived in your head, the OI you grew by building the thing. Nobody else could read it, and mostly nobody needed to. The code was the shared surface; the reasoning behind it was yours.
 
 Move up the stack and the center of gravity shifts to things that *only have value if they're shared*: the **spec**, the **plan**, the **intent**, the **review**. A spec that only its author can parse is a private artifact wearing a shared artifact's clothes. The [anatomy of a good spec](/blog/anatomy-of-a-spec/) — the thing that makes it legible, that lets someone who didn't write it reconstruct the intent — stops being a nicety and becomes the load-bearing wall of the whole team.
 
-This is the team version of a point I keep circling: completeness is easy, legibility is the product. On a solo project you can get away with a private, exhaustive, unreadable plan, because you hold the missing context in your head. On a team, the missing context isn't in anyone's head — it's supposed to be *in the artifact*. If the spec isn't legible, you haven't created a shared understanding. You've created a document that each reader has to reverse-engineer separately, which is just distributed rework with a Confluence page attached.
+This is the team version of a point I keep circling: completeness is easy, [legibility is the product](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents). On a solo project you can get away with a private, exhaustive, unreadable plan, because you hold the missing context in your head. On a team, the missing context isn't in anyone's head — it's supposed to be *in the artifact*. If the spec isn't legible, you haven't created a shared understanding. You've created a document that each reader has to reverse-engineer separately, which is just distributed rework with a Confluence page attached.
 
 The discipline of [doing it the same way twice](/blog/the-same-way-twice/) — repeatable, externalized process instead of heroic one-offs — is what turns these into genuinely shared assets. A pipeline that builds the same disciplined context for the hundredth task as the first is a thing a *team* can rely on. A clever prompt that lives in one person's shell history is not.
 
@@ -37,7 +40,7 @@ The discipline of [doing it the same way twice](/blog/the-same-way-twice/) — r
 
 Here's the uncomfortable structural fact. If the high-leverage work is now specifying, reviewing, and [orchestrating](/blog/orchestration/) — and the low-leverage work is hand-authoring implementation — then a team doesn't need the same *shape* it used to.
 
-It needs fewer pure authors and more conductors. Not because authoring is worthless, but because the bottleneck moved. When generation is cheap, the constraint on a team's throughput isn't how many people can write code. It's how many people can hold a coherent intent, express it well enough for an agent to execute, and verify the result with real judgment. That's a different skill, distributed differently across your team than you'd expect — and it does *not* map cleanly onto seniority. Some of your best authors are mediocre conductors. Some quiet mid-level engineer turns out to be exceptional at it, because conducting rewards clarity of intent over speed of typing.
+It needs fewer pure authors and more conductors. Not because authoring is worthless, but because the bottleneck moved. When generation is cheap, the [constraint on a team's throughput](https://www.anthropic.com/engineering/multi-agent-research-system) isn't how many people can write code. It's how many people can hold a coherent intent, express it well enough for an agent to execute, and verify the result with real judgment. That's a different skill, distributed differently across your team than you'd expect — and it does *not* map cleanly onto seniority. Some of your best authors are mediocre conductors. Some quiet mid-level engineer turns out to be exceptional at it, because conducting rewards clarity of intent over speed of typing.
 
 Most teams are restructuring around this by accident right now. The conductors are emerging organically, absorbing more and more of the real decisions, while the org chart still says everyone's an "engineer" doing the same job. The restructuring is happening; it's just happening invisibly, unrewarded, and unnamed. Which is exactly how you lose the people who are quietly doing the hardest new work — by not noticing that the job changed underneath them.
 
@@ -56,6 +59,8 @@ These three groups can't actually work at the same altitude, and that mismatch i
 This is the moment a lot of teams misdiagnose. They look at the friction and conclude the *tools* are the problem, or that the skeptics are the problem, or that they need to mandate adoption harder. But the friction isn't a sign the climb is wrong. It's the predictable mechanical consequence of a roped-together team strung out across the slope. You don't fix it by yelling at the people on the lower ledge to move faster. You fix it by making the next ledge *legible and reachable* — shared specs people will actually read, review standards everyone holds, a context pipeline that gives the skeptic the same disciplined folder as the believer so the wins are obvious instead of evangelical.
 
 ## Compound or rot — there's no third option
+
+![A tree trunk split down the middle — one half lush and thickening its rings, the other hollow and rotting from the inside while the bark still looks intact.](/img/the-team-dimension/compound-or-rot-split-tree.png)
 
 I'll end where the first post in this series ended, because it turns out to be even truer at the team level than the individual one. The difference between a team that **compounds** with these tools and one that **quietly rots while shipping more than ever** is not how much AI they use. Both teams use a lot. Both teams look fast.
 

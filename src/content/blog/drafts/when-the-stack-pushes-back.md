@@ -2,6 +2,7 @@
 title: 'When the Stack Pushes Back'
 description: "This whole series argues that your value moves up — to intent, to orchestration. This is the honest counterweight: the places where climbing the stack costs more than it pays, and how to tell you're standing on one."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1601224748193-d24f166b5c77'
 draft: true
 series: 'Agentic Engineering'
 seriesOrder: 9
@@ -19,11 +20,13 @@ Here are the four places I keep finding the edge.
 
 ## 1. Genuine novelty, where there's no prior art to lean on
 
-A model is, at its core, a magnificent compression of things people have already written down. When you ask it to do something that sits squarely inside that distribution — a REST endpoint, a migration, a React form, the thousandth variant of a pattern it has seen ten million times — it is astonishing, because you are essentially retrieving a consensus answer and adapting it.
+![A cartographer's hand drawing the first ink line onto a blank sheet of vellum — nothing to copy from, the first instance written by hand.](/img/when-the-stack-pushes-back/novelty-blank-map-first-line.png)
+
+A model is, at its core, a magnificent compression of things people have already written down. When you ask it to do something that sits squarely inside that distribution — a REST endpoint, a migration, a React form, the thousandth variant of a pattern it has seen ten million times — it is astonishing, because you are essentially [retrieving a consensus answer](https://www.anthropic.com/engineering/building-effective-agents) and adapting it.
 
 Now ask it to do something genuinely new. Not new-to-you. New to *the field* — a novel algorithm, an architecture nobody's published, a trick that works because of a property of your specific system that exists nowhere in the training data. The model has nothing to compress. It will still answer, confidently, in the average shape of adjacent problems — which is exactly the failure mode, because the average of nearby solutions to a problem that has no nearby solutions is plausible nonsense.
 
-This is the GIGO point ([Garbage In, Gospel Out](/blog/garbage-in-gospel-out/)) turned inside out. Usually the garbage is bad context you supplied. Here the garbage is *absence* — there's no signal in the weights to retrieve, so the model manufactures one. No amount of context engineering fixes a void. When the work is genuinely novel, your **Organic Intelligence** isn't a fallback, it's the only intelligence in the room that has ever actually held the problem. Build it yourself. Then, once you've made it real, *that* becomes prior art the model can extend — but you have to write the first instance by hand.
+This is the GIGO point ([Garbage In, Gospel Out](/blog/garbage-in-gospel-out/)) turned inside out. Usually the garbage is bad context you supplied. Here the garbage is *absence* — there's no signal in the weights to retrieve, so the model manufactures one. No amount of [context engineering](https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents) fixes a void. When the work is genuinely novel, your **Organic Intelligence** isn't a fallback, it's the only intelligence in the room that has ever actually held the problem. Build it yourself. Then, once you've made it real, *that* becomes prior art the model can extend — but you have to write the first instance by hand.
 
 ## 2. Irreducible ambiguity, where specifying costs more than doing
 
@@ -44,6 +47,8 @@ A one-line fix in code you wrote last week and still hold in your head. A rename
 Delegating a thirty-second edit so you can feel modern is a real failure mode, and I've done it. It's cargo-culting the workflow. The skill isn't "always delegate." It's having a genuine, honest sense of where your own speed beats the round trip — and that line moves with your familiarity, not with the calendar.
 
 ## 4. The moments you should drop a rung *inside* a delegated task
+
+![A single hand reaching into a running assembly line to fix one jammed part while the rest keeps moving — a surgical, targeted intervention.](/img/when-the-stack-pushes-back/drop-a-rung-hand-on-assembly-line.png)
 
 The first three are about not climbing in the first place. This one's sneakier: you were right to delegate, the agent did 90% of it well, and then it hit a wall — the same wall three times, each fix uglier than the last. This is the [doing it the same way twice](/blog/the-same-way-twice) problem in reverse: the agent will keep producing variations on a wrong approach forever, because it has no way to know its frame is the problem; it can only iterate within the frame you gave it.
 
