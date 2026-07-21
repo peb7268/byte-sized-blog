@@ -2,6 +2,7 @@
 title: 'Caching: Prompt, LLM, and Semantic'
 description: "Agents re-read the same context on every turn and re-answer the same questions all day. Three kinds of caching kill that waste — but each one has a failure mode that quietly serves you the wrong answer."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d'
 draft: true
 series: 'Token Economics'
 seriesOrder: 5
@@ -23,13 +24,15 @@ Recall the manila folder from the context window (the *Context Is King* post in 
 
 **Prompt caching** — sometimes called prefix caching — tells the system: *this front portion of the folder didn't change, reuse the work you already did on it.* The model keeps the processed state of that stable prefix and only does fresh work on the new pages at the end. You're not re-paying to re-read the rules; you're paying to read the one new question.
 
-The savings are not marginal. Cached input tokens typically run a fraction of the price of fresh ones — on the order of a 90% discount on the cached portion — and the latency drop is just as real, because processing the prefix was a chunk of the wait. For an agent that loops twenty times against the same 10,000-token preamble, that's the difference between paying for 200,000 tokens of preamble and paying for it roughly once.
+The savings are not marginal. Cached input tokens typically run a fraction of the price of fresh ones — [on the order of a 90% discount on the cached portion](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) — and the latency drop is just as real, because processing the prefix was a chunk of the wait. For an agent that loops twenty times against the same 10,000-token preamble, that's the difference between paying for 200,000 tokens of preamble and paying for it roughly once.
 
 The catch is a discipline, not a danger: **caching keys off an exact prefix match.** Change one token near the top of the folder — inject a timestamp, reorder the rules, splice today's date into the system prompt — and the cache misses from that point on. Everything after the change is now "new." This is the operational payoff of the lesson from *Context Is King*: structure the folder so the unchanging parts sit up front and actually stay unchanged. The volatile stuff — the user's current message, fresh tool output — goes at the *end*. Get that layout right and the tooling rewards you automatically. Get it wrong by sprinkling variability through the preamble and you've quietly disabled the cheapest optimization you have.
 
 This layer has essentially no correctness risk. The cached content *is* the content. You're reusing computation over identical bytes. Turn it on, lay out your context with the stable stuff first, and move on.
 
 ## Layer 2 — Response caching: don't re-answer the identical question
+
+![A librarian's hand pulling a pre-written answer card from a drawer instead of re-typing it — but the card carries a small red date stamp reading old. The staleness gotcha.](/img/caching-llm-semantic/response-cache-stale-date-stamp.png)
 
 The next layer up stops re-running the model entirely.
 
@@ -44,6 +47,8 @@ First, **exact-match caching is brittle in the same way prefix caching is.** "Su
 Second, and this is the one that bites: **a cache is only as fresh as the world it answered for.** If the underlying document, the account state, or the policy changed since you stored the answer, your cache is now confidently serving a stale truth. The model didn't hallucinate — your cache did, on its behalf. Anything non-deterministic or time-sensitive needs a deliberate invalidation strategy (key on a content hash or version, set a TTL) or it should not be cached at all. The failure is invisible until someone notices the answer is from last Tuesday.
 
 ## Layer 3 — Semantic caching: serve a hit when the question is *close enough*
+
+![A precision dial whose needle, turned too far, crosses from a calm green zone into a red danger zone — the similarity threshold between savings and wrong answers.](/img/caching-llm-semantic/semantic-threshold-dial-savings-vs-lies.png)
 
 The top layer is the powerful one, and the one to respect.
 

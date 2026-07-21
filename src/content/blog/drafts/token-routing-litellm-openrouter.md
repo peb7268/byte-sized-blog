@@ -2,6 +2,7 @@
 title: 'Routing: LiteLLM, OpenRouter, and Automatic Token Routing'
 description: "A routing layer isn't just a cost lever — it's a resilience and independence lever. One API across every provider, easy tasks to cheap models and hard ones to strong models, and failover when a lab falls over."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1700114338483-d14aac71d576'
 draft: true
 series: 'Token Economics'
 seriesOrder: 4
@@ -17,9 +18,11 @@ The fix is a piece of plumbing that doesn't get talked about enough because it i
 
 ## What a routing layer actually is
 
+![A single inbound pipe feeding a central brass junction box that fans out to labeled outlet pipes running to different provider tanks — one uniform input coupling, many models.](/img/token-routing-litellm-openrouter/routing-layer-one-api-manifold.png)
+
 Strip it down. A routing layer is a single endpoint that sits between your code and every model provider on the planet. Your application talks to *it*, in one consistent format. It talks to OpenAI, Anthropic, Google, Mistral, the open-weight models hosted on a dozen inference shops — whatever — and translates as needed.
 
-**OpenRouter** is a hosted service: you point at their API, drop in one key, and you've got access to hundreds of models from one billing relationship. **LiteLLM** is the same idea you run yourself — an open-source proxy (or a Python library) that you stand up, configure with your own provider keys, and own end to end.
+**[OpenRouter](https://openrouter.ai/docs)** is a hosted service: you point at their API, drop in one key, and you've got access to hundreds of models from one billing relationship. **[LiteLLM](https://docs.litellm.ai/docs/proxy/reliability)** is the same idea you run yourself — an open-source proxy (or a Python library) that you stand up, configure with your own provider keys, and own end to end.
 
 The shapes differ — managed convenience versus self-hosted control — but the core trick is identical: **one API, many models.** Everything good downstream flows from that one move.
 
@@ -30,6 +33,8 @@ This is the obvious win, so I'll be quick about it. Not every request needs your
 But here's the part people miss: **you can't act on that insight without a routing layer.** If every call is hardwired to one model, "send easy tasks to cheap models" is a nice idea you can't execute. The routing layer is what turns the principle into a switch you can actually throw. The savings aren't in the insight — they're in the plumbing that lets you spend the insight.
 
 ## Lever two: resilience — providers go down, and yours shouldn't with them
+
+![A railway switch throwing a train off a blocked, collapsed primary track onto a clean secondary track without stopping — transparent failover in motion.](/img/token-routing-litellm-openrouter/failover-track-switch-resilience.png)
 
 This is the lever that turns a cost optimization into an operational necessity.
 
