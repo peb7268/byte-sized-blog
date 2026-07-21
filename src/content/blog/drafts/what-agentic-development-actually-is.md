@@ -2,6 +2,7 @@
 title: 'What Agentic Development Actually Is'
 description: "Everyone says 'agentic' and nobody defines it. Here's the line that actually separates it from chat, copilot, and autocomplete — the agent takes multi-step action, in a loop, against a goal you set."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1556009756-5a06dce4729d'
 draft: true
 series: 'Agentic Foundations'
 seriesOrder: 2
@@ -25,6 +26,8 @@ The shift it describes is small to say and enormous to live: from *"AI helps me 
 
 ## The ladder
 
+![A rustic four-rung wooden ladder ascending against open sky, the top rung catching the light — the climb from autocomplete to agentic.](/img/what-agentic-development-actually-is/the-ladder-four-rungs.png)
+
 The cleanest way to see what's new is to climb the ladder of how AI has actually sat next to developers, rung by rung. Each rung adds exactly one capability, and the top rung is a different job.
 
 **Rung 1 — Autocomplete.** The oldest. You type, it predicts the rest of the line or the next few. Tab to accept. It has no idea what you're building; it's pattern-completing the local text. The unit of help is *characters*. You are doing 100% of the thinking and roughly 100% of the deciding — it just saves keystrokes. Useful. Not agentic. Not close.
@@ -39,7 +42,9 @@ The first three rungs are all the same job with better tooling: *you write the s
 
 ## What an agent actually does
 
-The word "autonomy" makes people picture something mystical. It isn't. An agent runs a dead-simple loop, and once you see it you can't unsee it:
+![A closed circular loop of four stations — planning notes, a hand using a tool, an eye watching a result, and an arrow feeding back — plan, act, observe, iterate.](/img/what-agentic-development-actually-is/agent-loop-plan-act-observe.png)
+
+The word "autonomy" makes people picture something mystical. It isn't. An agent runs a [dead-simple loop](https://www.anthropic.com/engineering/building-effective-agents), and once you see it you can't unsee it:
 
 1. **Plan.** Given the goal, decide the next step. Not the whole plan carved in stone — the *next move*.
 2. **Act.** Call a tool to make it real. Read a file. Run a command. Write a diff. Hit an API. Tools are the hands; without them you're back on rung 2, a brain in a jar producing text.

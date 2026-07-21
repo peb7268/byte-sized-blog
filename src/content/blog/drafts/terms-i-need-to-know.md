@@ -2,6 +2,7 @@
 title: 'Terms I Need to Know'
 description: "The whole catalog leans on a handful of words and assumes you already have them. This is the on-ramp's on-ramp — an opinionated field guide to the vocabulary you need before the rest of the series lands."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1426927308491-6380b6a9936f'
 draft: true
 series: 'Agentic Foundations'
 seriesOrder: 1
@@ -17,9 +18,11 @@ This is the on-ramp's on-ramp. If you only read one post in the Foundations seri
 
 ## Agent
 
+![A capable junior contractor working autonomously at a workbench while the foreman walks away — you can hand an agent a task and step back for ten minutes.](/img/terms-i-need-to-know/agent-junior-contractor.png)
+
 Start here, because the word is doing a lot of work and most people use it wrong.
 
-An **agent** is a system that's given a goal and the autonomy to take *actions* toward it — reading files, running commands, calling tools, looping on its own output — until the goal is met or it gives up. The key word is *actions*. It doesn't just talk back; it does things to the world and reacts to what happens.
+An **agent** is a system that's given a goal and the autonomy to take *actions* toward it — reading files, running commands, calling tools, looping on its own output — until the goal is met or it gives up. The key word is *actions*. It doesn't just talk back; it does things to the world and reacts to what happens. (Anthropic's [Building Effective Agents](https://www.anthropic.com/engineering/building-effective-agents) is the cleanest treatment of this loop.)
 
 That's what separates it from the things it gets confused with. A **chatbot** answers a question and stops — one turn, no hands. **Autocomplete** (think old-school Copilot) finishes the line you're typing — it's a suggestion engine, not a goal-seeker. A **copilot** sits beside you and helps while *you* stay in the driver's seat. An agent takes the wheel. The honest mental model is a junior contractor you can hand a task to and walk away from for ten minutes — not a smarter search box. Once you feel that difference in your gut, half of the hype and half of the fear sort themselves out.
 
@@ -31,11 +34,13 @@ I'm going to write a whole post on this (*Context Is King*, coming in this same 
 
 ## Tokens
 
-The context window has a finite size, measured in **tokens**. A token is a chunk of text — roughly three-quarters of a word, give or take. "Cat" is one token; "tokenization" might be three.
+The context window has a finite size, measured in **tokens**. A token is a chunk of text — [roughly three-quarters of a word](https://platform.claude.com/docs/en/build-with-claude/context-windows), give or take. "Cat" is one token; "tokenization" might be three.
 
 Why you should care: tokens are the unit of *both* cost and capacity. You pay per token, and the window holds a fixed number of them. Everything competes for that space — your instructions, the files you loaded, the conversation so far, the tool outputs. When people say a model "got dumber" halfway through a long session, what usually happened is the window filled with noise and the signal got buried, or it overflowed and the earliest pages fell out the back. Tokens are the budget you're always secretly spending.
 
 ## Harness
+
+![A bare engine on a stand beside the same engine fully harnessed inside a working machine with belts, hoses and feedback cabling — the harness is everything wrapped around the model.](/img/terms-i-need-to-know/harness-engine-vs-machine.png)
 
 The model is just the engine. The **harness** is everything wrapped around it that turns raw text-prediction into useful work: the loop that feeds it context, runs the tools it asks for, captures the results, and feeds them back. Claude Code, Cursor, the agent framework you wired up yourself — those are harnesses.
 
@@ -43,7 +48,9 @@ This is the term people skip, and skipping it causes a specific confusion: blami
 
 ## MCP (the tool protocol)
 
-**MCP** — the Model Context Protocol — is a standard way to plug tools and data sources into an agent. Think of it as USB for AI: a common plug so any compliant tool (a database, your Jira, a file system, a browser) can be exposed to any compliant agent without bespoke glue code each time.
+![A single universal USB-style connector plugging into a row of different labeled devices — a database, a ticket board, a browser, a file drawer: one standard plug for every tool.](/img/terms-i-need-to-know/mcp-usb-for-ai.png)
+
+**MCP** — the [Model Context Protocol](https://modelcontextprotocol.io/) — is a standard way to plug tools and data sources into an agent. Think of it as USB for AI: a common plug so any compliant tool (a database, your Jira, a file system, a browser) can be exposed to any compliant agent without bespoke glue code each time.
 
 Why it matters more than it sounds: before a shared protocol, every tool integration was a one-off. MCP is what makes the ecosystem *composable* — you can hand your agent a new capability by connecting a server, not by rewriting the agent. When I say an agent "has access to Jira," I almost always mean someone connected an MCP server. It's plumbing, but it's the plumbing that decides what your agent can actually reach.
 
