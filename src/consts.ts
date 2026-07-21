@@ -8,7 +8,7 @@ export const SITE_DESCRIPTION =
 
 // Personal-brand surface
 export const AUTHOR_NAME = 'Paul Barrick';
-export const AUTHOR_HANDLE = 'paul@byte-sized.io';
+export const AUTHOR_HANDLE = 'paul@barrick.dev';
 export const AUTHOR_LOCATION = 'Denver, CO';
 export const AUTHOR_TAGLINE =
   'Building agentic systems and marketing infrastructure that ships in days, not quarters.';
@@ -34,3 +34,12 @@ export const SERIES_META: Record<string, { color: string; blurb: string; label?:
   'Standalone': { color: '#6b7280', blurb: 'One-off pieces.' },
 };
 export const DEFAULT_SERIES_META = { color: '#6b7280', blurb: '' };
+
+// --- Star posts (homepage "Recent writing" featured strip) ------------------
+// Hand-picked flagship pieces, shown as cards above the recent-writing list.
+// Order here is display order; each must be a live (draft:false) post slug.
+export const STAR_POSTS = [
+  'the-new-caste-system',
+  'what-agentic-development-actually-is',
+  'the-review-is-the-work-now',
+];

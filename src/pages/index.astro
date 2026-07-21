@@ -15,13 +15,21 @@ import {
   AUTHOR_LOCATION,
   AUTHOR_TAGLINE,
   AUTHOR_BIO_SHORT,
+  STAR_POSTS,
 } from '../consts';
 
 const posts = (await getCollection('blog'))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
-const recentWriting = posts.slice(0, 3);
+// Hand-picked flagship pieces, in STAR_POSTS order (dropping any not live).
+const byId = new Map(posts.map((p) => [p.id, p]));
+const starPosts = STAR_POSTS.map((id) => byId.get(id)).filter(Boolean);
+
+// Recent list excludes anything already featured as a star, so we don't
+// show the same piece twice on the page.
+const starIds = new Set(starPosts.map((p) => p!.id));
+const recentWriting = posts.filter((p) => !starIds.has(p.id)).slice(0, 3);
 
 // "Inside Optimus" — Optimus as the umbrella plus two of the components
 // that make it more than a kanban tool: Test-driver (verification layer)
@@ -157,8 +165,31 @@ const nowBuilding = [
         <header class="section-header">
           <span class="section-label mono">// recent writing</span>
           <h2>Recent writing</h2>
-          <p class="section-sub">Notes from the build. Updated as I ship.</p>
+          <p class="section-sub">Notes from the oven. Check out what's cooking.</p>
         </header>
+
+        {starPosts.length > 0 && (
+          <ul class="star-grid" aria-label="Featured posts">
+            {starPosts.map((post) => (
+              <li class="star-card">
+                <a href={`/blog/${post!.id}/`}>
+                  <div class="star-thumb">
+                    {post!.data.heroImage && (
+                      <Image width={480} height={270} src={post!.data.heroImage} alt="" />
+                    )}
+                    <span class="star-badge" aria-hidden="true">★</span>
+                  </div>
+                  <div class="star-body">
+                    {post!.data.series && (
+                      <span class="star-series mono">{post!.data.series}</span>
+                    )}
+                    <h3 class="star-title">{post!.data.title}</h3>
+                  </div>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
 
         <ul class="writing-list">
           {recentWriting.map((post) => (
@@ -458,6 +489,85 @@ const nowBuilding = [
       ============================================================ */
       .recent-writing {
         padding: 4rem 0 2rem;
+      }
+
+      /* Star posts — featured flagship strip above the recent list */
+      .star-grid {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 2.5rem;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+      }
+
+      .star-card a {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        text-decoration: none;
+        color: inherit;
+        border: 1px solid var(--rule);
+        border-radius: 12px;
+        overflow: hidden;
+        background: #fff;
+        transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      }
+      .star-card a:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px rgba(15, 18, 25, 0.1);
+        border-color: var(--gold-dim);
+      }
+
+      .star-thumb {
+        position: relative;
+        aspect-ratio: 16 / 9;
+        background: var(--paper-warm);
+        overflow: hidden;
+      }
+      .star-thumb :global(img) {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .star-badge {
+        position: absolute;
+        top: 0.55rem;
+        left: 0.55rem;
+        width: 1.6rem;
+        height: 1.6rem;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: rgba(15, 18, 25, 0.72);
+        color: var(--gold);
+        font-size: 0.85rem;
+        line-height: 1;
+      }
+
+      .star-body {
+        padding: 0.85rem 0.95rem 1.05rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+      }
+      .star-series {
+        font-size: 0.68rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--gold);
+      }
+      .star-title {
+        margin: 0;
+        font-size: 1.02rem;
+        line-height: 1.25;
+        font-weight: 650;
+        color: var(--ink);
+      }
+
+      @media (max-width: 720px) {
+        .star-grid { grid-template-columns: 1fr; }
       }
 
       .writing-list {
