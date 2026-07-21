@@ -3,7 +3,7 @@ title: 'An Intro to DeepEval'
 description: "You decided evals matter. Now you need to actually write one. Here's DeepEval from zero — what a test case is, how metrics judge it, and how to read your first red bar."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1517420704952-d9f39e95b43e'
-draft: true
+draft: false
 series: 'Ship Confidence'
 seriesOrder: 2
 tags: ['llm-evals', 'deepeval', 'testing']

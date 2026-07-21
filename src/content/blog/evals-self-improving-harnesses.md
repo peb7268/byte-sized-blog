@@ -3,7 +3,7 @@ title: 'How Evals Enable Self-Improving Harnesses'
 description: "Evals don't just catch regressions — they turn a harness into a system that gets better on purpose. Here's the empirical loop that compounds measurement into a flywheel, and why without it every change is a guess."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1709613439196-1c08b60af80c'
-draft: true
+draft: false
 series: 'Ship Confidence'
 seriesOrder: 4
 tags: ['evals', 'self-improving-systems', 'agentic-ai']

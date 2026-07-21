@@ -3,7 +3,7 @@ title: 'What Are Evals?'
 description: "The gap between 'it worked when I tried it' and engineering has a name: evals. They're repeatable, measured tests of an AI system's output quality — and they're the difference between shipping on confidence and shipping on hope."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1559819614-8e87b90b8e9b'
-draft: true
+draft: false
 series: 'Ship Confidence'
 seriesOrder: 1
 tags: ['evals', 'ai-quality', 'engineering-discipline']

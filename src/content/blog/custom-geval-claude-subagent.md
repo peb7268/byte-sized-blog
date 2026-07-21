@@ -3,14 +3,14 @@ title: 'A Custom G-Eval Grade with a Claude Subagent'
 description: "Off-the-shelf metrics never fit your domain. Here's the concrete build: a Claude Code subagent that acts as a G-Eval judge, wired into Vitest so a rubric you wrote becomes a pass/fail in CI — with the full agent definition and the test code."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1564097147829-44f8c74a8549'
-draft: true
+draft: false
 series: 'Ship Confidence'
 seriesOrder: 3
 tags: ['evals', 'g-eval', 'vitest']
 hashtags: ['aiengineering', 'evals', 'llmasajudge']
 ---
 
-In [What Are Evals?](/internal/what-are-evals/) I argued that "it worked when I tried it" isn't engineering. And in [An Intro to DeepEval](/internal/intro-to-deepeval/) the built-in metrics did a lot of the work for you. But the first time you try to grade something that's actually *yours* — "is this summary faithful to our docs?", "does this reply follow our refund policy?", "is this commit message any good?" — the canned metrics shrug. Nobody shipped a metric for your rubric.
+In [What Are Evals?](/blog/what-are-evals/) I argued that "it worked when I tried it" isn't engineering. And in [An Intro to DeepEval](/blog/intro-to-deepeval/) the built-in metrics did a lot of the work for you. But the first time you try to grade something that's actually *yours* — "is this summary faithful to our docs?", "does this reply follow our refund policy?", "is this commit message any good?" — the canned metrics shrug. Nobody shipped a metric for your rubric.
 
 That's what **G-Eval** is for. And the most useful judge I've found for a custom G-Eval isn't a library call — it's a **Claude Code subagent** with its own isolated context, doing nothing but grading. This post is the concrete build: the agent, the glue, and the [Vitest](https://vitest.dev/) tests that turn your rubric into a green check.
 
@@ -205,7 +205,7 @@ Same judge, same rubric — now with batch data and a suite-level threshold gate
 - **Pin the judge model.** A grader you can't reproduce isn't a measurement. Same model + same rubric → same verdict (ties to [The Same Way Twice](/blog/the-same-way-twice/)).
 - **Sanity-check the judge against yourself.** Grade ~10 examples by hand and compare. If the judge disagrees with you, fix the *rubric* before you trust the number.
 
-A custom G-Eval is just this: a rubric you believe in, a judge that can't cheat, and a green check that means something. Once it's wired, every change to your prompt or your model gets graded automatically — which is the whole on-ramp to the [self-improving harness](/internal/evals-self-improving-harnesses/) the next post is about.
+A custom G-Eval is just this: a rubric you believe in, a judge that can't cheat, and a green check that means something. Once it's wired, every change to your prompt or your model gets graded automatically — which is the whole on-ramp to the [self-improving harness](/blog/evals-self-improving-harnesses/) the next post is about.
 
 ---
 
