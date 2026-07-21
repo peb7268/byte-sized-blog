@@ -2,6 +2,7 @@
 title: 'Measuring Agent Spend Over Time'
 description: "You can't manage what you can't see. Before you optimize a single token, you need to know where the money goes — by session, by user, by agent, by model. Here's how to actually measure it."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1458007683879-47560d7e33c3'
 draft: true
 series: 'Token Economics'
 seriesOrder: 1
@@ -19,6 +20,8 @@ So this is the foundation post. Not the clever optimization. The boring, load-be
 
 ## The dashboard number is a trap
 
+![One glowing monthly-total number sealed under a bell jar with no knobs, while four dark unplugged gauges sit beside it — the dashboard number you can't turn.](/img/measuring-agent-spend/dashboard-number-trap-gauges.png)
+
 Here's the first thing teams do, and why it fails them. They open the provider's billing dashboard, see a monthly total, and call it observability. *"We spent $4,200 on Anthropic in May."* Great. Now answer any question that matters:
 
 - Which **agent** drove it?
@@ -35,7 +38,7 @@ Before *where* the data lives, get clear on *what* a useful record contains. For
 
 - **Input tokens** — what you sent. This is usually the silent majority of the bill, because context is fat and re-sent constantly.
 - **Output tokens** — what the model generated. Priced higher per token, but often the smaller number.
-- **Cached tokens** — input you didn't pay full freight for because the provider reused it. If you're not tracking this separately, you're blind to your single biggest lever (more on that in a later post).
+- **Cached tokens** — input you didn't pay full freight for because the provider reused it. If you're not tracking this separately, you're blind to your [single biggest lever](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) (more on that in a later post).
 - **Cost** — the actual dollars, computed from the above against that model's price card. Tokens are the physics; cost is the language your leadership speaks.
 - **The dimensions** — timestamp, model id, and whatever tags let you attribute the spend: which agent, which user, which task or ticket.
 
@@ -47,13 +50,15 @@ There are three places to get this, and they sit on a spectrum from "free but cr
 
 **1. The transcripts / JSONL logs.** Most agent harnesses — Claude Code included — write a structured log of every session to disk, and those records carry per-turn token counts (input, output, cached) right there in the events. This is the cheapest possible starting point: the data already exists, on your machine, right now. A small script that walks the JSONL files and sums tokens by session gets you from zero to *something* in an afternoon. The catch is that it's local, per-machine, and after-the-fact — great for "what did *I* spend," weak for "what did the *team* spend this week" without somewhere central to ship it.
 
-**2. A proxy layer.** This is the grown-up version. You route every agent call through a gateway — an **OpenRouter**, a **LiteLLM** layer, or your own thin proxy — and it logs every request centrally, with whatever tags you attach. Now you have one place that sees *all* traffic, from every user and every agent, in real time, and you can decorate each call with metadata (user, agent, ticket) the providers never know about. This is the move that makes "spend by user by agent over time" a query instead of a forensics project. It's more setup, but it's the difference between observability and archaeology.
+**2. A proxy layer.** This is the grown-up version. You route every agent call through a gateway — an **OpenRouter**, a **[LiteLLM](https://docs.litellm.ai/docs/)** layer, or your own thin proxy — and it logs every request centrally, with whatever tags you attach. Now you have one place that sees *all* traffic, from every user and every agent, in real time, and you can decorate each call with metadata (user, agent, ticket) the providers never know about. This is the move that makes "spend by user by agent over time" a query instead of a forensics project. It's more setup, but it's the difference between observability and archaeology.
 
 **3. The provider dashboards.** Don't dismiss them — they're the ground truth for *billing*. When your homegrown numbers and the invoice disagree, the invoice wins, and you'll want the provider's view to reconcile against. But treat them as the **audit trail, not the instrument panel.** They tell you what you were charged. They don't tell you why, by whom, or for what — and they lag.
 
 The pattern I'd push you toward: a proxy for live, dimensioned visibility; the JSONL logs as a local fallback and a sanity check; the provider dashboard as the reconciliation backstop. Belt, suspenders, and the receipt.
 
 ## Watch it over time, or you're just taking snapshots
+
+![A hand pinning a rising trend-line strip chart onto a workbench beside a pile of discarded single-number Polaroids — the moving film beats the still snapshot.](/img/measuring-agent-spend/spend-trendline-vs-snapshots.png)
 
 The word *over time* in the title is doing real work. A single number — even a beautifully dimensioned one — is a photograph. What you want is the film.
 

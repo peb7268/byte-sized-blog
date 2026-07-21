@@ -2,6 +2,7 @@
 title: 'Trimming Token Cost'
 description: "Most teams overpay for agents by default — re-sending the same context, running a flagship model on trivial work, and stuffing the window with junk. Here are the levers that cut the bill without cutting quality."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1558540491-9a69d75ebab4'
 draft: true
 series: 'Token Economics'
 seriesOrder: 3
@@ -17,6 +18,8 @@ Let me walk the levers, roughly in order of how much they move the needle.
 
 ## Lever 1 — Context discipline (the one that pays twice)
 
+![Pruning shears trimming an overgrown bundle of files down to two clean labeled sheets, the clippings falling away as glowing wasted tokens — less junk, cheaper and sharper.](/img/trimming-token-cost/context-discipline-pruning-shears.png)
+
 If you read [Garbage In, Gospel Out](/blog/garbage-in-gospel-out/), you already know the failure mode: dump a pile of files into the window, expect structured output, get slop. What I didn't dwell on there is that the same pile is also burning money. Every irrelevant file you load is tokens you pay for on *every turn it stays in the window* — and tokens the model has to wade through to find the signal you actually care about.
 
 This is why context discipline is the single highest-leverage cost lever, and the only one that pays twice. The forthcoming *Context Is King* makes the full case for treating context as the medium of the work, but the cost angle stands on its own: **less junk in the window means fewer tokens spent AND a higher chance of the right answer.** A tight, curated folder is cheaper than a fat one and produces better output than a fat one. You are not trading cost against quality here. You're buying both with the same move.
@@ -27,13 +30,15 @@ The practical version: before you fire a task, ask what it actually needs. The t
 
 A surprising fraction of what you send an agent is identical turn after turn: the system instructions, the project's ground rules, the big reference doc, the coding standards. Re-sending that block every single turn means re-paying to process the same pages over and over, all session long. At one message it's nothing. At ten thousand it's a line item.
 
-**Caching** is telling the system "this part didn't change — reuse it." Done right, the model only processes the *new* pages each turn instead of re-reading the whole folder from scratch, and you pay a steep discount on the cached portion. The latency drops with the cost, which is a nice bonus.
+**Caching** is telling the system "this part didn't change — reuse it." Done right, the model only processes the *new* pages each turn instead of re-reading the whole folder from scratch, and you pay a [steep discount on the cached portion](https://platform.claude.com/docs/en/build-with-claude/prompt-caching). The latency drops with the cost, which is a nice bonus.
 
 The catch is that caching rewards *stability of layout*. Caches key off a stable prefix — keep the unchanging material in a consistent place at the front and let the volatile stuff (the current question, the latest tool output) live at the back. Shuffle the stable block around between turns and you bust your own cache and pay full freight. So the move isn't just "turn on caching," it's "structure the window so the unchanging parts *can* be reused." Most modern harnesses do a version of this automatically once you stop moving the furniture around.
 
 ## Lever 3 — Right-size the model
 
-This is the one teams resist hardest, and it's pure money left on the table. There's a reflex to run the most capable model on everything, because why would you want a *worse* model? But most agentic work isn't one hard problem — it's one hard problem wrapped in a dozen trivial ones. Classifying an intent. Extracting a field. Renaming variables. Summarizing a diff. Reformatting JSON. None of that needs your flagship, and the flagship can cost an order of magnitude more per token than a small fast model that does those jobs perfectly.
+![A brass manifold with a wide-open cheap valve passing a stream of small identical parts and a smaller premium valve gated for one large complex gear — route flow by the size of the job.](/img/trimming-token-cost/right-size-model-valve-manifold.png)
+
+This is the one teams resist hardest, and it's pure money left on the table. There's a reflex to run the most capable model on everything, because why would you want a *worse* model? But most agentic work isn't one hard problem — it's one hard problem wrapped in a dozen trivial ones. Classifying an intent. Extracting a field. Renaming variables. Summarizing a diff. Reformatting JSON. None of that needs your flagship, and the flagship can cost an [order of magnitude more per token](https://epoch.ai/data-insights/llm-inference-price-trends) than a small fast model that does those jobs perfectly.
 
 Right-sizing means matching the model to the *subtask*, not the project. Use the cheap, fast model for the cheap, mechanical work — the parsing, the routing, the boilerplate — and reserve the strong, expensive model for the place where judgment actually lives: the architecture call, the gnarly debug, the review. The skill is being honest about which is which. A lot of work that *feels* like it needs the big brain is really pattern-shaped, and a small model nails it for a tenth of the price.
 

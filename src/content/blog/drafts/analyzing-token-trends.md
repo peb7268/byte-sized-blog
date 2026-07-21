@@ -2,6 +2,7 @@
 title: 'Analyzing Token Trends, Regardless of the Harness'
 description: "A single month's token bill tells you almost nothing. The number that changes decisions is the one you can watch move over time — normalized across every harness, attributed to features and people, tied back to value."
 pubDate: 'Jun 29 2026'
+heroImage: 'https://images.unsplash.com/photo-1621638363255-9c092fa8d4ab'
 draft: true
 series: 'Token Economics'
 seriesOrder: 2
@@ -27,11 +28,13 @@ So the foundational move is to stop treating "which tool" as the primary axis an
 
 ## Normalize before you analyze
 
+![Three mismatched instruments — a beaker, a fuel gauge, an odometer — pouring differently-shaped streams into one funnel that outputs a single uniform stack of identical records.](/img/analyzing-token-trends/normalize-funnel-uniform-records.png)
+
 You cannot trend data you can't compare, and you can't compare data that isn't shaped the same. This is the unglamorous 80% of the work, and skipping it is why most cost dashboards are quietly lying.
 
 Every harness emits *something* — usage events, a log line, an API response with a `usage` block. Your job is to funnel all of it through one normalizer that flattens each event into the same record. At minimum I want, per event:
 
-- **Tokens in / tokens out / cached tokens**, separated. Lumping them hides the single biggest lever you have. (If "cached tokens" means nothing to you yet, that's the subject of a later post — but you have to *capture* the field now or you can never measure the win.)
+- **Tokens in / tokens out / cached tokens**, separated. Lumping them hides the [single biggest lever](https://platform.claude.com/docs/en/build-with-claude/prompt-caching) you have. (If "cached tokens" means nothing to you yet, that's the subject of a later post — but you have to *capture* the field now or you can never measure the win.)
 - **Model.** A trend that mixes a cheap model and an expensive one is uninterpretable.
 - **Cost**, computed by *you* from tokens and a model price table — not trusted from whatever the tool reported. Tools round, omit caching, and price inconsistently.
 - **Timestamp**, because this whole post is about time.
@@ -52,6 +55,8 @@ Total spend is a vanity metric. The question that actually changes behavior is *
 The mechanism is boring and that's fine: stamp every event with tags at the source. Branch name, ticket ID, agent name, harness, user. The transcripts already carry most of this if you bother to look — the cwd and the git branch are sitting right there in every event. You don't need a fancy system. You need the discipline to attach the tags *before* the data lands, because you can never reconstruct attribution after the fact.
 
 ## Now you can actually spot a regression
+
+![A seismograph whose 'total' channel reads flat while the 'per-task rate' channel below shows a creeping upward spike circled in red — the regression the average hid.](/img/analyzing-token-trends/hidden-regression-rate-vs-total.png)
 
 This is the payoff, and it's the same shape as catching a performance regression in CI. Once you have a normalized, attributed, time-series stream, you stop asking "what did we spend" and start asking "what *changed*."
 
