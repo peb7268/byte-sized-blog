@@ -3,7 +3,7 @@ title: 'What Agentic Development Actually Is'
 description: "Everyone says 'agentic' and nobody defines it. Here's the line that actually separates it from chat, copilot, and autocomplete — the agent takes multi-step action, in a loop, against a goal you set."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1556009756-5a06dce4729d'
-draft: true
+draft: false
 series: 'Agentic Foundations'
 seriesOrder: 2
 tags: ['agentic-ai', 'fundamentals', 'developer-workflow']

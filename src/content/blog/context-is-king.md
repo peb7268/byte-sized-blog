@@ -3,7 +3,7 @@ title: 'Context Is King'
 description: "Every post in this series leans on one word and never defines it: context. It's not the setting for the work — it's the medium. Here's what a context window actually is, and the four moves that separate engineers who get structured output from ones who get slop."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1507842217343-583bb7270b66'
-draft: true
+draft: false
 series: 'Agentic Foundations'
 seriesOrder: 3
 tags: ['agentic-ai', 'context-engineering', 'fundamentals']

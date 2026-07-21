@@ -3,7 +3,7 @@ title: 'Terms I Need to Know'
 description: "The whole catalog leans on a handful of words and assumes you already have them. This is the on-ramp's on-ramp — an opinionated field guide to the vocabulary you need before the rest of the series lands."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1426927308491-6380b6a9936f'
-draft: true
+draft: false
 series: 'Agentic Foundations'
 seriesOrder: 1
 tags: ['agentic-ai', 'fundamentals', 'vocabulary']
