@@ -108,7 +108,7 @@ const nowBuilding = [
             <!-- On load, this face rotates like a cube: pb monogram →
                  the "PB super" mark (the site's share avatar) → back to
                  the monogram. Pure CSS; respects reduced-motion. -->
-            <div class="pb-cube">
+            <div class="pb-cube" id="pb-cube">
               <div class="pb-face pb-front">
                 <!-- Inline SVG monogram. Same flat-vector language used in
                      the MHM revamp — gold serif glyph on near-black bg with
@@ -382,9 +382,11 @@ const nowBuilding = [
         width: 200px;
         height: 200px;
         transform-style: preserve-3d;
-        /* Loops: rests on the monogram, flips to the super mark, flips back,
-           then rests again — one full cycle roughly every 9s. */
-        animation: pb-cube-spin 9s ease-in-out 0.35s infinite both;
+      }
+      /* Flip runs only while this class is present. JS adds it once on load
+         and re-adds it on hover, so the flip is predictable — never scheduled. */
+      .pb-cube.pb-flip {
+        animation: pb-cube-spin 2.6s ease-in-out both;
       }
       .pb-face {
         position: absolute;
@@ -408,11 +410,9 @@ const nowBuilding = [
 
       @keyframes pb-cube-spin {
         0%   { transform: rotateY(0deg); }      /* monogram */
-        40%  { transform: rotateY(0deg); }      /* rest on monogram */
-        52%  { transform: rotateY(180deg); }    /* flip to the super mark */
-        68%  { transform: rotateY(180deg); }    /* hold on the super mark */
-        80%  { transform: rotateY(360deg); }    /* flip back to monogram */
-        100% { transform: rotateY(360deg); }    /* rest, then loop */
+        35%  { transform: rotateY(180deg); }    /* flip to the super mark */
+        65%  { transform: rotateY(180deg); }    /* hold on the super mark */
+        100% { transform: rotateY(360deg); }    /* flip back to monogram */
       }
 
       @media (prefers-reduced-motion: reduce) {
@@ -711,5 +711,25 @@ const nowBuilding = [
         .btn { font-size: 0.88rem; padding: 0.6rem 1.1rem; }
       }
     </style>
+
+    <script>
+      // Monogram cube: flip once on load, then again on each hover — no schedule.
+      const cube = document.getElementById('pb-cube');
+      const monogram = cube?.closest('.monogram');
+      if (cube && monogram && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const flip = () => {
+          cube.classList.remove('pb-flip');
+          void cube.offsetWidth; // force reflow so the animation restarts
+          cube.classList.add('pb-flip');
+        };
+        // one-shot on load
+        flip();
+        // re-trigger on hover, but not while a flip is already running
+        let running = false;
+        cube.addEventListener('animationstart', () => { running = true; });
+        cube.addEventListener('animationend', () => { running = false; });
+        monogram.addEventListener('mouseenter', () => { if (!running) flip(); });
+      }
+    </script>
   </body>
 </html>
