@@ -12,7 +12,13 @@ hashtags: ['agenticdevelopment', 'aiengineering', 'softwareengineering']
 
 # Agency
 
+**/ˈā-jən-sē/** · *noun*
+
 ## *The capacity to take action toward a goal on your behalf — to plan, act, observe the result, and adjust, without being told each step.*
+
+When we say a **person** has agency, we mean something older and deeper than any product feature: the capacity to act independently in the world — to make your own choices, pursue your own goals, and own the consequences. Philosophers and sociologists break it into three parts — **intentionality** (you set the goal), **autonomy** (you act without being controlled), and **self-reflection** (you weigh what happened and adjust). [Merriam-Webster](https://www.merriam-webster.com/dictionary/agency) strips it to the root: *"the capacity, condition, or state of acting or of exerting power."*
+
+The whole story of agentic development is what happens when we hand a slice of that capacity — deliberately, and against a goal we set — to a machine.
 
 ---
 
