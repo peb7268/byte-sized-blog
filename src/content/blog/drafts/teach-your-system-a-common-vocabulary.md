@@ -2,6 +2,7 @@
 title: 'Teach Your System a Common Vocabulary'
 description: "Your agent doesn't know that 'the OV' means your Obsidian vault, or that 'Tower' is your NAS. You've spent years building a private shorthand — teach it to your system once, load it every session, and your terse instructions suddenly land."
 pubDate: 'Jul 21 2026'
+heroImage: 'https://images.unsplash.com/photo-1543165796-5426273eaab3'
 draft: true
 series: 'Agentic Foundations'
 seriesOrder: 4
@@ -29,6 +30,8 @@ There are two halves to it.
 
 These are the *things* in your world — the machines, servers, and named systems you point at constantly. Give each one a name and a one-line definition, and suddenly "deploy to Tower" is an address, not a riddle.
 
+![A row of server and network hardware on a workshop shelf — a NAS box, a router, a laptop, rack units — each tagged with a hand-tied blank brass luggage label, warm workshop light.](/img/teach-your-system-a-common-vocabulary/name-your-artifacts.png)
+
 Mine, for example:
 
 - **Tower** — my NAS (an Unraid box). It runs the containers: the databases, the sales system, the tunnels. "Ship it to Tower" means something exact.
@@ -42,6 +45,8 @@ Without the glossary, "Pipe" is a coin flip between a shell primitive and my pro
 ## Half two: teach your abbreviations
 
 These are the two- and three-letter shortcuts you use so often you've forgotten they're jargon. This is where new agents fall down hardest, because the abbreviations *look* like they could mean anything.
+
+![An antique brass cipher decoder wheel resting on an open library card-catalog drawer of blank index cards, a hand rotating the inner ring to align two concentric dials — turning shorthand into meaning.](/img/teach-your-system-a-common-vocabulary/abbreviations-decoder.png)
 
 A slice of mine:
 
