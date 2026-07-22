@@ -3,7 +3,7 @@ title: 'Trimming Token Cost'
 description: "Most teams overpay for agents by default — re-sending the same context, running a flagship model on trivial work, and stuffing the window with junk. Here are the levers that cut the bill without cutting quality."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1558540491-9a69d75ebab4'
-draft: true
+draft: false
 series: 'Token Economics'
 seriesOrder: 3
 tags: ['token-economics', 'context-engineering', 'cost-optimization']

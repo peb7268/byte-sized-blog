@@ -3,7 +3,7 @@ title: 'Caching: Prompt, LLM, and Semantic'
 description: "Agents re-read the same context on every turn and re-answer the same questions all day. Three kinds of caching kill that waste — but each one has a failure mode that quietly serves you the wrong answer."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d'
-draft: true
+draft: false
 series: 'Token Economics'
 seriesOrder: 5
 tags: ['token-economics', 'caching', 'agentic-ai']

@@ -3,7 +3,7 @@ title: 'Measuring Agent Spend Over Time'
 description: "You can't manage what you can't see. Before you optimize a single token, you need to know where the money goes — by session, by user, by agent, by model. Here's how to actually measure it."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1458007683879-47560d7e33c3'
-draft: true
+draft: false
 series: 'Token Economics'
 seriesOrder: 1
 tags: ['token-economics', 'observability', 'cost-management']

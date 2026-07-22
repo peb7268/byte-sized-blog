@@ -3,7 +3,7 @@ title: 'Analyzing Token Trends, Regardless of the Harness'
 description: "A single month's token bill tells you almost nothing. The number that changes decisions is the one you can watch move over time — normalized across every harness, attributed to features and people, tied back to value."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1621638363255-9c092fa8d4ab'
-draft: true
+draft: false
 series: 'Token Economics'
 seriesOrder: 2
 tags: ['token-economics', 'observability', 'cost-engineering']

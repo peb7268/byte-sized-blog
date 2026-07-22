@@ -3,7 +3,7 @@ title: 'Routing: LiteLLM, OpenRouter, and Automatic Token Routing'
 description: "A routing layer isn't just a cost lever — it's a resilience and independence lever. One API across every provider, easy tasks to cheap models and hard ones to strong models, and failover when a lab falls over."
 pubDate: 'Jun 29 2026'
 heroImage: 'https://images.unsplash.com/photo-1700114338483-d14aac71d576'
-draft: true
+draft: false
 series: 'Token Economics'
 seriesOrder: 4
 tags: ['model-routing', 'token-economics', 'llm-infrastructure']
