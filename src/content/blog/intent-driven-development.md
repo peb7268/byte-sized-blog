@@ -3,7 +3,7 @@ title: 'Intent-Driven Development'
 description: "I've written a series on how to spec and a series on how to eval. This is the post where I admit they were never two skills. A spec is your intent declared; an eval is the contract that proves it. Do both on purpose and you have a method — Intent-Driven Development."
 pubDate: 'Jul 22 2026'
 heroImage: '/img/intent-driven-development/idd-hero.png'
-draft: true
+draft: false
 series: 'Agentic Engineering'
 seriesOrder: 12
 tags: ['agentic-development', 'intent-driven-development', 'specs', 'evals']
