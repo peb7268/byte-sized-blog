@@ -2,7 +2,7 @@
 title: 'Intent-Driven Development'
 description: "I've written a series on how to spec and a series on how to eval. This is the post where I admit they were never two skills. A spec is your intent declared; an eval is the contract that proves it. Do both on purpose and you have a method — Intent-Driven Development."
 pubDate: 'Jul 22 2026'
-# heroImage: TBD — blueprint + inspection-stamp motif; pull themed Unsplash on publish
+heroImage: '/img/intent-driven-development/idd-hero.png'
 draft: true
 series: 'Agentic Engineering'
 seriesOrder: 12
@@ -28,6 +28,8 @@ First you write down what you want — the outcome, the reason it matters, the i
 Then — if you're disciplined — you write down how you'll *know* it worked. Concrete cases, expected qualities, a grader, a threshold. That's the eval. It points *backward*: here is the finished thing, measured against what I claimed I wanted.
 
 Now look at those two documents side by side and notice the uncomfortable thing. **They're describing the same object.** The spec is that object stated as a promise. The eval is that object stated as a test. One source of truth — your intent — projected onto two surfaces. If you wrote them both honestly they should say the same thing in two grammars: the imperative ("do this") and the interrogative ("did it?").
+
+![A single glass prism splitting one white beam into two — a warm amber beam landing on a folded blueprint, a cool blue beam landing on an inspection checklist. One source of light, two projections: the spec and the eval are the same intent refracted in two directions.](/img/intent-driven-development/one-source-two-projections.png)
 
 That's the move IDD asks you to make consciously: stop treating "write the spec" and "write the evals" as separate chores at separate times, and start treating them as two required projections of a single act of deciding what you want.
 
