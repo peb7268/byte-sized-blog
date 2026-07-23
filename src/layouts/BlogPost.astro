@@ -10,6 +10,7 @@ import Header from '../components/Header.astro';
 type Props = CollectionEntry<'blog'>['data'] & { noindex?: boolean };
 
 const { title, description, pubDate, updatedDate, heroImage, draft, noindex } = Astro.props;
+const hasSidebar = Astro.slots.has('sidebar');
 ---
 
 <html lang="en">
@@ -42,6 +43,44 @@ const { title, description, pubDate, updatedDate, heroImage, draft, noindex } = 
 				margin: auto;
 				padding: 1em;
 				color: rgb(var(--gray-dark));
+			}
+			/* Two-column layout when a sidebar slot is provided (public blog posts). */
+			.post-grid.has-sidebar {
+				display: grid;
+				grid-template-columns: minmax(0, 1fr) 320px;
+				gap: 2.5em;
+				max-width: 1160px;
+				margin: 0 auto;
+				padding: 0 1em;
+				align-items: start;
+			}
+			.post-main {
+				min-width: 0;
+			}
+			.has-sidebar .post-main .prose {
+				width: 100%;
+				max-width: none;
+				margin: 0;
+				padding: 0;
+			}
+			.post-sidebar {
+				position: sticky;
+				top: 1.5em;
+				align-self: start;
+			}
+			@media (max-width: 1023px) {
+				.post-grid.has-sidebar {
+					grid-template-columns: minmax(0, 1fr);
+					max-width: 780px;
+				}
+				.has-sidebar .post-main .prose {
+					max-width: calc(100% - 2em);
+					margin: auto;
+				}
+				.post-sidebar {
+					position: static;
+					margin-top: 2.5em;
+				}
 			}
 			.title {
 				margin-bottom: 1em;
@@ -107,6 +146,8 @@ const { title, description, pubDate, updatedDate, heroImage, draft, noindex } = 
 				<div class="hero-image">
 					{heroImage && <Image width={2000} height={800} src={heroImage} alt="" />}
 				</div>
+				<div class:list={['post-grid', { 'has-sidebar': hasSidebar }]}>
+				<div class="post-main">
 				<div class="prose">
 					<div class="title">
 						<div class="byline">By Paul Barrick</div>
@@ -157,6 +198,13 @@ const { title, description, pubDate, updatedDate, heroImage, draft, noindex } = 
 						<hr />
 					</div>
 					<slot />
+				</div>
+				</div>
+				{hasSidebar && (
+					<aside class="post-sidebar">
+						<slot name="sidebar" />
+					</aside>
+				)}
 				</div>
 			</article>
 			{!draft && !noindex && <Giscus />}

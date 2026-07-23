@@ -1,0 +1,188 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import SeriesToc from './SeriesToc.astro';
+import SeriesNav from './SeriesNav.astro';
+import { PINNED_SERIES, SERIES_META, DEFAULT_SERIES_META, STAR_POSTS } from '../consts';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+const { post } = Astro.props;
+
+const all = (await getCollection('blog')).filter((p) => !p.data.draft);
+const byId = new Map(all.map((p) => [p.id, p]));
+
+// 📌 Pinned reads — hand-picked flagships, minus the current post
+const pinned = STAR_POSTS
+  .map((id) => byId.get(id))
+  .filter((p): p is CollectionEntry<'blog'> => !!p && p.id !== post.id)
+  .slice(0, 4);
+
+// ⣿ Top series — counts + accent + link to the series' first post
+const counts = new Map<string, number>();
+const firstOf = new Map<string, CollectionEntry<'blog'>>();
+for (const p of all) {
+  const s = p.data.series;
+  if (!s) continue;
+  counts.set(s, (counts.get(s) ?? 0) + 1);
+  const cur = firstOf.get(s);
+  if (!cur || (p.data.seriesOrder ?? 999) < (cur.data.seriesOrder ?? 999)) firstOf.set(s, p);
+}
+const orderedSeries = PINNED_SERIES.filter((s) => counts.has(s));
+for (const s of [...counts.keys()].sort()) if (!orderedSeries.includes(s)) orderedSeries.push(s);
+const topSeries = orderedSeries.map((name) => ({
+  name,
+  count: counts.get(name) ?? 0,
+  meta: SERIES_META[name] ?? DEFAULT_SERIES_META,
+  href: firstOf.get(name) ? `/blog/${firstOf.get(name)!.id}/` : null,
+  current: name === post.data.series,
+}));
+
+// ✎ Recent writing — newest, excluding current + already-pinned
+const pinnedIds = new Set(pinned.map((p) => p.id));
+const recent = all
+  .filter((p) => p.id !== post.id && !pinnedIds.has(p.id))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 4);
+
+const seriesColor = post.data.series
+  ? (SERIES_META[post.data.series] ?? DEFAULT_SERIES_META).color
+  : 'rgb(var(--accent))';
+---
+
+<div class="post-sidebar-modules">
+  {post.data.series && (
+    <div class="sb-series" style={`--accent: ${seriesColor}`}>
+      <SeriesToc post={post} route="blog" />
+      <SeriesNav post={post} showHead={false} />
+    </div>
+  )}
+
+  {pinned.length > 0 && (
+    <section class="sb-card" aria-label="Pinned reads">
+      <h2 class="sb-title"><span class="sb-ico">📌</span> Pinned reads</h2>
+      <ul class="sb-list">
+        {pinned.map((p) => (
+          <li>
+            <a href={`/blog/${p.id}/`}>{p.data.title}</a>
+            {p.data.series && <span class="sb-tag">{p.data.series}</span>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {topSeries.length > 0 && (
+    <section class="sb-card" aria-label="Top series">
+      <h2 class="sb-title"><span class="sb-ico">⣿</span> Top series</h2>
+      <ul class="sb-series-list">
+        {topSeries.map((s) => (
+          <li class:list={['sb-series-item', { current: s.current }]}>
+            <span class="sb-dot" style={`background: ${s.meta.color}`}></span>
+            {s.href ? <a href={s.href}>{s.name}</a> : <span>{s.name}</span>}
+            <span class="sb-count">{s.count}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {recent.length > 0 && (
+    <section class="sb-card" aria-label="Recent writing">
+      <h2 class="sb-title"><span class="sb-ico">✎</span> Recent writing</h2>
+      <ul class="sb-list">
+        {recent.map((p) => (
+          <li><a href={`/blog/${p.id}/`}>{p.data.title}</a></li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <section class="sb-card sb-follow" aria-label="Follow and subscribe">
+    <h2 class="sb-title"><span class="sb-ico">✉</span> Follow along</h2>
+    <p class="sb-follow-copy">New pieces on agentic development, most weeks.</p>
+    <div class="sb-follow-btns">
+      <a class="sb-btn linkedin" href="https://www.linkedin.com/in/paulbarrick/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a class="sb-btn rss" href="/rss.xml">RSS</a>
+    </div>
+  </section>
+</div>
+
+<style>
+  .post-sidebar-modules {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25em;
+    font-size: 0.95rem;
+  }
+  /* series module inherits SeriesToc/SeriesNav styling; we only set the accent */
+  .sb-series { display: flex; flex-direction: column; }
+  .sb-series :global(.series-toc-top) { margin-bottom: 1em; }
+
+  .sb-card {
+    border: 1px solid rgb(var(--gray-light));
+    border-radius: 10px;
+    padding: 1em 1.1em;
+    background: #fff;
+  }
+  .sb-title {
+    display: flex;
+    align-items: center;
+    gap: 0.45em;
+    margin: 0 0 0.7em;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    font-weight: 700;
+    color: rgb(var(--gray-dark));
+  }
+  .sb-ico { font-size: 0.95em; }
+  .sb-list { list-style: none; margin: 0; padding: 0; }
+  .sb-list li { padding: 0.4em 0; border-top: 1px solid rgba(var(--gray-light), 0.6); line-height: 1.35; }
+  .sb-list li:first-child { border-top: none; padding-top: 0; }
+  .sb-list a { color: rgb(var(--gray-dark)); text-decoration: none; font-weight: 600; }
+  .sb-list a:hover { color: rgb(var(--accent)); text-decoration: underline; }
+  .sb-tag {
+    display: block;
+    margin-top: 0.15em;
+    font-size: 0.72em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgb(var(--gray));
+  }
+
+  .sb-series-list { list-style: none; margin: 0; padding: 0; }
+  .sb-series-item {
+    display: flex;
+    align-items: center;
+    gap: 0.55em;
+    padding: 0.38em 0;
+  }
+  .sb-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+  .sb-series-item a { color: rgb(var(--gray-dark)); text-decoration: none; font-weight: 600; }
+  .sb-series-item a:hover { text-decoration: underline; }
+  .sb-series-item.current > a,
+  .sb-series-item.current > span:not(.sb-dot):not(.sb-count) { color: rgb(var(--black)); font-weight: 800; }
+  .sb-count {
+    margin-left: auto;
+    font-size: 0.8em;
+    color: rgb(var(--gray));
+    font-variant-numeric: tabular-nums;
+  }
+
+  .sb-follow-copy { margin: 0 0 0.8em; font-size: 0.9em; color: rgb(var(--gray)); line-height: 1.4; }
+  .sb-follow-btns { display: flex; gap: 0.5em; }
+  .sb-btn {
+    flex: 1;
+    text-align: center;
+    padding: 0.5em 0.6em;
+    border-radius: 8px;
+    font-size: 0.85em;
+    font-weight: 600;
+    text-decoration: none;
+    color: #fff;
+  }
+  .sb-btn.linkedin { background: #0a66c2; }
+  .sb-btn.rss { background: #ee802f; }
+  .sb-btn:hover { opacity: 0.88; }
+</style>

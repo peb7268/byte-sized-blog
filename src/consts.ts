@@ -29,6 +29,8 @@ export const SERIES_META: Record<string, { color: string; blurb: string; label?:
   'Agentic Foundations': { color: '#0d9488', blurb: 'The on-ramp — read this first.', label: 'Start Here' },
   'Agentic Engineering': { color: '#4f46e5', blurb: 'The flagship series.', label: 'The Flagship' },
   'The New Ways of Working': { color: '#d4af37', blurb: 'How the job itself is changing.' },
+  'Ship Confidence': { color: '#16a34a', blurb: 'Evals — ship on proof, not vibes.' },
+  'Token Economics': { color: '#2563eb', blurb: 'What your agents cost, and how to trim it.' },
   'PCMS': { color: '#7c3aed', blurb: 'Personal context management, systematized.' },
   'Sustainable AI': { color: '#e0662e', blurb: 'The honest tradeoffs.' },
   'Standalone': { color: '#6b7280', blurb: 'One-off pieces.' },

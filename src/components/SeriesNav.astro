@@ -3,8 +3,11 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 
 interface Props {
   post: CollectionEntry<'blog'>;
+  // When false, omit the "Series · Title · Part N of M" header (e.g. in the sidebar,
+  // where the SeriesToc directly above already shows it).
+  showHead?: boolean;
 }
-const { post } = Astro.props;
+const { post, showHead = true } = Astro.props;
 const series = post.data.series;
 
 let items: CollectionEntry<'blog'>[] = [];
@@ -29,11 +32,13 @@ const showFirst = first && first.id !== post.id && (!prev || prev.id !== first.i
 
 {series && total > 0 && (
   <nav class="series-nav" aria-label={`${series} series navigation`}>
-    <div class="series-head">
-      <span class="series-kicker">Series</span>
-      <span class="series-title">{series}</span>
-      <span class="series-progress">Part {order} of {total}</span>
-    </div>
+    {showHead && (
+      <div class="series-head">
+        <span class="series-kicker">Series</span>
+        <span class="series-title">{series}</span>
+        <span class="series-progress">Part {order} of {total}</span>
+      </div>
+    )}
 
     {(showFirst || prev || next) ? (
       <div class="series-links">
