@@ -59,6 +59,12 @@ const hasSidebar = Astro.slots.has('sidebar');
 			.post-main {
 				min-width: 0;
 			}
+			/* Comments live in the left column so they line up with the body. */
+			.comments {
+				margin-top: 3em;
+				padding-top: 1.5em;
+				border-top: 1px solid rgb(var(--gray-light));
+			}
 			.has-sidebar .post-main .prose {
 				width: 100%;
 				max-width: none;
@@ -200,6 +206,11 @@ const hasSidebar = Astro.slots.has('sidebar');
 					</div>
 					<slot />
 				</div>
+				{!draft && !noindex && (
+					<div class="comments">
+						<Giscus />
+					</div>
+				)}
 				</div>
 				{hasSidebar && (
 					<aside class="post-sidebar">
@@ -208,7 +219,6 @@ const hasSidebar = Astro.slots.has('sidebar');
 				)}
 				</div>
 			</article>
-			{!draft && !noindex && <Giscus />}
 		</main>
 		<Footer />
 	</body>
