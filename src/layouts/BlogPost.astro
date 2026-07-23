@@ -45,13 +45,15 @@ const hasSidebar = Astro.slots.has('sidebar');
 				color: rgb(var(--gray-dark));
 			}
 			/* Two-column layout when a sidebar slot is provided (public blog posts). */
+			/* Match the header's content band exactly (width: min(1240px, 92vw),
+			   no side padding) so the article left edge lines up under the logo
+			   and the sidebar right edge lines up under the GitHub icon. */
 			.post-grid.has-sidebar {
 				display: grid;
-				grid-template-columns: minmax(0, 1fr) 320px;
-				gap: 2.5em;
-				max-width: 1160px;
+				grid-template-columns: minmax(0, 1fr) 360px;
+				gap: 3rem;
+				width: min(1240px, 92vw);
 				margin: 0 auto;
-				padding: 0 1em;
 				align-items: start;
 			}
 			.post-main {
@@ -71,7 +73,6 @@ const hasSidebar = Astro.slots.has('sidebar');
 			@media (max-width: 1023px) {
 				.post-grid.has-sidebar {
 					grid-template-columns: minmax(0, 1fr);
-					max-width: 780px;
 				}
 				.has-sidebar .post-main .prose {
 					max-width: calc(100% - 2em);
